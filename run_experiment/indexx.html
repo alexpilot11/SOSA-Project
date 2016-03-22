@@ -1,233 +1,122 @@
-
 <!DOCTYPE html>
 <html lang="en">
-	<head>
-		<title>three.js webgl - geometry LatheGeometry </title>
-		<meta charset="utf-8">
-		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
-		<meta name="author" content="Vildanov Almaz">	
-		<style>
-			body {
-				color: #000;
-				font-size:13px;
-				text-align:center;
-				font-weight: bold;
+<head>
+    <meta charset="UTF-8">
+    <title>Preview Experiment</title>
+    <link rel="stylesheet" type="text/css" href="css/preview_experiment.css">
 
-				background-color: #fff;
-				margin: 0;
-				overflow: hidden;
-			}
-
-			#info {
-				color:#000;
-				position: absolute;
-				top: 0; width: 100%;
-				padding: 5px;
-
-			}
-
-			a {
-				color: red;
-			}
-		</style>
-	</head>
-	
-	<!-- 
-	Code References
-	Prism creation - Board - http://alexan0308.github.io/threejs/examples/#webgl_geometry_PrismGeometry
-	GUI - https://code.google.com/archive/p/dat-gui/
-	
-	
-	
-	
-	
-	
-	
-	-->
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-
-	<body>
-		<div id="container"></div>
-		<div id="info">
-			SOSA
-		</div>
-		
-		<script src="js/three.js"></script>
-		
+		<script src="js/three.js"></script>	
 		<script src="js/Mirror.js"></script>
 		<script src="js/OrbitControls.js"></script>
-
 		<script src="js/Detector.js"></script>
-		<script src="js/stats.js"></script>
-		
+		<script src="js/stats.js"></script>	
 		<script src="js/DAT.GUI.js"></script>
+    <script type="text/javascript" src="js/preview_experiment.js"></script>
+</head>
+<body>
+		<script type="text/javascript">	
+//Start GUI
+var board = function() {
+this.boardR = 255;
+this.boardG = 255;
+this.boardB = 255;
+this.boardTiltDefaults = true;
+this.tiltSet = function(){};
+this.boardDefaults = true;
 
-		
-		<script>
-		
-PrismGeometry = function ( vertices, height ) {
+this.bgR = 255;
+this.bgG = 255;
+this.bgB = 255;
+this.backgroundDefaults = true;
+this.hasBG = true;
 
-	var Shape = new THREE.Shape();
+this.import = function(){};
+this.export = function(){};
 
-	( function f( ctx ){
+this.showLabels = true;
+this.labelPosition = 60;
+this.labelShade = 100;
+this.labelSize = 75;
+this.labelDefaults = true;
 
-	ctx.moveTo( vertices[0].x, vertices[0].y );
-	for (var i=1; i < vertices.length; i++)
-		{
-			ctx.lineTo( vertices[i].x, vertices[i].y );
-		}
-	ctx.lineTo( vertices[0].x, vertices[0].y );
-
-	} )( Shape );
-	
-    var settings = {};
-    settings.amount = height;
-	settings.bevelEnabled = false;
-    THREE.ExtrudeGeometry.call( this, Shape, settings );
+this.outputLoc = function(){};
 
 };
 
-PrismGeometry.prototype = Object.create( THREE.ExtrudeGeometry.prototype );
-
-
-			if ( ! Detector.webgl ) Detector.addGetWebGLMessage();
-
-			var container, stats;
-
-			var camera, controls, scene, renderer;
-			var light1;
-			var CircleMirror;
-			
-			init();
-			animate();
-
-			function init() {
-
-				// camera		
-				AddCamera(0, 0, 500); 		
-
-				scene = new THREE.Scene();
-
-		
-
-				 //renderer
-
-				renderer = new THREE.WebGLRenderer( { antialias: true } );
-				renderer.setClearColor( 0xFFFFFF );
-				renderer.setSize( window.innerWidth, window.innerHeight );
-
-				container = document.getElementById( 'container' );
-				container.appendChild( renderer.domElement );
-
-				stats = new Stats();
-				stats.domElement.style.position = 'absolute';
-				stats.domElement.style.top = '0px';
-				stats.domElement.style.zIndex = 100;
-				container.appendChild( stats.domElement );
-
-				//
-
-				window.addEventListener( 'resize', onWindowResize, false );
+window.onload = function() {
+  var boardTest = new board();
+  var gui = new dat.GUI();
+  gui.remember(boardTest);
+  var appearance = gui.addFolder('Appearance');
+  appearance.open();
+  var boardAppearance = appearance.addFolder('Board');
+  boardAppearance.open();
+  boardAppearance.add(boardTest, 'boardR', 0, 255);
+  boardAppearance.add(boardTest, 'boardG', 0, 255);
+  boardAppearance.add(boardTest, 'boardB', 0, 255);
+  boardAppearance.add(boardTest, 'boardDefaults');
+  boardAppearance.add(boardTest, 'tiltSet');
+  boardAppearance.add(boardTest, 'boardTiltDefaults');
+  
+  
+  var backgroundAppearance = appearance.addFolder('Background');
+  backgroundAppearance.open();
+  backgroundAppearance.add(boardTest, 'bgR', 0, 255);
+  backgroundAppearance.add(boardTest, 'bgG', 0, 255);
+  backgroundAppearance.add(boardTest, 'bgB', 0, 255);
+  backgroundAppearance.add(boardTest, 'backgroundDefaults');
+  
+  var settingsIO = gui.addFolder('Import/Export Settings');
+  settingsIO.open();
+  settingsIO.add(boardTest, 'import');
+  settingsIO.add(boardTest, 'export');
+  
+  var labels = gui.addFolder('Labels');
+  labels.open();
+  labels.add(boardTest, 'showLabels');
+  labels.add(boardTest, 'labelPosition', 0, 100);
+  labels.add(boardTest, 'labelShade', 0, 100);
+  labels.add(boardTest, 'labelSize', 0, 100);
+  labels.add(boardTest, 'labelDefaults');
+  
+  
+  var outputLocation = gui.addFolder('Log Output Location');
+  outputLocation.open();
+  outputLocation.add(boardTest, 'outputLoc');
+  
 	
-				// world
-
-	var A = new THREE.Vector2( -50, -50 );	
-	var B = new THREE.Vector2( -50, 100 );	
-	var C = new THREE.Vector2( 100, 100 );
-	var D = new THREE.Vector2( 100, -50 );	
-
-	var material = new THREE.MeshPhongMaterial( { color: 0x00b2fc, specular: 0x00ffff, shininess: 20 } );
-	
-	var height = 12;				   
-	var geometry = new PrismGeometry( [ A, B, C, D], 0 ); 	
-	var prism1 = new THREE.Mesh( geometry, material );
-	prism1.position.set( 0, 0, 0 );
-
-	scene.add( prism1 );
-
-	//GUI
-	
-	var gui = new DAT.GUI({
-    height : 5 * 32 - 1
-});
-
-var params = {
-    iteration: 5000,
-	boardsize: 10000,
-	numpegs: 10000,
-	sizepegs: 2000,
-	colorboard: 1010100
 };
-	
-	gui.add(params, 'iteration').onFinishChange(function(){
-    // refresh based on the new value of params.iteration
-
-});
-gui.add(params, 'boardsize').onFinishChange(function(){
-    // refresh based on the new value of params.iteration
-
-});
-gui.add(params, 'numpegs').onFinishChange(function(){
-    // refresh based on the new value of params.iteration
-
-});
-
-
-gui.add(params, 'colorboard').onFinishChange(function(){
-    // refresh based on the new value of params.iteration
-
-});
-
-
-
 	//END GUI
-
-
-	
-			}
-
-			function onWindowResize() {
-
-				camera.aspect = window.innerWidth / window.innerHeight;
-				camera.updateProjectionMatrix();
-				renderer.setSize( window.innerWidth, window.innerHeight );
-
-			}
-
-			function animate() {
-
-					requestAnimationFrame(animate);
-					render();
-
-			}
-
-
-			function render() {
-
-					stats.update();
-					controls.update();
-					renderer.render(scene, camera);
-
-			}
-
-			function AddCamera( X, Y, Z ) {
-
-				camera = new THREE.PerspectiveCamera( 24, window.innerWidth / window.innerHeight, 1, 10000 );
-
-				camera.position.set(X,Y,Z);
-
-
-
-			}
 		</script>
-	</body>
+<div class="left-column">
+    <h4>Presentation Order</h4>
+    <select onclick="reorderElements(); reorderStims();" class="order_box" name="presentation_order" size="7">
+        <option value="o1">Order 1</option>
+        <option value="o2">Order 2</option>
+        <option value="o3">Order 3</option>
+    </select>
+
+
+    <h4>Stimuli</h4>
+    <select class="stim_box" name="stimuli" size="17">
+        <option value="s1">Stimuli 1</option>
+        <option value="s2">Stimuli 2</option>
+        <option value="s3">Stimuli 3</option>
+        <option value="s4">Stimuli 4</option>
+        <option value="s5">Stimuli 5</option>
+    </select>
+</div>
+<div class="background">
+    <div class="board">
+        <ul class="board-stims">
+            <li class="board-stim"><h5 class="board-stim-label">test 1</h5><img class="board-stim-img" src="img/test1.png"></li>
+            <li class="board-stim"><h5 class="board-stim-label">test 2</h5><img class="board-stim-img" src="img/test2.png"></li>
+            <li class="board-stim"><h5 class="board-stim-label">test 3</h5><img class="board-stim-img" src="img/test3.png"></li>
+            <li class="board-stim"><h5 class="board-stim-label">test 4</h5><img class="board-stim-img" src="img/test4.jpg"></li>
+            <li class="board-stim"><h5 class="board-stim-label">test 5</h5><img class="board-stim-img" src="img/test5.jpg"></li>
+        </ul>
+
+    </div>
+</div>
+</body>
 </html>
