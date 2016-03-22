@@ -1,0 +1,18 @@
+/*board*/
+.color {
+  display: inline-block;
+  width: 100px;
+  height: 100px;
+  border: 1px solid rgba(0, 0, 0, 0.5);
+  background-color: rgb(255,255,255);
+  margin: 0 20px;
+  vertical-align: middle;
+}
+			
+#sliders {
+  float: left;
+  clear: left;
+  width: 180px;
+  height: 40px;
+  line-height: 40px;
+}

@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Create_EditPage for Stimulus Sets">
+    <meta name="author" content="Dr. Daniel Webster">
+	
+	<link rel="stylesheet" type="text/css" href="css/SOSA_DropDown.css">
+    <script src="js/SOSA_DropDown.js"></script>
+
+	<link rel="stylesheet" type="text/css" href="css/SOSA_COLORTHING.css">
+    <script src="js/SOSA_COLORTHING.js"></script>
+	
+	<title>Create/Edit Page - SOSA Web App</title>
+</head>
+
+<body>
+<div>
+	<form>
+		<fieldset>
+			<legend>Experiment</legend>
+				Name: <input type="text" name="exp_name" value=""><br>
+				Version: <input type="text" name="exp_ver" value=""><br>
+			<button name="new_exp_btn">New</button>
+			<button name="save_exp_btn">Save</button>
+			<button name="load_exp_btn">Load</button>
+		</fieldset>
+
+		<p>Current file open:</p>
+ 
+		<fieldset>
+		<legend>Board Settings</legend>
+		<p>File Name:</p>
+		<button name="browse_settings_btn">Browse</button>
+		<button name="revert_view_btn">Revert</button><br>
+		<input type="checkbox" name="rel_size_btn">Show stimulus at relative size 
+	</form>
+</div>
+
+<div class="PegSettings"
+	<form>
+	<fieldset>
+	<legend>Stimulus Settings</legend>
+		<button type="button" onclick=null>Move Stim Up</button>
+	    <button type="button" onclick=null>Move Stim Down</button>
+		<button type="button" onclick=null>Add Order</button>
+					<button type="button" onclick=null>Remove Order</button> <br>		
+		<div class="dropdown">
+			<button onclick="myFunction()" class="dropbtn">Orders</button>
+				<div id="myDropdown" class="dropdown-content">
+					<a href="#">Order 1</a>
+					<a href="#">Order 2</a>
+					<a href="#">Order 3</a>	
+				</div>
+		</div>
+		<select name="sometext" size="10">
+			<option>Blue Peg</option>
+			<option>Red Peg </option>
+			<option>Yellow Peg</option>
+			<option>Green Peg</option>
+			<option>Orange Peg</option>
+			<option>Unlabeled 6</option>
+		</select>
+	<button type="button" onclick=null>Add Stim</button>
+	<button type="button" onclick=null>Remove Stim</button>	<br><br>
+	<button type="button" onclick=null>Load</button>
+	<button type="button" onclick=null>Save</button>
+	
+	<p>Label <input type="text" value=""></p>
+	
+	<input type= "radio" name="peg" value="peg"> Peg <br>
+	<input type= "radio" name="image" value="image"> Image<br>
+	
+		<!-- Label Color -->
+		<p> Label Color </p>
+		<div id="sliders">
+			<input type="range" min="0" max="255" value="255" step="1" oninput="doAllThisRed(this.value)" id="redSlide" />R: 
+			<span id="redVal">255</span>
+			<input type="range" min="0" max="255" value="255" step="1" oninput="doAllThisGreen(this.value)" id="greenSlide" />G: 
+			<span id="greenVal">255</span>
+			<input type="range" min="0" max="255" value="255" step="1" oninput="doAllThisBlue(this.value)" id="blueSlide" />B: 
+			<span id="blueVal">255</span>
+		</div>
+		<input type="checkbox" name="default_label_color">Default Label Color 
+		<div class = color id = "board"></div>
+		<!-- Peg Color -->
+		<p> Peg Color </p>
+		<div id="sliders">
+			<input type="range" min="0" max="255" value="255" step="1" oninput="doAllThisRed(this.value)" id="redSlide" />R: 
+			<span id="redVal">255</span>
+			<input type="range" min="0" max="255" value="255" step="1" oninput="doAllThisGreen(this.value)" id="greenSlide" />G: 
+			<span id="greenVal">255</span>
+			<input type="range" min="0" max="255" value="255" step="1" oninput="doAllThisBlue(this.value)" id="blueSlide" />B: 
+			<span id="blueVal">255</span>
+		</div>
+		<input type="checkbox" name="default_peg_color">Default Peg Color 
+		<div class = color id = "board"></div>
+		<div class="dropdown">
+			<button onclick="myFunction2()" class="dropbtn">Size/Type</button>
+				<div id="myDropdown2" class="dropdown-content">
+					<a href="#">Choice 1</a>
+					<a href="#">Choice 2</a>
+					<a href="#">Choice 3</a>
+				</div>
+		</div>
+	</fieldset>
+	</form>
+</div>
+
+
+</body>
+
+</html>
