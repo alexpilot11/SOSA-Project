@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <script src="js/three.js"></script>
+
+    <script src="js/Mirror.js"></script>
+    <script src="js/OrbitControls.js"></script>
+
+    <script src="js/Detector.js"></script>
+    <script src="js/stats.js"></script>
+
+    <script src="js/DAT.GUI.js"></script>
+    <script src="js/jquery-1.12.2.min.js"></script>
+</head>
+<body>
+<div id="container"></div>
+<div id="info">
+    SOSA
+</div>
+<script type="text/javascript">
+
+
+    PrismGeometry = function ( vertices, height ) {
+
+        var Shape = new THREE.Shape();
+
+        ( function f( ctx ){
+
+            ctx.moveTo( vertices[0].x, vertices[0].y );
+            for (var i=1; i < vertices.length; i++)
+            {
+                ctx.lineTo( vertices[i].x, vertices[i].y );
+            }
+            ctx.lineTo( vertices[0].x, vertices[0].y );
+
+        } )( Shape );
+
+        var settings = {};
+        settings.amount = height;
+        settings.bevelEnabled = false;
+        THREE.ExtrudeGeometry.call( this, Shape, settings );
+
+    };
+
+    PrismGeometry.prototype = Object.create( THREE.ExtrudeGeometry.prototype );
+
+
+    if ( ! Detector.webgl ) Detector.addGetWebGLMessage();
+
+    var container, stats;
+
+    var camera, controls, scene, renderer;
+    var light1;
+    var CircleMirror;
+
+    init();
+    animate();
+
+    function init() {
+
+        // camera
+        AddCamera(0, 0, 500);
+
+        scene = new THREE.Scene();
+
+
+
+        //renderer
+
+        renderer = new THREE.WebGLRenderer( { antialias: true } );
+        renderer.setClearColor( 0xFFFFFF );
+        renderer.setSize( window.innerWidth, window.innerHeight );
+
+        container = document.getElementById( 'container' );
+        container.appendChild( renderer.domElement );
+
+        stats = new Stats();
+        stats.domElement.style.position = 'absolute';
+        stats.domElement.style.top = '0px';
+        stats.domElement.style.zIndex = 100;
+        container.appendChild( stats.domElement );
+
+        //
+
+        window.addEventListener( 'resize', onWindowResize, false );
+
+        // world
+
+        var A = new THREE.Vector2( -50, -50 );
+        var B = new THREE.Vector2( -50, 100 );
+        var C = new THREE.Vector2( 100, 100 );
+        var D = new THREE.Vector2( 100, -50 );
+
+        var material = new THREE.MeshPhongMaterial( { color: 0x00b2fc, specular: 0x00ffff, shininess: 20 } );
+
+        var height = 12;
+        var geometry = new PrismGeometry( [ A, B, C, D], 0 );
+        var prism1 = new THREE.Mesh( geometry, material );
+        prism1.position.set( 0, 0, 0 );
+
+        scene.add( prism1 );
+
+        //GUI
+
+        var gui = new DAT.GUI({
+            height : 5 * 32 - 1
+        });
+
+        var params = {
+            iteration: 5000,
+            boardsize: 10000,
+            numpegs: 10000,
+            sizepegs: 2000,
+            colorboard: 1010100
+        };
+
+        gui.add(params, 'iteration').onFinishChange(function(){
+            // refresh based on the new value of params.iteration
+
+        });
+        gui.add(params, 'boardsize').onFinishChange(function(){
+            // refresh based on the new value of params.iteration
+
+        });
+        gui.add(params, 'numpegs').onFinishChange(function(){
+            // refresh based on the new value of params.iteration
+
+        });
+
+
+        gui.add(params, 'colorboard').onFinishChange(function(){
+            // refresh based on the new value of params.iteration
+
+        });
+
+
+
+        //END GUI
+
+
+
+    }
+
+    function onWindowResize() {
+
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize( window.innerWidth, window.innerHeight );
+
+    }
+
+    function animate() {
+
+        requestAnimationFrame(animate);
+        render();
+
+    }
+
+
+    function render() {
+
+        stats.update();
+        controls.update();
+        renderer.render(scene, camera);
+
+    }
+
+    function AddCamera( X, Y, Z ) {
+
+        camera = new THREE.PerspectiveCamera( 24, window.innerWidth / window.innerHeight, 1, 10000 );
+
+        camera.position.set(X,Y,Z);
+
+
+
+    }
+
+</script>
+</body>
+</html>

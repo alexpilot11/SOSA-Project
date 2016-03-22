@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Preview Experiment</title>
+    <link rel="stylesheet" type="text/css" href="css/preview_experiment.css">
+
+    <script type="text/javascript" src="js/preview_experiment.js"></script>
+</head>
+<body>
+<div class="left-column">
+    <h4>Presentation Order</h4>
+    <select onclick="reorderElements(); reorderStims();" class="order_box" name="presentation_order" size="7">
+        <option value="o1">Order 1</option>
+        <option value="o2">Order 2</option>
+        <option value="o3">Order 3</option>
+    </select>
+
+
+    <h4>Stimuli</h4>
+    <select class="stim_box" name="stimuli" size="17">
+        <option value="s1">Stimuli 1</option>
+        <option value="s2">Stimuli 2</option>
+        <option value="s3">Stimuli 3</option>
+        <option value="s4">Stimuli 4</option>
+        <option value="s5">Stimuli 5</option>
+    </select>
+</div>
+<div class="background">
+    <div class="board">
+        <ul class="board-stims">
+            <li class="board-stim"><h5 class="board-stim-label">test 1</h5><img class="board-stim-img" src="img/test1.png"></li>
+            <li class="board-stim"><h5 class="board-stim-label">test 2</h5><img class="board-stim-img" src="img/test2.png"></li>
+            <li class="board-stim"><h5 class="board-stim-label">test 3</h5><img class="board-stim-img" src="img/test3.png"></li>
+            <li class="board-stim"><h5 class="board-stim-label">test 4</h5><img class="board-stim-img" src="img/test4.jpg"></li>
+            <li class="board-stim"><h5 class="board-stim-label">test 5</h5><img class="board-stim-img" src="img/test5.jpg"></li>
+        </ul>
+
+    </div>
+</div>
+</body>
+</html>
