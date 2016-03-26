@@ -1,22 +1,243 @@
+
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Preview Experiment</title>
-    <link rel="stylesheet" type="text/css" href="css/preview_experiment.css">
-
+	<head>
+		<title>SOSA Preview Experiment</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		<style>
+			body {
+				font-family: Monospace;
+				background-color: #f0f0f0;
+				margin: 0px;
+				overflow: hidden;
+			}
+		</style>
+		<!--
+		Basic layout from
+		http://mrdoob.github.io/three.js/examples/canvas_geometry_board.html
+		-->
+		
+		
+	</head>
+	<body>
 		<script src="js/three.js"></script>	
 		<script src="js/Mirror.js"></script>
 		<script src="js/OrbitControls.js"></script>
 		<script src="js/Detector.js"></script>
 		<script src="js/stats.js"></script>	
 		<script src="js/DAT.GUI.js"></script>
-    <script type="text/javascript" src="js/preview_experiment.js"></script>
-</head>
-<body>
-		<script type="text/javascript">	
+		<script src="js/Projector.js"></script>
+		<script src="js/CanvasRenderer.js"></script>
+
+		<script>
+
+			var container, stats;
+
+			var camera, scene, renderer;
+
+			var board; /*
+			= 	{
+			boardR: 255,
+			boardG: 255,
+			boardB: 255,
+			boardTiltDefaults: true,
+			tiltSet: function(){},
+			boardDefaults: true
+		
+			this.bgR = 255;
+			this.bgG = 255;
+			this.bgB = 255;
+			this.backgroundDefaults = true;
+			this.hasBG = true;
+
+			this.import = function(){};
+			this.export = function(){};
+
+			this.showLabels = true;
+			this.labelPosition = 60;
+			this.labelShade = 100;
+			this.labelSize = 75;
+			this.labelDefaults = true;
+
+			this.outputLoc = function(){};
+		
+			}	*/
+
+
+			
+
+			var targetRotation = -350;
+			var targetRotationOnMouseDown = 0;
+
+			var mouseX = 0;
+			var mouseXOnMouseDown = 0;
+
+			var windowHalfX = window.innerWidth / 2;
+			var windowHalfY = window.innerHeight / 2;
+
+			init();
+			animate();
+
+			function init() {
+
+				container = document.createElement( 'div' );
+				document.body.appendChild( container );
+
+				var info = document.createElement( 'div' );
+				info.style.position = 'absolute';
+				info.style.top = '10px';
+				info.style.width = '100%';
+				info.style.textAlign = 'center';
+				info.innerHTML = 'Preview Experiment';
+				container.appendChild( info );
+
+				camera = new THREE.PerspectiveCamera( 70, window.innerWidth / window.innerHeight, 1, 1000 );
+				camera.position.y = 150;
+				camera.position.z = 500;
+
+				scene = new THREE.Scene();
+
+				// board
+
+				var geometry = new THREE.BoxGeometry( 400, 20, 400 );
+
+				for ( var i = 0; i < geometry.faces.length; i += 2 ) {
+
+					var hex =  0xffffff;
+					geometry.faces[ i ].color.setHex( hex );
+					geometry.faces[ i + 1 ].color.setHex( hex );
+
+				}
+
+				var material = new THREE.MeshBasicMaterial( { vertexColors: THREE.FaceColors, overdraw: 0.5 } );
+
+				board = new THREE.Mesh( geometry, material );
+				board.position.y = 200;
+				board.rotation.x = -350;
+				scene.add( board );
+
+				renderer = new THREE.CanvasRenderer();
+				renderer.setClearColor( 0xf0f0f0 );
+				renderer.setPixelRatio( window.devicePixelRatio );
+				renderer.setSize( window.innerWidth, window.innerHeight );
+				container.appendChild( renderer.domElement );
+
+				stats = new Stats();
+				stats.domElement.style.position = 'absolute';
+				stats.domElement.style.top = '0px';
+				container.appendChild( stats.domElement );
+
+				document.addEventListener( 'mousedown', onDocumentMouseDown, false );
+				document.addEventListener( 'touchstart', onDocumentTouchStart, false );
+				document.addEventListener( 'touchmove', onDocumentTouchMove, false );
+
+				//
+
+				window.addEventListener( 'resize', onWindowResize, false );
+
+			}
+
+			function onWindowResize() {
+
+				windowHalfX = window.innerWidth / 2;
+				windowHalfY = window.innerHeight / 2;
+
+				camera.aspect = window.innerWidth / window.innerHeight;
+				camera.updateProjectionMatrix();
+
+				renderer.setSize( window.innerWidth, window.innerHeight );
+
+			}
+
+			//
+
+			function onDocumentMouseDown( event ) {
+
+				event.preventDefault();
+
+				document.addEventListener( 'mousemove', onDocumentMouseMove, false );
+				document.addEventListener( 'mouseup', onDocumentMouseUp, false );
+				document.addEventListener( 'mouseout', onDocumentMouseOut, false );
+
+				mouseXOnMouseDown = event.clientX - windowHalfX;
+				targetRotationOnMouseDown = targetRotation;
+
+			}
+
+			function onDocumentMouseMove( event ) {
+
+				mouseX = event.clientX - windowHalfX;
+
+				targetRotation = targetRotationOnMouseDown + ( mouseX - mouseXOnMouseDown ) * 0.02;
+
+			}
+
+			function onDocumentMouseUp( event ) {
+
+				document.removeEventListener( 'mousemove', onDocumentMouseMove, false );
+				document.removeEventListener( 'mouseup', onDocumentMouseUp, false );
+				document.removeEventListener( 'mouseout', onDocumentMouseOut, false );
+
+			}
+
+			function onDocumentMouseOut( event ) {
+
+				document.removeEventListener( 'mousemove', onDocumentMouseMove, false );
+				document.removeEventListener( 'mouseup', onDocumentMouseUp, false );
+				document.removeEventListener( 'mouseout', onDocumentMouseOut, false );
+
+			}
+
+			function onDocumentTouchStart( event ) {
+
+				if ( event.touches.length === 1 ) {
+
+					event.preventDefault();
+
+					mouseXOnMouseDown = event.touches[ 0 ].pageX - windowHalfX;
+					targetRotationOnMouseDown = targetRotation;
+
+				}
+
+			}
+
+			function onDocumentTouchMove( event ) {
+
+				if ( event.touches.length === 1 ) {
+
+					event.preventDefault();
+
+					mouseX = event.touches[ 0 ].pageX - windowHalfX;
+					targetRotation = targetRotationOnMouseDown + ( mouseX - mouseXOnMouseDown ) * 0.05;
+
+				}
+
+			}
+
+			//
+
+			function animate() {
+
+				requestAnimationFrame( animate );
+
+				stats.begin();
+				render();
+				stats.end();
+
+			}
+
+			function render() {
+				//For rotation of the board
+				board.rotation.x += ( targetRotation - board.rotation.x ) * 0.05;
+				renderer.render( scene, camera );
+
+			}
+
+
+
 //Start GUI
-var board = function() {
+var board1 = function() {
 this.boardR = 255;
 this.boardG = 255;
 this.boardB = 255;
@@ -44,12 +265,12 @@ this.outputLoc = function(){};
 };
 
 window.onload = function() {
-  var boardTest = new board();
+  var boardTest = new board1();
   var gui = new dat.GUI();
   gui.remember(boardTest);
   var appearance = gui.addFolder('Appearance');
   appearance.open();
-  var boardAppearance = appearance.addFolder('Board');
+  var boardAppearance = appearance.addFolder('Board1');
   boardAppearance.open();
   boardAppearance.add(boardTest, 'boardR', 0, 255);
   boardAppearance.add(boardTest, 'boardG', 0, 255);
@@ -88,35 +309,6 @@ window.onload = function() {
 };
 	//END GUI
 		</script>
-<div class="left-column">
-    <h4>Presentation Order</h4>
-    <select onclick="reorderElements(); reorderStims();" class="order_box" name="presentation_order" size="7">
-        <option value="o1">Order 1</option>
-        <option value="o2">Order 2</option>
-        <option value="o3">Order 3</option>
-    </select>
 
-
-    <h4>Stimuli</h4>
-    <select class="stim_box" name="stimuli" size="17">
-        <option value="s1">Stimuli 1</option>
-        <option value="s2">Stimuli 2</option>
-        <option value="s3">Stimuli 3</option>
-        <option value="s4">Stimuli 4</option>
-        <option value="s5">Stimuli 5</option>
-    </select>
-</div>
-<div class="background">
-    <div class="board">
-        <ul class="board-stims">
-            <li class="board-stim"><h5 class="board-stim-label">test 1</h5><img class="board-stim-img" src="img/test1.png"></li>
-            <li class="board-stim"><h5 class="board-stim-label">test 2</h5><img class="board-stim-img" src="img/test2.png"></li>
-            <li class="board-stim"><h5 class="board-stim-label">test 3</h5><img class="board-stim-img" src="img/test3.png"></li>
-            <li class="board-stim"><h5 class="board-stim-label">test 4</h5><img class="board-stim-img" src="img/test4.jpg"></li>
-            <li class="board-stim"><h5 class="board-stim-label">test 5</h5><img class="board-stim-img" src="img/test5.jpg"></li>
-        </ul>
-
-    </div>
-</div>
-</body>
+	</body>
 </html>
