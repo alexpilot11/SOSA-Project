@@ -17,6 +17,14 @@
   line-height: 40px;
 }
 
+#slidersp {
+    float: left;
+    clear: left;
+    width: 180px;
+    height: 40px;
+    line-height: 40px;
+}
+
 /* Dropdown Button */
 .dropbtn {
     background-color: #4CAF50;
@@ -60,3 +68,51 @@
 
 /* Show the dropdown menu (use JS to add this class to the .dropdown-content container when the user clicks on the dropdown button) */
 .show {display:block;}
+
+/*2 fieldsets at the top of the page*/
+#field1{
+    width: 50%;
+    padding: 0;
+    margin: 0;
+    display: inline-block;
+    height: 120px;
+    background-color: silver;
+}
+
+#field2{
+    width: 49%;
+    padding: 0;
+    margin: 0;
+    display: inline-block;
+    height: 114px;
+    background-color: silver;
+}
+
+#bp{
+    width: 100%;
+    height: 500px;
+}
+
+.stimsettings{
+    padding: 0;
+    margin: 0;
+    display: inline-block;
+    background-color: silver;
+    width: 30%;
+    float: left;
+}
+
+.pegsettings{
+    display: inline-block;
+    width: 25%
+}
+
+.pegappearance{
+    padding: 0;
+    margin: 0;
+    display: inline-block;
+    background-color: silver;
+    float: right;
+    width: 45%
+}
+
