@@ -4,7 +4,7 @@
 }
 
 .background {
-    background-color: darkgreen;
+    background-color: black;
     width: 800px;
     height: 600px;
     margin: 10px auto 0 auto;
@@ -13,7 +13,7 @@
 
 .board {
     margin: 0 auto;
-    background-color: palegreen;
+    background-color: white;
     width: 500px;
     height: 500px;
     position: absolute;
@@ -21,10 +21,6 @@
     left: 150px;
 }
 
-.board-stims {
-    list-style: none;
-
-}
 
 .board-stim {
     display: inline-block;
@@ -34,4 +30,68 @@
 .board-stim img {
     width: 20px;
     height: 20px;
+}
+
+
+#sliders-board {
+    float: left;
+    clear: left;
+    width: 180px;
+    height: 200px;
+    line-height: 40px;
+    position: relative;
+
+}
+
+#sliders-background {
+    float: left;
+    clear: left;
+    width: 180px;
+    height: 200px;
+    line-height: 40px;
+}
+
+
+.appearance{
+    padding: 0;
+    margin: 0 0 20px 0;
+    display: flex;
+    background-color: silver;
+    float: left;
+    width: auto;
+    height: auto;
+}
+
+.default {
+    float: right;
+    top: 13px;
+    position: relative;
+}
+
+.default-check {
+    float: right;
+    left: 30px;
+    top: -70px;
+    position: relative;
+}
+
+.color-max-val {
+    margin: auto;
+
+
+}
+
+.color-val {
+    margin: auto;
+}
+
+.slider {
+    display: flex;
+    width: 200px;
+    height: 100px;
+    margin: auto;
+}
+
+.board-final-checks {
+    float: left;
 }

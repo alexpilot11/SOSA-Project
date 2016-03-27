@@ -29,14 +29,93 @@
 <div class="background">
     <div class="board">
         <ul class="board-stims">
-            <li class="board-stim"><h5 class="board-stim-label">test 1</h5><img class="board-stim-img" src="img/test1.png"></li>
-            <li class="board-stim"><h5 class="board-stim-label">test 2</h5><img class="board-stim-img" src="img/test2.png"></li>
-            <li class="board-stim"><h5 class="board-stim-label">test 3</h5><img class="board-stim-img" src="img/test3.png"></li>
-            <li class="board-stim"><h5 class="board-stim-label">test 4</h5><img class="board-stim-img" src="img/test4.jpg"></li>
-            <li class="board-stim"><h5 class="board-stim-label">test 5</h5><img class="board-stim-img" src="img/test5.jpg"></li>
+            <li class="board-stim"><h5 class="board-stim-label">test 1</h5><img class="board-stim-img"
+                                                                                src="img/test1.png"></li>
+            <li class="board-stim"><h5 class="board-stim-label">test 2</h5><img class="board-stim-img"
+                                                                                src="img/test2.png"></li>
+            <li class="board-stim"><h5 class="board-stim-label">test 3</h5><img class="board-stim-img"
+                                                                                src="img/test3.png"></li>
+            <li class="board-stim"><h5 class="board-stim-label">test 4</h5><img class="board-stim-img"
+                                                                                src="img/test4.jpg"></li>
+            <li class="board-stim"><h5 class="board-stim-label">test 5</h5><img class="board-stim-img"
+                                                                                src="img/test5.jpg"></li>
         </ul>
 
     </div>
 </div>
+<div class="appearance">
+    <fieldset>
+        <legend>Appearance</legend>
+        <!-- Label Color -->
+        <p class="default">Default</p>
+
+        <div id="sliders-board">
+            <p> Board Tint </p>
+
+            <label>R:</label>
+
+            <input class="color-val" type="range" min="0" max="255" value="255" step="1"
+                   oninput="doAllThisRed(this.value, 'board')"
+                   id="redSlide"/>
+            <span class="color-max-val" id="redVal">255</span>
+            <br>
+            <label>G:</label>
+
+            <input class="color-val" type="range" min="0" max="255" value="255" step="1"
+                   oninput="doAllThisGreen(this.value, 'board')"
+                   id="greenSlide"/>
+            <span class="color-max-val" id="greenVal">255</span>
+            <br>
+
+            <label>B:</label>
+
+            <input class="color-val" type="range" min="0" max="255" value="255" step="1"
+                   oninput="doAllThisBlue(this.value, 'board')"
+                   id="blueSlide"/>
+            <span class="color-max-val" id="blueVal">255</span>
+            <input class="default-check" type="checkbox" id="board_tint_default">
+
+        </div>
+
+
+        <div id="sliders-background">
+            <p> Background Image Tint </p>
+
+            <label>R:</label>
+
+            <input class="color-val" type="range" min="0" max="255" value="255" step="1"
+                   oninput="doAllThisRed(this.value, 'board')"
+                   id="redSlide-tint"/>
+            <span class="color-max-val" id="redVal-tint">255</span>
+            <br>
+            <label>G:</label>
+
+            <input class="color-val" type="range" min="0" max="255" value="255" step="1"
+                   oninput="doAllThisGreen(this.value, 'board')"
+                   id="greenSlide-tint"/>
+            <span class="color-max-val" id="greenVal-tint">255</span>
+            <br>
+
+            <label>B:</label>
+
+            <input class="color-val" type="range" min="0" max="255" value="255" step="1"
+                   oninput="doAllThisBlue(this.value, 'board')"
+                   id="blueSlide-tint"/>
+            <span class="color-max-val" id="blueVal-tint">255</span>
+
+            <input class="default-check" type="checkbox" id="background_tint_defualt">
+
+        </div>
+
+        <div class="board-final-checks">
+            <input type="checkbox" id="use-grid-check"><label for="use-grid-check">Use grid on final image</label>
+            <input type="checkbox" id="hide-background-check"><label for="hide-background-check">Hide Board Background
+            Image</label>
+        </div>
+
+    </fieldset>
+</div>
+
+
 </body>
 </html>
