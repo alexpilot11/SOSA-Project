@@ -43,95 +43,142 @@
 
     </div>
 </div>
-<div class="appearance">
+
+<div class="bottom-settings">
     <fieldset class="appearance">
         <legend>Appearance</legend>
         <div class="settings">
-        <div class="labels">
+            <div class="appearance-labels">
 
-            <p class="labels-board"> Board Tint </p>
+                <p class="labels-board"> Board Tint </p>
 
-            <p class="labels-background"> Background Image Tint </p>
-
-
-        </div>
-
-        <div class="sliders">
-            <div class="slider-block">
-                <!-- board tint -->
-
-                <label>R:</label>
-
-                <input class="color-val" type="range" min="0" max="255" value="255" step="1"
-                       oninput="doAllThisRed(this.value, 'board')"
-                       id="redSlide"/>
-                <span class="color-max-val" id="redVal">255</span>
-                <br>
-                <label>G:</label>
-
-                <input class="color-val" type="range" min="0" max="255" value="255" step="1"
-                       oninput="doAllThisGreen(this.value, 'board')"
-                       id="greenSlide"/>
-                <span class="color-max-val" id="greenVal">255</span>
-                <br>
-
-                <label>B:</label>
-
-                <input class="color-val" type="range" min="0" max="255" value="255" step="1"
-                       oninput="doAllThisBlue(this.value, 'board')"
-                       id="blueSlide"/>
-                <span class="color-max-val" id="blueVal">255</span>
-
-            </div>
-
-
-            <div class="slider-block">
-                <!-- background image tint -->
-                <label>R:</label>
-
-                <input class="color-val" type="range" min="0" max="255" value="0" step="1"
-                       oninput="doAllThisRed(this.value, 'background')"
-                       id="redSlide-tint"/>
-                <span class="color-max-val" id="redVal-tint">0</span>
-                <br>
-                <label>G:</label>
-
-                <input class="color-val" type="range" min="0" max="255" value="0" step="1"
-                       oninput="doAllThisGreen(this.value, 'background')"
-                       id="greenSlide-tint"/>
-                <span class="color-max-val" id="greenVal-tint">0</span>
-                <br>
-
-                <label>B:</label>
-
-                <input class="color-val" type="range" min="0" max="255" value="0" step="1"
-                       oninput="doAllThisBlue(this.value, 'background')"
-                       id="blueSlide-tint"/>
-                <span class="color-max-val" id="blueVal-tint">0</span>
+                <p class="labels-background"> Background Image Tint </p>
 
 
             </div>
 
-        </div>
+            <div class="sliders">
+                <div class="appearance-slider-block">
+                    <!-- board tint -->
 
-        <div class="default-checks">
-            <p>Default</p>
+                    <label>R:</label>
 
-            <input class="default-check check-board" type="checkbox" id="board_tint_default">
-            <input class="default-check check-background" type="checkbox" id="background_tint_defualt">
+                    <input class="color-val" type="range" min="0" max="255" value="255" step="1"
+                           oninput="doAllThisRed(this.value, 'board')"
+                           id="redSlide"/>
+                    <span class="color-max-val" id="redVal">255</span>
+                    <br>
+                    <label>G:</label>
+
+                    <input class="color-val" type="range" min="0" max="255" value="255" step="1"
+                           oninput="doAllThisGreen(this.value, 'board')"
+                           id="greenSlide"/>
+                    <span class="color-max-val" id="greenVal">255</span>
+                    <br>
+
+                    <label>B:</label>
+
+                    <input class="color-val" type="range" min="0" max="255" value="255" step="1"
+                           oninput="doAllThisBlue(this.value, 'board')"
+                           id="blueSlide"/>
+                    <span class="color-max-val" id="blueVal">255</span>
+
+                </div>
 
 
-        </div>
+                <div class="appearance-slider-block">
+                    <!-- background image tint -->
+                    <label>R:</label>
+
+                    <input class="color-val" type="range" min="0" max="255" value="0" step="1"
+                           oninput="doAllThisRed(this.value, 'background')"
+                           id="redSlide-tint"/>
+                    <span class="color-max-val" id="redVal-tint">0</span>
+                    <br>
+                    <label>G:</label>
+
+                    <input class="color-val" type="range" min="0" max="255" value="0" step="1"
+                           oninput="doAllThisGreen(this.value, 'background')"
+                           id="greenSlide-tint"/>
+                    <span class="color-max-val" id="greenVal-tint">0</span>
+                    <br>
+
+                    <label>B:</label>
+
+                    <input class="color-val" type="range" min="0" max="255" value="0" step="1"
+                           oninput="doAllThisBlue(this.value, 'background')"
+                           id="blueSlide-tint"/>
+                    <span class="color-max-val" id="blueVal-tint">0</span>
+
+
+                </div>
+
+            </div>
+
+            <div class="default-checks">
+                <p>Default</p>
+
+                <input class="default-check check-board" type="checkbox" id="board_tint_default">
+                <input class="default-check check-background" type="checkbox" id="background_tint_defualt">
+
+
+            </div>
         </div>
         <div class="board-final-checks">
             <input type="checkbox" id="use-grid-check"><label for="use-grid-check">Use grid on final image</label>
-            <input type="checkbox" id="hide-background-check"><label for="hide-background-check">Hide Board Background
-            Image</label>
+            <input type="checkbox" id="hide-background-check"><label for="hide-background-check">Hide Board
+            Background Image</label>
         </div>
 
     </fieldset>
+
+    <fieldset class="labels">
+        <legend>Labels</legend>
+        <div class="labels-show">
+
+            <input type="checkbox" id="show-labels"><label for="show-labels">Show</label>
+        </div>
+
+        <div class="label-slider-block">
+            <!-- label settings -->
+            <div class="labels-labels-settings">
+                <label for="position-val">Position:</label>
+                <label for="shade-val">Shade:</label>
+                <label for="size-val">Size:</label>
+
+
+            </div>
+
+            <input class="label-val" type="range" min="0" max="100" value="100" step="1"
+                   oninput="updateLabelPosition(this.value)"
+                   id="position-val"/>
+            <span class="color-max-val" id="position-val-text">0</span>
+            <br>
+
+            <input class="label-val" type="range" min="0" max="100" value="100" step="1"
+                   oninput="updateLabelShade(this.value)"
+                   id="shade-val"/>
+            <span class="color-max-val" id="shade-val-text">0</span>
+            <br>
+
+
+            <input class="label-val" type="range" min="0" max="100" value="100" step="1"
+                   oninput="updateLabelSize(this.value)"
+                   id="size-val"/>
+            <span class="color-max-val" id="size-val-text">0</span>
+
+
+        </div>
+
+        <div class="labels-default">
+            <p>Default</p>
+            <input class="default-check" type="checkbox" id="labels-default-check">
+
+
+        </div>
+
+    </fieldset>
+
 </div>
-
-
 </body>
 </html>

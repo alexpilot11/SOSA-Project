@@ -35,6 +35,7 @@
 
 .appearance{
     width: 425px;
+    float: left;
 }
 
 .appearance > .settings > div {
@@ -44,7 +45,7 @@
 
 }
 
-.labels p {
+.appearance-labels p {
     position: relative;
 }
 
@@ -63,11 +64,11 @@
 
 }
 
-.slider-block {
+.appearance-slider-block {
     margin-bottom: 20px;
 }
 
-.labels {
+.appearance-labels {
     top: -26px;
     position: relative;
     margin-right: 10px;
@@ -87,3 +88,26 @@
     height: 200px;
 }
 
+.labels {
+    display: inline-block;
+    float: left;
+    width: 280px;
+}
+
+.labels-labels-settings {
+    width: 65px;
+    float: left;
+}
+
+.labels-labels-settings label {
+    float: right;
+    margin: 5px 0;
+}
+
+.labels-default {
+    float: right;
+}
+
+.label-slider-block {
+    display: inline-block;
+}
