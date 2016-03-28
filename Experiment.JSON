@@ -1,0 +1,38 @@
+{
+	"Experiment": {
+		"Name": "Project",
+		"Version": "1.0",
+		"Log Output Location": "C:\Users\",
+		"Board": {
+			"Red": 255,
+			"Green": 255,
+			"Blue": 255,
+			"Default": true,
+			"tiltX": 0,
+			"tiltY": 0,
+			"tiltZ": 0,
+			"tiltDefault": true
+		},
+		
+		"Background": {
+			"Red": 255,
+			"Green": 255,
+			"Blue": 255,
+			"Default": true
+		},
+		
+		"Label": {
+			"Position": 100,
+			"Shade": 100,
+			"Size": 100,
+			"Is Showing": true,
+			"Default": true
+		},
+		"Stimuli": {
+		"_This will be file locations of stimuli JSONS":"C:\Users\"
+		}
+	}
+}
+	
+
+
