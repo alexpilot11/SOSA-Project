@@ -184,6 +184,29 @@ function doAllThisBlue(newValue, boardClass){
     colorUpdate(boardClass);
 }
 
+function updateLabelPosition(newValue) {
+    var pos = document.getElementById("position-val-text");
+    pos.innerHTML = newValue;
+    var labels = document.getElementsByClassName("board-stim-label");
+    for (var i = 0; i < labels.length; i++){
+        labels[i].style.top = (newValue) + "px";
+    }
 
+}
+
+function updateLabelShade(newValue) {
+    //TODO: write this
+
+}
+
+function updateLabelSize(newValue) {
+    //TODO: fix this
+    var size = document.getElementById("size-val-text");
+    size.innerHTML = newValue;
+    var labels = document.getElementsByClassName("board-stim-label");
+    for (var i = 0; i < labels.length; i++){
+        labels[i].style.fontSize = (newValue) + "px";
+    }
+}
 
 

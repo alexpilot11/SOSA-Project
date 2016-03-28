@@ -27,6 +27,11 @@
     margin: 50px;
 }
 
+.board-stim-label {
+    top: 20px;
+    position: relative;
+}
+
 .board-stim img {
     width: 20px;
     height: 20px;
@@ -110,4 +115,5 @@
 
 .label-slider-block {
     display: inline-block;
+    width: 230px;
 }
