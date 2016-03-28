@@ -58,6 +58,7 @@
 
         <div class="sliders">
             <div class="slider-block">
+                <!-- board tint -->
 
                 <label>R:</label>
 
@@ -85,28 +86,28 @@
 
 
             <div class="slider-block">
-
+                <!-- background image tint -->
                 <label>R:</label>
 
-                <input class="color-val" type="range" min="0" max="255" value="255" step="1"
-                       oninput="doAllThisRed(this.value, 'board')"
+                <input class="color-val" type="range" min="0" max="255" value="0" step="1"
+                       oninput="doAllThisRed(this.value, 'background')"
                        id="redSlide-tint"/>
-                <span class="color-max-val" id="redVal-tint">255</span>
+                <span class="color-max-val" id="redVal-tint">0</span>
                 <br>
                 <label>G:</label>
 
-                <input class="color-val" type="range" min="0" max="255" value="255" step="1"
-                       oninput="doAllThisGreen(this.value, 'board')"
+                <input class="color-val" type="range" min="0" max="255" value="0" step="1"
+                       oninput="doAllThisGreen(this.value, 'background')"
                        id="greenSlide-tint"/>
-                <span class="color-max-val" id="greenVal-tint">255</span>
+                <span class="color-max-val" id="greenVal-tint">0</span>
                 <br>
 
                 <label>B:</label>
 
-                <input class="color-val" type="range" min="0" max="255" value="255" step="1"
-                       oninput="doAllThisBlue(this.value, 'board')"
+                <input class="color-val" type="range" min="0" max="255" value="0" step="1"
+                       oninput="doAllThisBlue(this.value, 'background')"
                        id="blueSlide-tint"/>
-                <span class="color-max-val" id="blueVal-tint">255</span>
+                <span class="color-max-val" id="blueVal-tint">0</span>
 
 
             </div>

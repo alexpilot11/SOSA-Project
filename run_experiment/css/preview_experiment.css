@@ -59,7 +59,7 @@
 }
 
 .default-check.check-board {
-    margin-bottom: 94px;
+    margin-bottom: 90px;
 
 }
 
@@ -77,6 +77,10 @@
     position: relative;
     top: -165px;
     margin-left: 20px;
+}
+
+.default-checks p {
+    margin-bottom: 20px;
 }
 
 .settings {

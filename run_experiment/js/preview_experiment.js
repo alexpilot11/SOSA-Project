@@ -132,37 +132,55 @@ function reorderStims() {
 
 }
 
-function showValueR(newValue){
-    document.getElementById("redVal").innerHTML=newValue;
+function showValueR(newValue, boardClass){
+    var redVal = "redVal";
+    if (boardClass == "background") {
+        redVal += "-tint";
+    }
+    document.getElementById(redVal).innerHTML=newValue;
 }
 
-function showValueG(newValue){
-    document.getElementById("greenVal").innerHTML=newValue;
+function showValueG(newValue, boardClass){
+    var greenVal = "greenVal";
+    if (boardClass == "background") {
+        greenVal += "-tint";
+    }
+    document.getElementById(greenVal).innerHTML=newValue;
 }
 
-function showValueB(newValue){
-    document.getElementById("blueVal").innerHTML=newValue;
+function showValueB(newValue, boardClass){
+    var blueVal = "blueVal";
+    if (boardClass == "background") {
+        blueVal += "-tint";
+    }
+    document.getElementById(blueVal).innerHTML=newValue;
 }
 
 function colorUpdate(boardClass) {
-    var r = document.getElementById("redVal").innerHTML;
-    var g = document.getElementById("greenVal").innerHTML;
-    var b = document.getElementById("blueVal").innerHTML;
+    var redVal="redVal", greenVal="greenVal", blueVal="blueVal";
+    if (boardClass == "background") {
+        redVal += "-tint";
+        greenVal += "-tint";
+        blueVal += "-tint";
+    }
+    var r = document.getElementById(redVal).innerHTML;
+    var g = document.getElementById(greenVal).innerHTML;
+    var b = document.getElementById(blueVal).innerHTML;
     document.getElementsByClassName(boardClass)[0].style.backgroundColor = 'rgb(' + r + ',' + g + ',' + b + ')';
 }
 
 function doAllThisRed(newValue, boardClass){
-    showValueR(newValue);
+    showValueR(newValue, boardClass);
     colorUpdate(boardClass);
 }
 
 function doAllThisGreen(newValue, boardClass){
-    showValueG(newValue);
+    showValueG(newValue, boardClass);
     colorUpdate(boardClass);
 }
 
 function doAllThisBlue(newValue, boardClass){
-    showValueB(newValue);
+    showValueB(newValue, boardClass);
     colorUpdate(boardClass);
 }
 
