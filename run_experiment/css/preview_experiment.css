@@ -33,65 +33,53 @@
 }
 
 
-#sliders-board {
-    float: left;
-    clear: left;
-    width: 180px;
-    height: 200px;
-    line-height: 40px;
-    position: relative;
-
-}
-
-#sliders-background {
-    float: left;
-    clear: left;
-    width: 180px;
-    height: 200px;
-    line-height: 40px;
-}
-
-
 .appearance{
-    padding: 0;
-    margin: 0 0 20px 0;
-    display: flex;
-    background-color: silver;
-    float: left;
-    width: auto;
-    height: auto;
+    width: 425px;
 }
 
-.default {
-    float: right;
-    top: 13px;
+.appearance > .settings > div {
+    display:inline-block;
+    height: 170px;
+    padding:10px 0;
+
+}
+
+.labels p {
     position: relative;
 }
+
+.labels-board {
+    margin-bottom: 84px;
+
+}
+
 
 .default-check {
-    float: right;
-    left: 30px;
-    top: -70px;
+    display: block;
+}
+
+.default-check.check-board {
+    margin-bottom: 94px;
+
+}
+
+.slider-block {
+    margin-bottom: 20px;
+}
+
+.labels {
+    top: -26px;
     position: relative;
+    margin-right: 10px;
 }
 
-.color-max-val {
-    margin: auto;
-
-
+.default-checks {
+    position: relative;
+    top: -165px;
+    margin-left: 20px;
 }
 
-.color-val {
-    margin: auto;
+.settings {
+    height: 200px;
 }
 
-.slider {
-    display: flex;
-    width: 200px;
-    height: 100px;
-    margin: auto;
-}
-
-.board-final-checks {
-    float: left;
-}
