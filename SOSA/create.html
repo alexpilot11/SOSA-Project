@@ -18,45 +18,44 @@
 <body bgcolor="silver">
 <!--Experiment and Board Settings-->
 <div id="expboard-settings">
-	<form>
-		<fieldset id="field1">
+	<form draggable="false">
+		<fieldset class="form1">
 			<legend>Experiment</legend>
-				Name: <input type="text" name="exp_name" value=""><br>
+				Name:&nbsp;&nbsp;&nbsp; <input type="text" name="exp_name" value=""><br>
 				Version: <input type="text" name="exp_ver" value=""><br>
+			<p>Current file open:</p>
+			<div class="btnLoc">
 			<button name="new_exp_btn">New</button>
 			<button name="save_exp_btn">Save</button>
 			<button name="load_exp_btn">Load</button>
-            <p>Current file open:</p>
+			</div>
 		</fieldset>
 
-		<fieldset id="field2">
+		<fieldset class="form2">
 		<legend id="legend2">Board Settings</legend>
 		<p>File Name:</p>
 		<button name="browse_settings_btn">Browse</button>
 		<button name="revert_view_btn">Revert</button><br>
 		<input type="checkbox" name="rel_size_btn">Show stimulus at relative size
 		</fieldset>
+		<div class="clearfix"></div>
 	</form>
 </div> <br>
 <div class="board-preview">
     <fieldset id="bp">
     </fieldset>
 </div>
-<div class="stimsettings">
-    <form>
-        <fieldset>
+<div>
+    <form draggable="false">
+        <fieldset class="stimsettings">
             <legend>Stimulus Settings</legend>
+			<div class="btnStimLoc">
             <button type="button" onclick=null>Move Stim Up</button>
             <button type="button" onclick=null>Move Stim Down</button>
             <button type="button" onclick=null>Add Order</button>
             <button type="button" onclick=null>Remove Order</button> <br>
+			</div>
             <div class="dropdown">
-                <button onclick="myFunction()" class="dropbtn">Orders</button>
-                <div id="myDropdown" class="dropdown-content">
-                    <a href="#">Order 1</a>
-                    <a href="#">Order 2</a>
-                    <a href="#">Order 3</a>
-                </div>
                 <select name="sometext" size="10">
                     <option>Blue Peg</option>
                     <option>Red Peg </option>
@@ -66,13 +65,21 @@
                     <option>Unlabeled 6</option>
                 </select>
             </div>
+			<div class = "creationBts">
             <button type="button" onclick=null>Add Stim</button>
             <button type="button" onclick=null>Remove Stim</button>	<br><br>
+			</div>
+				<button onclick="myFunction()" class="dropbtn">Orders</button>
+                <div id="myDropdown" class="dropdown-content">
+                    <a href="#">Order 1</a>
+                    <a href="#">Order 2</a>
+                    <a href="#">Order 3</a>
+                </div>
         </fieldset>
     </form>
 </div>
-<div class="pegsettings">
-    <fieldset>
+<div>
+    <fieldset class="pegsettings">
         <legend>Peg Settings</legend>
     <p>Label <input type="text" value=""></p>
     <fieldset>
@@ -87,12 +94,11 @@
     </fieldset>
     </fieldset>
 </div>
-<div class="pegappearance">
-        <fieldset>
-            <legend>Peg Appearance</legend>
+<div>
+        <fieldset class="pegappearance">
+        <legend>Peg Appearance</legend>
 		<!-- Label Color -->
-		<p> Label Color </p>
-		<div id="sliders">
+		<div id="sliders">Label Color
 			<input type="range" min="0" max="255" value="255" step="1" oninput="doAllThisRed(this.value)" id="redSlide" />R: 
 			<span id="redVal">255</span>
 			<input type="range" min="0" max="255" value="255" step="1" oninput="doAllThisGreen(this.value)" id="greenSlide" />G: 
@@ -100,23 +106,26 @@
 			<input type="range" min="0" max="255" value="255" step="1" oninput="doAllThisBlue(this.value)" id="blueSlide" />B: 
 			<span id="blueVal">255</span>
 		</div>
+		<div class = "colorChkBox">
 		<input type="checkbox" name="default_label_color">Default Label Color 
-		<div class = color id = "board"></div>
+		</div>
+		<div class = "color1" id = "board"></div>
 		<!-- Peg Color -->
-		<p> Peg Color </p>
-		<div id="slidersp">
-			<input type="range" min="0" max="255" value="255" step="1" oninput="doAllThisRed(this.value)" id="redSlidep" />R:
+		<div id="slidersp">Peg Color
+			<input type="range" min="0" max="255" value="255" step="1" oninput="doAllThisRedp(this.value)" id="redSlidep" />R:
 			<span id="redValp">255</span>
-			<input type="range" min="0" max="255" value="255" step="1" oninput="doAllThisGreen(this.value)" id="greenSlidep" />G:
+			<input type="range" min="0" max="255" value="255" step="1" oninput="doAllThisGreenp(this.value)" id="greenSlidep" />G:
 			<span id="greenValp">255</span>
-			<input type="range" min="0" max="255" value="255" step="1" oninput="doAllThisBlue(this.value)" id="blueSlidep" />B:
+			<input type="range" min="0" max="255" value="255" step="1" oninput="doAllThisBluep(this.value)" id="blueSlidep" />B:
 			<span id="blueValp">255</span>
 		</div>
-            <input type="checkbox" name="default_peg_color">Default Peg Color
-		<div class = color id = "boardp"></div><br><br><br>
-		        <div class="dropdown">
-			        <button onclick="myFunction2()" class="dropbtn">Size/Type</button>
-				        <div id="myDropdown2" class="dropdown-content">
+		<div class = "colorChkBox2">
+        <input type="checkbox" name="default_peg_color">Default Peg Color
+		</div>
+		<div class = "color2" id = "boardp"></div><br><br><br>
+		        <div class="dropdown2">
+			        <button onclick="myFunction2()" class="dropbtn2">Size/Type</button>
+				        <div id="myDropdown2" class="dropdown-content2">
 					        <a href="#">Choice 1</a>
 					        <a href="#">Choice 2</a>
 					        <a href="#">Choice 3</a>
