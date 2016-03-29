@@ -1,0 +1,34 @@
+{
+	"Output": {
+		"Experiment Name": "default name",
+		"Experiment Version": "default version",
+		"Date": "1/1/2016",
+		"Stimuli": {
+			"Stimulus Order":{
+				"1": "Stimulus 1",
+				"2": "Stimulus 3",
+				"3": "Stimulus 2",
+				"4": "Stimulus 5",
+				"5": "Stimulus 4",
+			},
+			"Stimuli Movement": {
+				"Stimulus 1 xStart": 200,
+				"Stimulus 1 xEnd": 300,
+				"Stimulus 1 yStart": 200,
+				"Stimulus 1 yEnd": 300,
+				"Stimulus 1 time stamp": "04:25"
+			},
+			"Final Stimuli Location": {
+				"Stimulus 1 x": 200,
+				"Stimulus 1 y": 200
+			},
+			"Final Stimuli Distances": {
+				"Stimulus 1 to 2": 424,
+				"Stimulus 1 to 3": 333,
+				"Stimulus 1 to 4": 454,
+				"Stimulus 1 to 5": 545	
+			}
+		}
+	
+	}
+}
