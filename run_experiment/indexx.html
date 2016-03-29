@@ -17,15 +17,15 @@
 		Basic layout from
 		http://mrdoob.github.io/three.js/examples/canvas_geometry_board.html
 		-->
-		
-		
+
+
 	</head>
 	<body>
-		<script src="js/three.js"></script>	
+		<script src="js/three.js"></script>
 		<script src="js/Mirror.js"></script>
 		<script src="js/OrbitControls.js"></script>
 		<script src="js/Detector.js"></script>
-		<script src="js/stats.js"></script>	
+		<script src="js/stats.js"></script>
 		<script src="js/DAT.GUI.js"></script>
 		<script src="js/Projector.js"></script>
 		<script src="js/CanvasRenderer.js"></script>
@@ -44,7 +44,7 @@
 			boardTiltDefaults: true,
 			tiltSet: function(){},
 			boardDefaults: true
-		
+
 			this.bgR = 255;
 			this.bgG = 255;
 			this.bgB = 255;
@@ -61,11 +61,11 @@
 			this.labelDefaults = true;
 
 			this.outputLoc = function(){};
-		
+
 			}	*/
 
 
-			
+
 
 			var targetRotation = -350;
 			var targetRotationOnMouseDown = 0;
@@ -80,7 +80,6 @@
 			animate();
 
 			function init() {
-
 				container = document.createElement( 'div' );
 				document.body.appendChild( container );
 
@@ -104,7 +103,7 @@
 
 				for ( var i = 0; i < geometry.faces.length; i += 2 ) {
 
-					var hex =  0xffffff;
+					var hex =  0x000000;
 					geometry.faces[ i ].color.setHex( hex );
 					geometry.faces[ i + 1 ].color.setHex( hex );
 
@@ -114,7 +113,7 @@
 
 				board = new THREE.Mesh( geometry, material );
 				board.position.y = 200;
-				board.rotation.x = -350;
+				board.rotation.x = -350.25;
 				scene.add( board );
 
 				renderer = new THREE.CanvasRenderer();
@@ -230,9 +229,19 @@
 			function render() {
 				//For rotation of the board
 				board.rotation.x += ( targetRotation - board.rotation.x ) * 0.05;
-				renderer.render( scene, camera );
+                console.log(board.rotation.x);
+                if (board.rotation.x >= -350.25) {
+                    //overhead
+                    board.rotation.x = -350.25;
+                }
+                else if (board.rotation.x <= -351.6){
+                    //tilted all the way down
+                    board.rotation.x = -351.6;
 
-			}
+                }
+                renderer.render( scene, camera );
+
+            }
 
 
 
@@ -242,7 +251,9 @@ this.boardR = 255;
 this.boardG = 255;
 this.boardB = 255;
 this.boardTiltDefaults = true;
-this.tiltSet = function(){};
+this.tiltSet = function(){
+
+};
 this.boardDefaults = true;
 
 this.bgR = 255;
@@ -278,20 +289,20 @@ window.onload = function() {
   boardAppearance.add(boardTest, 'boardDefaults');
   boardAppearance.add(boardTest, 'tiltSet');
   boardAppearance.add(boardTest, 'boardTiltDefaults');
-  
-  
+
+
   var backgroundAppearance = appearance.addFolder('Background');
   backgroundAppearance.open();
   backgroundAppearance.add(boardTest, 'bgR', 0, 255);
   backgroundAppearance.add(boardTest, 'bgG', 0, 255);
   backgroundAppearance.add(boardTest, 'bgB', 0, 255);
   backgroundAppearance.add(boardTest, 'backgroundDefaults');
-  
+
   var settingsIO = gui.addFolder('Import/Export Settings');
   settingsIO.open();
   settingsIO.add(boardTest, 'import');
   settingsIO.add(boardTest, 'export');
-  
+
   var labels = gui.addFolder('Labels');
   labels.open();
   labels.add(boardTest, 'showLabels');
@@ -299,13 +310,13 @@ window.onload = function() {
   labels.add(boardTest, 'labelShade', 0, 100);
   labels.add(boardTest, 'labelSize', 0, 100);
   labels.add(boardTest, 'labelDefaults');
-  
-  
+
+
   var outputLocation = gui.addFolder('Log Output Location');
   outputLocation.open();
   outputLocation.add(boardTest, 'outputLoc');
-  
-	
+
+
 };
 	//END GUI
 		</script>

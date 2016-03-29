@@ -107,6 +107,7 @@
 .labels-labels-settings label {
     float: right;
     margin: 5px 0;
+    -webkit-transform: scale(1.0);
 }
 
 .labels-default {

@@ -189,23 +189,38 @@ function updateLabelPosition(newValue) {
     pos.innerHTML = newValue;
     var labels = document.getElementsByClassName("board-stim-label");
     for (var i = 0; i < labels.length; i++){
-        labels[i].style.top = (newValue) + "px";
+        labels[i].style.top = (newValue - 10) + "px";
     }
 
 }
 
 function updateLabelShade(newValue) {
-    //TODO: write this
+    var shade = document.getElementById("shade-val-text");
+    shade.innerHTML = newValue;
+    var labels = document.getElementsByClassName("board-stim-label");
+
+    for (var i = 0; i < labels.length; i++){
+        var rgb = getComputedStyle(labels[i]).color.match(/\d+/g);
+        //TODO: THIS IS THE WRONG WAY TO DO THIS!!!!!!
+        rgb[0] = parseInt(rgb[0]) + newValue-50;
+        rgb[1] = parseInt(rgb[1]) + newValue-50;
+        rgb[2] = parseInt(rgb[2]) + newValue-50;
+        console.log(rgb);
+
+        labels[i].style.color = "rgb(" + rgb[0] + "," + rgb[1] + "," + rgb[2];
+        //labels[i].style.color += "rgb(" + newValue - 50 + ",";
+        //labels[i].innerHTML += newValue - 50;
+        //labels[i].innerHTML += newValue - 50;
+    }
 
 }
 
 function updateLabelSize(newValue) {
-    //TODO: fix this
     var size = document.getElementById("size-val-text");
     size.innerHTML = newValue;
     var labels = document.getElementsByClassName("board-stim-label");
     for (var i = 0; i < labels.length; i++){
-        labels[i].style.fontSize = (newValue) + "px";
+        labels[i].style.webkitTransform = "scale(" + newValue/10 + ")";
     }
 }
 
