@@ -37,7 +37,8 @@
 
     var camera, scene, renderer;
 
-    var board;
+    var board, stim;
+    var moveStim = false;
     /*
      = 	{
      boardR: 255,
@@ -117,7 +118,7 @@
 
         board = new THREE.Mesh(geometry, material);
         board.position.y = 200;
-        board.rotation.x = -350.25;
+        board.rotation.x = -351.25;
         scene.add(board);
 
         renderer = new THREE.CanvasRenderer();
@@ -127,24 +128,25 @@
         container.appendChild(renderer.domElement);
 
 
-        document.addEventListener('mousedown', onDocumentMouseDown, false);
-        document.addEventListener('touchstart', onDocumentTouchStart, false);
-        document.addEventListener('touchmove', onDocumentTouchMove, false);
+        renderer.domElement.addEventListener('mousedown', onDocumentMouseDown, false);
+        renderer.domElement.addEventListener('touchstart', onDocumentTouchStart, false);
+        renderer.domElement.addEventListener('touchmove', onDocumentTouchMove, false);
 
         //
 
         window.addEventListener('resize', onWindowResize, false);
 
 
-        var stim = new THREE.BoxGeometry( 40, 40, 40 );
-        var object = new THREE.Mesh(stim, new THREE.MeshLambertMaterial({ color: 0x0000ff }));
-        object.position.x = 0;
-        object.position.y = 0;
-        object.position.z = 0;
-        object.rotation.x = 350;
-        object.rotation.y = 0;
-        object.rotation.z = 0;
-        scene.add(object);
+        var stim_geo = new THREE.BoxGeometry( 40, 40, 40 );
+        stim = new THREE.Mesh(stim_geo, new THREE.MeshLambertMaterial({ color: 0x0000ff }));
+        stim.position.x = board.position.x;
+        stim.position.y = board.position.y + 40;
+        stim.position.z = board.position.z;
+        stim.rotation.x = board.rotation.x;
+        stim.rotation.y = board.rotation.y;
+        stim.rotation.z = board.rotation.z;
+
+        scene.add(stim);
         scene.add( new THREE.AmbientLight( 0x505050 ) );
 
 
@@ -175,6 +177,12 @@
         mouseXOnMouseDown = event.clientX - windowHalfX;
         targetRotationOnMouseDown = targetRotation;
 
+        if (mouseX >= stim.position.x - 20 && mouseX <= stim.position.x + 20 ){
+            console.log('yay');
+            moveStim = true;
+        }
+        else moveStim = false;
+
     }
 
     function onDocumentMouseMove(event) {
@@ -182,6 +190,10 @@
         mouseX = event.clientX - windowHalfX;
 
         targetRotation = targetRotationOnMouseDown + ( mouseX - mouseXOnMouseDown ) * 0.02;
+        if (moveStim){
+            stim.position.x = mouseX;
+        }
+
 
     }
 
@@ -239,16 +251,19 @@
 
     function render() {
         //For rotation of the board
-        board.rotation.x += ( targetRotation - board.rotation.x ) * 0.05;
-        if (board.rotation.x >= -350.25) {
-            //overhead
-            board.rotation.x = -350.25;
-        }
-        else if (board.rotation.x <= -351.6) {
-            //tilted all the way down
-            board.rotation.x = -351.6;
-
-        }
+//        board.rotation.x += ( targetRotation - board.rotation.x ) * 0.05;
+//        if (board.rotation.x >= -350.25) {
+//            //overhead
+//            board.rotation.x = -350.25;
+//        }
+//        else if (board.rotation.x <= -351.6) {
+//            //tilted all the way down
+//            board.rotation.x = -351.6;
+//
+//        }
+        stim.rotation.x = board.rotation.x;
+        stim.rotation.y = board.rotation.y;
+        stim.rotation.z = board.rotation.z;
         renderer.render(scene, camera);
 
     }
