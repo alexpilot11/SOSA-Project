@@ -24,14 +24,16 @@
 <script src="js/Mirror.js"></script>
 <script src="js/OrbitControls.js"></script>
 <script src="js/Detector.js"></script>
-<script src="js/stats.js"></script>
 <script src="js/DAT.GUI.js"></script>
 <script src="js/Projector.js"></script>
 <script src="js/CanvasRenderer.js"></script>
 
+<script src="js/TrackballControls.js"></script>
+
+
 <script>
 
-    var container, stats;
+    var container;
 
     var camera, scene, renderer;
 
@@ -124,10 +126,6 @@
         renderer.setSize(window.innerWidth, window.innerHeight);
         container.appendChild(renderer.domElement);
 
-        stats = new Stats();
-        stats.domElement.style.position = 'absolute';
-        stats.domElement.style.top = '0px';
-        container.appendChild(stats.domElement);
 
         document.addEventListener('mousedown', onDocumentMouseDown, false);
         document.addEventListener('touchstart', onDocumentTouchStart, false);
@@ -136,6 +134,19 @@
         //
 
         window.addEventListener('resize', onWindowResize, false);
+
+
+        var stim = new THREE.BoxGeometry( 40, 40, 40 );
+        var object = new THREE.Mesh(stim, new THREE.MeshLambertMaterial({ color: 0x0000ff }));
+        object.position.x = 0;
+        object.position.y = 0;
+        object.position.z = 0;
+        object.rotation.x = 350;
+        object.rotation.y = 0;
+        object.rotation.z = 0;
+        scene.add(object);
+        scene.add( new THREE.AmbientLight( 0x505050 ) );
+
 
     }
 
@@ -222,9 +233,7 @@
 
         requestAnimationFrame(animate);
 
-        stats.begin();
         render();
-        stats.end();
 
     }
 
