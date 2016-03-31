@@ -35,7 +35,7 @@
 
     var container;
 
-    var camera, scene, renderer;
+    var camera, scene, renderer, controls;
 
     var board, stim;
     var moveStim = false;
@@ -78,7 +78,12 @@
 
     var windowHalfX = window.innerWidth / 2;
     var windowHalfY = window.innerHeight / 2;
-
+    var mouse = new THREE.Vector2();
+    var raycaster = new THREE.Raycaster();
+    var stats;
+    var objects = [], plane;
+    var offset = new THREE.Vector3(),
+            INTERSECTED, SELECTED;
 
     var boardR, boardG, boardB, boardDefaults, boardTiltDefault, bgR, bgG, bgB, backgroundDefaults, hasBG, showLables,
             labelPosition, labelShade, labelSize, labelDefaults;
@@ -88,6 +93,28 @@
 
     function init() {
         container = document.createElement('div');
+        container.style.position = 'absolute';
+        scene = new THREE.Scene();
+
+        document.body.appendChild( container );
+        camera = new THREE.PerspectiveCamera( 70, window.innerWidth / window.innerHeight, 1, 10000 );
+        camera.position.z = 1000;
+        controls = new THREE.TrackballControls( camera );
+        controls.rotateSpeed = 1.0;
+        controls.zoomSpeed = 1.2;
+        controls.panSpeed = 0.8;
+        controls.noZoom = false;
+        controls.noPan = false;
+        controls.staticMoving = true;
+        controls.dynamicDampingFactor = 0.3;
+        scene.add( new THREE.AmbientLight( 0x505050 ) );
+
+//        container.style.height = '600px';
+//        container.style.width = '800px';
+//        container.style.top = windowHalfX/4 + "px";
+//        container.style.left =  windowHalfY/4 + "px";
+//        container.style.border = "solid black 5px";
+
         document.body.appendChild(container);
 
         var info = document.createElement('div');
@@ -102,7 +129,6 @@
         camera.position.y = 150;
         camera.position.z = 500;
 
-        scene = new THREE.Scene();
 
         // board
 
@@ -150,6 +176,8 @@
 
         scene.add(stim);
         scene.add( new THREE.AmbientLight( 0x505050 ) );
+        objects.push( stim );
+
 
 
     }
@@ -169,52 +197,88 @@
     //
 
     function onDocumentMouseDown(event) {
-
         event.preventDefault();
-
-        document.addEventListener('mousemove', onDocumentMouseMove, false);
-        document.addEventListener('mouseup', onDocumentMouseUp, false);
-        document.addEventListener('mouseout', onDocumentMouseOut, false);
-
-        mouseXOnMouseDown = event.clientX - windowHalfX;
-        targetRotationOnMouseDown = targetRotation;
-
-        mouseX = event.clientX - windowHalfX;
-        console.log(window.innerWidth);
-        console.log(windowHalfX);
-        mouseY = -(event.clientY - (windowHalfY * 1.4));
-
-        if (mouseX >= stim.position.x - 20 && mouseX <= stim.position.x + 20 ){
-            console.log(stim.position.y + ', ' + mouseY);
-            if(mouseY >= stim.position.y - 20 && mouseY <= stim.position.y + 20) {
-                console.log(stim.position.y + ', ' + mouseY);
-                console.log('yay');
-                moveStim = true;
+        raycaster.setFromCamera( mouse, camera );
+        var intersects = raycaster.intersectObjects( objects );
+        if ( intersects.length > 0 ) {
+            controls.enabled = false;
+            SELECTED = intersects[ 0 ].object;
+            var intersects = raycaster.intersectObject( plane );
+            if ( intersects.length > 0 ) {
+                offset.copy( intersects[ 0 ].point ).sub( plane.position );
             }
+            container.style.cursor = 'move';
         }
-        else moveStim = false;
+//        event.preventDefault();
+//
+//        document.addEventListener('mousemove', onDocumentMouseMove, false);
+//        document.addEventListener('mouseup', onDocumentMouseUp, false);
+//        document.addEventListener('mouseout', onDocumentMouseOut, false);
+//
+//        mouseXOnMouseDown = event.clientX - windowHalfX;
+//        targetRotationOnMouseDown = targetRotation;
+//        mouseX = event.clientX - windowHalfX;
+//        mouseY = -(event.clientY - windowHalfY);
+//
+//        moveStim = (mouseX >= stim.position.x - 20 && mouseX <= stim.position.x + 20 );
+
+
+
 
     }
 
     function onDocumentMouseMove(event) {
 
-        mouseX = event.clientX - windowHalfX;
-        mouseY = -(event.clientY - (windowHalfY * 1.4));
-
-        targetRotation = targetRotationOnMouseDown + ( mouseX - mouseXOnMouseDown ) * 0.02;
-        if (moveStim){
-            stim.position.x = mouseX;
-            stim.position.y = mouseY;
+        event.preventDefault();
+        mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
+        mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
+        raycaster.setFromCamera( mouse, camera );
+        if ( SELECTED ) {
+            var intersects = raycaster.intersectObject( plane );
+            if ( intersects.length > 0 ) {
+                SELECTED.position.copy( intersects[ 0 ].point.sub( offset ) );
+            }
+            return;
         }
+        var intersects = raycaster.intersectObjects( objects );
+        if ( intersects.length > 0 ) {
+            if ( INTERSECTED != intersects[ 0 ].object ) {
+                if ( INTERSECTED ) INTERSECTED.material.color.setHex( INTERSECTED.currentHex );
+                INTERSECTED = intersects[ 0 ].object;
+                INTERSECTED.currentHex = INTERSECTED.material.color.getHex();
+                plane.position.copy( INTERSECTED.position );
+                plane.lookAt( camera.position );
+            }
+            container.style.cursor = 'pointer';
+        } else {
+            if ( INTERSECTED ) INTERSECTED.material.color.setHex( INTERSECTED.currentHex );
+            INTERSECTED = null;
+            container.style.cursor = 'auto';
+        }
+
+
+//        mouseX = event.clientX - windowHalfX;
+//        mouseY = -(event.clientY - windowHalfY);
+////        console.log(mouseX, event.clientX);
+//        console.log(mouseY, event.clientY);
+//        targetRotation = targetRotationOnMouseDown + ( mouseX - mouseXOnMouseDown ) * 0.02;
+//        if (moveStim){
+//            stim.position.x = mouseX;
+//            stim.position.y = mouseY;
+//
+//        }
 
 
     }
 
     function onDocumentMouseUp(event) {
-
-        document.removeEventListener('mousemove', onDocumentMouseMove, false);
-        document.removeEventListener('mouseup', onDocumentMouseUp, false);
-        document.removeEventListener('mouseout', onDocumentMouseOut, false);
+        event.preventDefault();
+        controls.enabled = true;
+        if ( INTERSECTED ) {
+            plane.position.copy( INTERSECTED.position );
+            SELECTED = null;
+        }
+        container.style.cursor = 'auto';
 
     }
 
@@ -234,6 +298,7 @@
 
             mouseXOnMouseDown = event.touches[0].pageX - windowHalfX;
             mouseYOnMouseDown = event.touches[0].pageY - windowHalfY;
+
             targetRotationOnMouseDown = targetRotation;
 
         }
@@ -275,9 +340,11 @@
 //            board.rotation.x = -351.6;
 //
 //        }
-        stim.rotation.x = board.rotation.x;
-        stim.rotation.y = board.rotation.y;
-        stim.rotation.z = board.rotation.z;
+        controls.update();
+
+//        stim.rotation.x = board.rotation.x;
+//        stim.rotation.y = board.rotation.y;
+//        stim.rotation.z = board.rotation.z;
         renderer.render(scene, camera);
 
     }
