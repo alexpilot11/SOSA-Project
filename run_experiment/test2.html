@@ -21,6 +21,14 @@
 
 <script src="js/stats.js"></script>
 
+<script src="js/Mirror.js"></script>
+<script src="js/OrbitControls.js"></script>
+<script src="js/Detector.js"></script>
+<script src="js/DAT.GUI.js"></script>
+<script src="js/Projector.js"></script>
+<script src="js/CanvasRenderer.js"></script>
+
+
 <script>
     var container, stats;
     var camera, controls, scene, renderer;
@@ -159,7 +167,7 @@
         raycaster.setFromCamera(mouse, camera);
         var intersects = raycaster.intersectObjects(objects);
         if (intersects.length > 0) {
-            controls.enabled = false;
+//            controls.enabled = false;
             SELECTED = intersects[0].object;
             var intersects = raycaster.intersectObject(plane);
             if (intersects.length > 0) {
@@ -170,7 +178,7 @@
     }
     function onDocumentMouseUp(event) {
         event.preventDefault();
-        controls.enabled = true;
+//        controls.enabled = true;
         if (INTERSECTED) {
             plane.position.copy(INTERSECTED.position);
             SELECTED = null;
@@ -184,9 +192,171 @@
         stats.update();
     }
     function render() {
-        controls.update();
+//        controls.update();
         renderer.render(scene, camera);
     }
+
+
+    //Start GUI
+    var board1 = function () {
+        this.boardR = 255;
+        this.boardG = 255;
+        this.boardB = 255;
+        this.boardTiltDefaults = true;
+        this.tiltSet = function () {
+
+        };
+        this.boardDefaults = true;
+
+        this.bgR = 255;
+        this.bgG = 255;
+        this.bgB = 255;
+        this.backgroundDefaults = true;
+        this.hasBG = true;
+
+        this.import = function () {
+
+
+        };
+        this.export = function () {
+
+            var properties = document.getElementsByClassName("property-name");
+
+            var exportJSON = {};
+
+            for (var i = 0; i < properties.length; i++) {
+
+                if (properties[i].innerHTML == "boardR") {
+                    exportJSON.boardR = properties[i].nextSibling.children[0].children[0].value;
+                }
+                else if (properties[i].innerHTML == "boardG") {
+                    exportJSON.boardG = properties[i].nextSibling.children[0].children[0].value;
+
+                }
+                else if (properties[i].innerHTML == "boardB") {
+                    exportJSON.boardB = properties[i].nextSibling.children[0].children[0].value;
+
+                }
+                else if (properties[i].innerHTML == "boardDefaults") {
+                    exportJSON.boardDefaults = properties[i].nextSibling.children[0].value;
+
+                }
+                else if (properties[i].innerHTML == "boardTiltDefault") {
+                    exportJSON.boardTiltDefault = properties[i].nextSibling.children[0].value;
+
+                }
+                else if (properties[i].innerHTML == "bgR") {
+                    exportJSON.bgR = properties[i].nextSibling.children[0].children[0].value;
+
+                }
+                else if (properties[i].innerHTML == "bgG") {
+                    exportJSON.bgG = properties[i].nextSibling.children[0].children[0].value;
+
+                }
+                else if (properties[i].innerHTML == "bgB") {
+                    exportJSON.bgB = properties[i].nextSibling.children[0].children[0].value;
+
+                }
+                else if (properties[i].innerHTML == "backgroundDefaults") {
+                    exportJSON.backgroundDefaults = properties[i].nextSibling.children[0].value;
+
+                }
+                else if (properties[i].innerHTML == "hasBG") {
+                    exportJSON.hasBG = properties[i].nextSibling.children[0].value;
+
+                }
+                else if (properties[i].innerHTML == "showLables") {
+                    exportJSON.showLables = properties[i].nextSibling.children[0].value;
+
+                }
+                else if (properties[i].innerHTML == "labelPosition") {
+                    exportJSON.labelPosition = properties[i].nextSibling.children[0].children[0].value;
+
+                }
+                else if (properties[i].innerHTML == "labelShade") {
+                    exportJSON.labelShade = properties[i].nextSibling.children[0].children[0].value;
+
+                }
+                else if (properties[i].innerHTML == "labelSize") {
+                    exportJSON.labelSize = properties[i].nextSibling.children[0].children[0].value;
+
+                }
+                else if (properties[i].innerHTML == "labelDefaults") {
+                    exportJSON.labelDefaults = properties[i].nextSibling.children[0].value;
+
+                }
+
+
+
+            }
+            var textToSave = JSON.stringify(exportJSON);
+            var hiddenElement = document.createElement('a');
+            hiddenElement.href = 'data:attachment/text,' + encodeURI(textToSave);
+            hiddenElement.target = '_blank';
+            hiddenElement.download = 'myFile.txt';
+            hiddenElement.click();
+
+            //write to json and save
+
+        };
+
+        this.showLabels = true;
+        this.labelPosition = 60;
+        this.labelShade = 100;
+        this.labelSize = 75;
+        this.labelDefaults = true;
+
+        this.outputLoc = function () {
+
+        };
+
+    };
+
+    window.onload = function () {
+        var boardTest = new board1();
+        var gui = new dat.GUI();
+//        gui.remember(boardTest);
+        var appearance = gui.addFolder('Appearance');
+        appearance.open();
+        var boardAppearance = appearance.addFolder('Board1');
+        boardAppearance.open();
+        boardAppearance.add(boardTest, 'boardR', 0, 255);
+        boardAppearance.add(boardTest, 'boardG', 0, 255);
+        boardAppearance.add(boardTest, 'boardB', 0, 255);
+        boardAppearance.add(boardTest, 'boardDefaults');
+        boardAppearance.add(boardTest, 'tiltSet');
+        boardAppearance.add(boardTest, 'boardTiltDefaults');
+
+
+        var backgroundAppearance = appearance.addFolder('Background');
+        backgroundAppearance.open();
+        backgroundAppearance.add(boardTest, 'bgR', 0, 255);
+        backgroundAppearance.add(boardTest, 'bgG', 0, 255);
+        backgroundAppearance.add(boardTest, 'bgB', 0, 255);
+        backgroundAppearance.add(boardTest, 'backgroundDefaults');
+        backgroundAppearance.add(boardTest, 'hasBG');
+
+        var settingsIO = gui.addFolder('Import/Export Settings');
+        settingsIO.open();
+        settingsIO.add(boardTest, 'import');
+        settingsIO.add(boardTest, 'export');
+
+        var labels = gui.addFolder('Labels');
+        labels.open();
+        labels.add(boardTest, 'showLabels');
+        labels.add(boardTest, 'labelPosition', 0, 100);
+        labels.add(boardTest, 'labelShade', 0, 100);
+        labels.add(boardTest, 'labelSize', 0, 100);
+        labels.add(boardTest, 'labelDefaults');
+
+
+        var outputLocation = gui.addFolder('Log Output Location');
+        outputLocation.open();
+        outputLocation.add(boardTest, 'outputLoc');
+
+
+    };
+    //END GUI
 </script>
 
 </body>
