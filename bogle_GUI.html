@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>SOSA Preview Experiment</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		<style>
+			body {
+				font-family: Monospace;
+				background-color: #f0f0f0;
+				margin: 0px;
+				overflow: hidden;
+			}
+		</style>
+		<!--
+		Basic layout from
+		http://mrdoob.github.io/three.js/examples/canvas_geometry_board.html
+		-->
+		
+		
+	</head>
+	<body>
+		<script src="js/three.js"></script>	
+		<script src="js/Mirror.js"></script>
+		<script src="js/OrbitControls.js"></script>
+		<script src="js/Detector.js"></script>
+		<script src="js/stats.js"></script>	
+		<script src="js/DAT.GUI.js"></script>
+		<script src="js/Projector.js"></script>
+		<script src="js/CanvasRenderer.js"></script>
+
+		<script>
+
+			var container, stats;
+			var camera, scene, renderer;
+			var board;
+			var windowHalfX = window.innerWidth / 2;
+			var windowHalfY = window.innerHeight / 2;
+			
+			//Scene setup 
+			function init() {
+				
+				container = document.createElement( 'div' );
+				document.body.appendChild( container );
+
+				var info = document.createElement( 'div' );
+				info.style.position = 'absolute';
+				info.style.top = '10px';
+				info.style.width = '100%';
+				info.style.textAlign = 'center';
+				info.style.color = '#ffffff';
+				info.innerHTML = 'Preview Experiment';
+				container.appendChild( info );
+
+				camera = new THREE.PerspectiveCamera( 70, window.innerWidth / window.innerHeight, 1, 1000 );
+				camera.position.y = 150;
+				camera.position.z = 500;
+
+				scene = new THREE.Scene();
+
+				//Board
+				var geometry = new THREE.BoxGeometry( 400, 20, 400 );
+				for ( var i = 0; i < geometry.faces.length; i += 2 ) {
+					var colo =  "rgb(255, 255, 255)";
+					geometry.faces[ i ].color.set(new THREE.Color(colo));
+					geometry.faces[ i + 1 ].color.set(new THREE.Color(colo));
+				}
+				var material = new THREE.MeshBasicMaterial( { vertexColors: THREE.FaceColors, overdraw: 0.5 } );
+				board = new THREE.Mesh( geometry, material );
+				board.position.y = 200;
+				board.rotation.x = 1;
+				scene.add( board );
+
+				//Renderer
+				renderer = new THREE.CanvasRenderer();
+				renderer.setClearColor( 0x000000 );
+				renderer.setPixelRatio( window.devicePixelRatio );
+				renderer.setSize( window.innerWidth, window.innerHeight );
+				container.appendChild( renderer.domElement );
+
+				//Stats
+				stats = new Stats();
+				stats.domElement.style.position = 'absolute';
+				stats.domElement.style.top = '0px';
+				container.appendChild( stats.domElement );
+
+				//Resize event listener
+				window.addEventListener( 'resize', onWindowResize, false );
+				
+
+			}
+			
+			//MAKE THIS SCALE SHIT
+			function onWindowResize() {
+				windowHalfX = window.innerWidth / 2;
+				windowHalfY = window.innerHeight / 2;
+
+				camera.aspect = window.innerWidth / window.innerHeight;
+				camera.updateProjectionMatrix();
+
+				renderer.setSize( window.innerWidth, window.innerHeight );
+			}
+
+			//
+			function animate() {
+				requestAnimationFrame( animate );
+				stats.begin();
+				render();
+				stats.end();
+			}
+
+			function render() {
+				renderer.render( scene, camera );
+			}
+
+			//Start GUI
+			//GUI params
+			var controls = function() {
+				this.rotationX = 1;
+				this.boardR = 255;
+				this.boardG = 255;
+				this.boardB = 255;
+				
+				//sets the defaults
+				this.setDefault = function(){
+					boardTest.boardR = 255;
+					boardTest.boardG = 255;
+					boardTest.boardB = 255;
+					board.material.color.setRGB(boardTest.boardR, boardTest.boardG, boardTest.boardB);
+				};
+				
+				this.boardTiltDefaults = function() {
+					boardTest.rotationX = 0;
+					board.rotation.x =  1.15;
+				};
+
+				this.bgR = 255;
+				this.bgG = 255;
+				this.bgB = 255;
+				this.backgroundDefaults = function() {
+					boardTest.bgR = 255;
+					boardTest.bgG = 255;
+					boardTest.bgB = 255;
+					renderer.setClearColor(0x000000);
+				
+				};
+				this.hasBG = true;
+
+				//MAKE THESE DO JSON THINGS
+				this.import = function(){};
+				this.export = function(){};
+
+				//MAKE THESE DO LABEL THINGS
+				this.showLabels = true;
+				this.labelPosition = 60;
+				this.labelShade = 100;
+				this.labelSize = 75;
+				
+				this.labelDefaults = function(){
+					boardTest.labelPosition = 60;
+					boardTest.labelShade = 100;
+					boardTest.labelSize = 75;
+				
+				};
+				
+				this.outputLoc = function(){};
+			};
+
+			//GUI creation
+			//vars for rgb color strings
+			var boardColor;
+			var bgColor;
+			
+			/*
+			*	listen() on the gui panels allows the gui to react to outside input i.e. setDefault etc
+			*	onChange() updates the scene based off gui values
+			*
+			*/
+			var boardTest = new controls();
+			var gui = new dat.GUI();
+
+			var appearance = gui.addFolder('Appearance');
+			appearance.open();
+		
+			var boardAppearance = appearance.addFolder('Board1');
+			boardAppearance.open();
+			boardAppearance.add(boardTest, 'rotationX', -3.14, 3.14).listen().onChange( function(){
+			console.log(board.rotation.x);
+				board.rotation.x = (boardTest.rotationX);
+			});
+			boardAppearance.add(boardTest, 'boardR', 0, 255).listen().onChange( function(){
+				boardColor = "rgb("+Math.round(boardTest.boardR)+", "+Math.round(boardTest.boardG)+", "+Math.round(boardTest.boardB)+")";
+				board.material.color.set(new THREE.Color(boardColor));
+			});
+			boardAppearance.add(boardTest, 'boardG', 0, 255).listen().onChange( function(){
+				boardColor = "rgb("+Math.round(boardTest.boardR)+", "+Math.round(boardTest.boardG)+", "+Math.round(boardTest.boardB)+")";
+				board.material.color.set(new THREE.Color(boardColor));
+			});
+			boardAppearance.add(boardTest, 'boardB', 0, 255).listen().onChange( function(){
+				boardColor = "rgb("+Math.round(boardTest.boardR)+", "+Math.round(boardTest.boardG)+", "+Math.round(boardTest.boardB)+")";
+				board.material.color.set(new THREE.Color(boardColor));
+			});
+			boardAppearance.add(boardTest, 'setDefault');
+			boardAppearance.add(boardTest, 'boardTiltDefaults');
+  
+			var backgroundAppearance = appearance.addFolder('Background');
+			backgroundAppearance.open();
+			backgroundAppearance.add(boardTest, 'bgR', 0, 255).listen().onChange( function(){
+				bgColor = "rgb("+Math.round(boardTest.bgR)+", "+Math.round(boardTest.bgG)+", "+Math.round(boardTest.bgB)+")";
+				renderer.setClearColor(new THREE.Color(bgColor));
+			});
+			backgroundAppearance.add(boardTest, 'bgG', 0, 255).listen().onChange( function(){
+				bgColor = "rgb("+Math.round(boardTest.bgR)+", "+Math.round(boardTest.bgG)+", "+Math.round(boardTest.bgB)+")";
+				renderer.setClearColor(new THREE.Color(bgColor));
+			});
+			backgroundAppearance.add(boardTest, 'bgB', 0, 255).listen().onChange( function(){
+				bgColor = "rgb("+Math.round(boardTest.bgR)+", "+Math.round(boardTest.bgG)+", "+Math.round(boardTest.bgB)+")";
+				renderer.setClearColor(new THREE.Color(bgColor));
+			});
+			backgroundAppearance.add(boardTest, 'backgroundDefaults');
+  
+			var settingsIO = gui.addFolder('Import/Export Settings');
+			settingsIO.open();
+			settingsIO.add(boardTest, 'import');
+			settingsIO.add(boardTest, 'export');
+			
+			var labels = gui.addFolder('Labels');
+			labels.open();
+			labels.add(boardTest, 'showLabels');
+			labels.add(boardTest, 'labelPosition', 0, 100).listen();
+			labels.add(boardTest, 'labelShade', 0, 100).listen();
+			labels.add(boardTest, 'labelSize', 0, 100).listen();
+			labels.add(boardTest, 'labelDefaults');
+  
+  
+			var outputLocation = gui.addFolder('Log Output Location');
+			outputLocation.open();
+			outputLocation.add(boardTest, 'outputLoc');
+  
+	
+			init();
+			animate();
+			//END GUI
+		</script>
+
+	</body>
+</html>
