@@ -14,7 +14,7 @@
     </style>
 </head>
 <body>
-
+<div id="blah"></div>
 <script src="js/three.js"></script>
 
 <script src="js/TrackballControls.js"></script>
@@ -30,7 +30,7 @@
 
 
 <script>
-    var container, stats;
+    var container, stats, board;
     var camera, controls, scene, renderer;
     var objects = [], plane;
     var raycaster = new THREE.Raycaster();
@@ -310,8 +310,16 @@
         };
 
     };
+    var board2 = function () {
+        this.test1 = 255;
+        this.test2 = 255;
+
+    };
+
 
     window.onload = function () {
+
+
         var boardTest = new board1();
         var gui = new dat.GUI();
 //        gui.remember(boardTest);
@@ -352,6 +360,18 @@
         var outputLocation = gui.addFolder('Log Output Location');
         outputLocation.open();
         outputLocation.add(boardTest, 'outputLoc');
+
+
+        var boardTest2 = new board2();
+        var gui2 = new dat.GUI();
+        var appearance2 = gui2.addFolder('Appearance2');
+        appearance2.open();
+        appearance2.add(boardTest2, 'test1', 0, 255);
+        appearance2.add(boardTest2, 'test2', 0, 255);
+
+//        var gui_container = document.getElementById('blah');
+//        gui_container.appendChild(gui.domElement);
+
 
 
     };
