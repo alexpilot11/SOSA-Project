@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>three.js webgl - draggable cubes</title>
+    <title>SOSA Preview Experiment</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
     <style>
@@ -12,45 +12,64 @@
             overflow: hidden;
         }
     </style>
+    <!--
+    Basic layout from
+    http://mrdoob.github.io/three.js/examples/canvas_geometry_board.html
+    -->
+
+
 </head>
 <body>
-<div id="blah"></div>
 <script src="js/three.js"></script>
-
-<script src="js/TrackballControls.js"></script>
-
-<script src="js/stats.js"></script>
-
 <script src="js/Mirror.js"></script>
 <script src="js/OrbitControls.js"></script>
 <script src="js/Detector.js"></script>
 <script src="js/DAT.GUI.js"></script>
 <script src="js/Projector.js"></script>
 <script src="js/CanvasRenderer.js"></script>
+<script src="js/TrackballControls.js"></script>
 
 
 <script>
-    var container, stats, board;
+
+    var container, board;
     var camera, controls, scene, renderer;
+    var windowHalfX = window.innerWidth / 2;
+    var windowHalfY = window.innerHeight / 2;
+
     var objects = [], plane;
     var raycaster = new THREE.Raycaster();
     var mouse = new THREE.Vector2(),
             offset = new THREE.Vector3(),
             INTERSECTED, SELECTED;
+
     init();
     animate();
+
+    //Scene setup
     function init() {
-        container = document.createElement('div');
-        document.body.appendChild(container);
+
+        container = document.createElement( 'div' );
+        document.body.appendChild( container );
+
+        var info = document.createElement( 'div' );
+        info.style.position = 'absolute';
+        info.style.top = '10px';
+        info.style.width = '100%';
+        info.style.textAlign = 'center';
+        info.style.color = '#ffffff';
+        info.innerHTML = '<p>Preview Experiment</p>';
+        container.appendChild( info );
+
         camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 1, 10000);
         camera.position.z = 700;
         camera.position.y = 700;
         controls = new THREE.TrackballControls(camera);
-        controls.rotateSpeed = 5.0;
+        controls.rotateSpeed = 0.0;
         controls.zoomSpeed = 1.2;
         controls.panSpeed = 0.8;
-        controls.noZoom = false;
-        controls.noPan = false;
+        controls.noZoom = true;
+        controls.noPan = true;
         controls.staticMoving = true;
         controls.dynamicDampingFactor = 0.3;
         scene = new THREE.Scene();
@@ -66,18 +85,18 @@
         light.shadowMapHeight = 2048;
         scene.add(light);
 
-        // board
-        var geometry = new THREE.BoxGeometry(400, 20, 400);
-        for (var i = 0; i < geometry.faces.length; i += 2) {
-            var hex = 0xffffff;
-            geometry.faces[i].color.setHex(hex);
-            geometry.faces[i + 1].color.setHex(hex);
+        //Board
+        var geometry = new THREE.BoxGeometry( 400, 20, 400 );
+        for ( var i = 0; i < geometry.faces.length; i += 2 ) {
+            var colo =  "rgb(255, 255, 255)";
+            geometry.faces[ i ].color.set(new THREE.Color(colo));
+            geometry.faces[ i + 1 ].color.set(new THREE.Color(colo));
         }
-        var material = new THREE.MeshBasicMaterial({vertexColors: THREE.FaceColors, overdraw: 0.5});
-        board = new THREE.Mesh(geometry, material);
+        var material = new THREE.MeshBasicMaterial( { vertexColors: THREE.FaceColors, overdraw: 0.5 } );
+        board = new THREE.Mesh( geometry, material );
         board.position.y = 200;
-        scene.add(board);
-
+        board.rotation.x = 1;
+        scene.add( board );
 
         // create box
         var geometry_box = new THREE.BoxGeometry(40, 40, 40);
@@ -98,48 +117,57 @@
         );
         scene.add(plane);
 
-
+        //Renderer
         renderer = new THREE.WebGLRenderer({antialias: true});
-        renderer.setClearColor(0xf0f0f0);
-        renderer.setPixelRatio(window.devicePixelRatio);
-        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setClearColor( 0xf0f0f0 );
+        renderer.setPixelRatio( window.devicePixelRatio );
+        renderer.setSize( window.innerWidth, window.innerHeight );
         renderer.sortObjects = false;
         renderer.shadowMap.enabled = true;
         renderer.shadowMap.type = THREE.PCFShadowMap;
-        container.appendChild(renderer.domElement);
-        var info = document.createElement('div');
-        info.style.position = 'absolute';
-        info.style.top = '10px';
-        info.style.width = '100%';
-        info.style.textAlign = 'center';
-        info.innerHTML = '<a href="http://threejs.org" target="_blank">three.js</a> webgl - draggable cubes';
-        container.appendChild(info);
-        stats = new Stats();
-        stats.domElement.style.position = 'absolute';
-        stats.domElement.style.top = '0px';
-        container.appendChild(stats.domElement);
+        container.appendChild( renderer.domElement );
+
+        //Resize event listener
+        window.addEventListener( 'resize', onWindowResize, false );
+
+        //mouse event listeners
         renderer.domElement.addEventListener('mousemove', onDocumentMouseMove, false);
         renderer.domElement.addEventListener('mousedown', onDocumentMouseDown, false);
         renderer.domElement.addEventListener('mouseup', onDocumentMouseUp, false);
 
-        window.addEventListener('resize', onWindowResize, false);
+
+
     }
+
+    //MAKE THIS SCALE SHIT
     function onWindowResize() {
+        windowHalfX = window.innerWidth / 2;
+        windowHalfY = window.innerHeight / 2;
+
         camera.aspect = window.innerWidth / window.innerHeight;
         camera.updateProjectionMatrix();
+
         renderer.setSize(window.innerWidth, window.innerHeight);
     }
+
     function onDocumentMouseMove(event) {
         event.preventDefault();
         mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
         mouse.y = -( event.clientY / window.innerHeight ) * 2 + 1;
         raycaster.setFromCamera(mouse, camera);
         if (SELECTED) {
-            var intersects = raycaster.intersectObject(plane);
-            if (intersects.length > 0) {
-                SELECTED.position.copy(intersects[0].point.sub(offset));
+            var intersects_board = raycaster.intersectObject(board);
+            if (intersects_board.length > 0) {
+                SELECTED.position.copy(intersects_board[0].point.sub(offset));
+                SELECTED.position.x += 20;
+                SELECTED.position.y += 20;
+                SELECTED.position.z += 20;
+                SELECTED.rotation = board.rotation;
+
             }
-            SELECTED.position.y = board.position.y + 40;
+
+
+
             return;
         }
         var intersects = raycaster.intersectObjects(objects);
@@ -185,196 +213,173 @@
         container.style.cursor = 'auto';
     }
 
+    //
     function animate() {
-        requestAnimationFrame(animate);
+        requestAnimationFrame( animate );
         render();
-        stats.update();
     }
+
     function render() {
         controls.update();
-        renderer.render(scene, camera);
+
+        renderer.render( scene, camera );
     }
 
-
     //Start GUI
-    var board1 = function () {
+    //GUI params
+    var gui_controls = function() {
+        this.rotationX = 1;
         this.boardR = 255;
         this.boardG = 255;
         this.boardB = 255;
-        this.boardTiltDefaults = true;
-        this.tiltSet = function () {
 
+        //sets the defaults
+        this.setDefault = function(){
+            boardTest.boardR = 255;
+            boardTest.boardG = 255;
+            boardTest.boardB = 255;
+            board.material.color.setRGB(boardTest.boardR, boardTest.boardG, boardTest.boardB);
         };
-        this.boardDefaults = true;
+
+        this.boardTiltDefaults = function() {
+            boardTest.rotationX = 0;
+            board.rotation.x =  1.15;
+        };
 
         this.bgR = 255;
         this.bgG = 255;
         this.bgB = 255;
-        this.backgroundDefaults = true;
+        this.backgroundDefaults = function() {
+            boardTest.bgR = 255;
+            boardTest.bgG = 255;
+            boardTest.bgB = 255;
+            renderer.setClearColor(0x000000);
+
+        };
         this.hasBG = true;
 
-        this.import = function () {
+        //MAKE THESE DO JSON THINGS
+        this.import = function(){};
+        this.export = function(){};
 
-
-        };
-        this.export = function () {
-
-            var properties = document.getElementsByClassName("property-name");
-
-            var exportJSON = {};
-
-            for (var i = 0; i < properties.length; i++) {
-
-                if (properties[i].innerHTML == "boardR") {
-                    exportJSON.boardR = properties[i].nextSibling.children[0].children[0].value;
-                }
-                else if (properties[i].innerHTML == "boardG") {
-                    exportJSON.boardG = properties[i].nextSibling.children[0].children[0].value;
-
-                }
-                else if (properties[i].innerHTML == "boardB") {
-                    exportJSON.boardB = properties[i].nextSibling.children[0].children[0].value;
-
-                }
-                else if (properties[i].innerHTML == "boardDefaults") {
-                    exportJSON.boardDefaults = properties[i].nextSibling.children[0].value;
-
-                }
-                else if (properties[i].innerHTML == "boardTiltDefault") {
-                    exportJSON.boardTiltDefault = properties[i].nextSibling.children[0].value;
-
-                }
-                else if (properties[i].innerHTML == "bgR") {
-                    exportJSON.bgR = properties[i].nextSibling.children[0].children[0].value;
-
-                }
-                else if (properties[i].innerHTML == "bgG") {
-                    exportJSON.bgG = properties[i].nextSibling.children[0].children[0].value;
-
-                }
-                else if (properties[i].innerHTML == "bgB") {
-                    exportJSON.bgB = properties[i].nextSibling.children[0].children[0].value;
-
-                }
-                else if (properties[i].innerHTML == "backgroundDefaults") {
-                    exportJSON.backgroundDefaults = properties[i].nextSibling.children[0].value;
-
-                }
-                else if (properties[i].innerHTML == "hasBG") {
-                    exportJSON.hasBG = properties[i].nextSibling.children[0].value;
-
-                }
-                else if (properties[i].innerHTML == "showLables") {
-                    exportJSON.showLables = properties[i].nextSibling.children[0].value;
-
-                }
-                else if (properties[i].innerHTML == "labelPosition") {
-                    exportJSON.labelPosition = properties[i].nextSibling.children[0].children[0].value;
-
-                }
-                else if (properties[i].innerHTML == "labelShade") {
-                    exportJSON.labelShade = properties[i].nextSibling.children[0].children[0].value;
-
-                }
-                else if (properties[i].innerHTML == "labelSize") {
-                    exportJSON.labelSize = properties[i].nextSibling.children[0].children[0].value;
-
-                }
-                else if (properties[i].innerHTML == "labelDefaults") {
-                    exportJSON.labelDefaults = properties[i].nextSibling.children[0].value;
-
-                }
-
-
-
-            }
-            var textToSave = JSON.stringify(exportJSON);
-            var hiddenElement = document.createElement('a');
-            hiddenElement.href = 'data:attachment/text,' + encodeURI(textToSave);
-            hiddenElement.target = '_blank';
-            hiddenElement.download = 'myFile.txt';
-            hiddenElement.click();
-
-            //write to json and save
-
-        };
-
+        //MAKE THESE DO LABEL THINGS
         this.showLabels = true;
         this.labelPosition = 60;
         this.labelShade = 100;
         this.labelSize = 75;
-        this.labelDefaults = true;
 
-        this.outputLoc = function () {
+        this.labelDefaults = function(){
+            boardTest.labelPosition = 60;
+            boardTest.labelShade = 100;
+            boardTest.labelSize = 75;
 
         };
 
-    };
-    var board2 = function () {
-        this.test1 = 255;
-        this.test2 = 255;
-
+        this.outputLoc = function(){};
     };
 
+    //GUI creation
+    //vars for rgb color strings
+    var boardColor;
+    var bgColor;
 
-    window.onload = function () {
+    /*
+     *	listen() on the gui panels allows the gui to react to outside input i.e. setDefault etc
+     *	onChange() updates the scene based off gui values
+     *
+     */
+    var boardTest = new gui_controls();
+    var gui = new dat.GUI();
 
+    var appearance = gui.addFolder('Appearance');
+    appearance.open();
 
-        var boardTest = new board1();
-        var gui = new dat.GUI();
-//        gui.remember(boardTest);
-        var appearance = gui.addFolder('Appearance');
-        appearance.open();
-        var boardAppearance = appearance.addFolder('Board1');
-        boardAppearance.open();
-        boardAppearance.add(boardTest, 'boardR', 0, 255);
-        boardAppearance.add(boardTest, 'boardG', 0, 255);
-        boardAppearance.add(boardTest, 'boardB', 0, 255);
-        boardAppearance.add(boardTest, 'boardDefaults');
-        boardAppearance.add(boardTest, 'tiltSet');
-        boardAppearance.add(boardTest, 'boardTiltDefaults');
+    var boardAppearance = appearance.addFolder('Board1');
+    boardAppearance.open();
+    boardAppearance.add(boardTest, 'rotationX', -0.3, 1).listen().onChange( function(){
 
+        board.rotation.x = (boardTest.rotationX);
 
-        var backgroundAppearance = appearance.addFolder('Background');
-        backgroundAppearance.open();
-        backgroundAppearance.add(boardTest, 'bgR', 0, 255);
-        backgroundAppearance.add(boardTest, 'bgG', 0, 255);
-        backgroundAppearance.add(boardTest, 'bgB', 0, 255);
-        backgroundAppearance.add(boardTest, 'backgroundDefaults');
-        backgroundAppearance.add(boardTest, 'hasBG');
+        for (var i = 0; i < objects.length; i++ ){
 
-        var settingsIO = gui.addFolder('Import/Export Settings');
-        settingsIO.open();
-        settingsIO.add(boardTest, 'import');
-        settingsIO.add(boardTest, 'export');
-
-        var labels = gui.addFolder('Labels');
-        labels.open();
-        labels.add(boardTest, 'showLabels');
-        labels.add(boardTest, 'labelPosition', 0, 100);
-        labels.add(boardTest, 'labelShade', 0, 100);
-        labels.add(boardTest, 'labelSize', 0, 100);
-        labels.add(boardTest, 'labelDefaults');
+            //TODO: ROTATE CUBE ABOUT BOARD HAVE TO TRANSLATE TO ORIGIN, ROTATE, THEN TRANSLATE BACK
+            //TODO: WHAT I HAVE HERE IS CONCEPTUALLY CORRECT, BUT INSTEAD OF SETTING THE POSITION BACK TO X, Y, AND Z,
+            //TODO: WE NEED TO TRANSLATE BY THE SAME AMOUNT IN A NEW VECTOR'S DIRECTION. PLAY WITH IT
 
 
-        var outputLocation = gui.addFolder('Log Output Location');
-        outputLocation.open();
-        outputLocation.add(boardTest, 'outputLoc');
+            var x = objects[i].position.x;
+            var y = objects[i].position.y;
+            var z = objects[i].position.z;
+
+            objects[i].position.x -= x;
+            objects[i].position.y -= y;
+            objects[i].position.z -= z;
+
+            objects[i].rotation.x = boardTest.rotationX;
+
+            objects[i].position.x += x;
+            objects[i].position.y += y;
+            objects[i].position.z += z;
+
+//            var y = (objects[i].position.y * Math.cos(board.rotation.x) + objects[i].position.z * Math.sin(board.rotation.x));
+//            var z = (objects[i].position.y * -Math.sin(board.rotation.x) + objects[i].position.z * Math.cos(board.rotation.x));
+//            console.log(y + ", "+ z);
+//            objects[i].position.y *= y;
+//            objects[i].position.z *= z;
+
+        }
+    });
+    boardAppearance.add(boardTest, 'boardR', 0, 255).listen().onChange( function(){
+        boardColor = "rgb("+Math.round(boardTest.boardR)+", "+Math.round(boardTest.boardG)+", "+Math.round(boardTest.boardB)+")";
+        board.material.color.set(new THREE.Color(boardColor));
+    });
+    boardAppearance.add(boardTest, 'boardG', 0, 255).listen().onChange( function(){
+        boardColor = "rgb("+Math.round(boardTest.boardR)+", "+Math.round(boardTest.boardG)+", "+Math.round(boardTest.boardB)+")";
+        board.material.color.set(new THREE.Color(boardColor));
+    });
+    boardAppearance.add(boardTest, 'boardB', 0, 255).listen().onChange( function(){
+        boardColor = "rgb("+Math.round(boardTest.boardR)+", "+Math.round(boardTest.boardG)+", "+Math.round(boardTest.boardB)+")";
+        board.material.color.set(new THREE.Color(boardColor));
+    });
+    boardAppearance.add(boardTest, 'setDefault');
+    boardAppearance.add(boardTest, 'boardTiltDefaults');
+
+    var backgroundAppearance = appearance.addFolder('Background');
+    backgroundAppearance.open();
+    backgroundAppearance.add(boardTest, 'bgR', 0, 255).listen().onChange( function(){
+        bgColor = "rgb("+Math.round(boardTest.bgR)+", "+Math.round(boardTest.bgG)+", "+Math.round(boardTest.bgB)+")";
+        renderer.setClearColor(new THREE.Color(bgColor));
+    });
+    backgroundAppearance.add(boardTest, 'bgG', 0, 255).listen().onChange( function(){
+        bgColor = "rgb("+Math.round(boardTest.bgR)+", "+Math.round(boardTest.bgG)+", "+Math.round(boardTest.bgB)+")";
+        renderer.setClearColor(new THREE.Color(bgColor));
+    });
+    backgroundAppearance.add(boardTest, 'bgB', 0, 255).listen().onChange( function(){
+        bgColor = "rgb("+Math.round(boardTest.bgR)+", "+Math.round(boardTest.bgG)+", "+Math.round(boardTest.bgB)+")";
+        renderer.setClearColor(new THREE.Color(bgColor));
+    });
+    backgroundAppearance.add(boardTest, 'backgroundDefaults');
+
+    var settingsIO = gui.addFolder('Import/Export Settings');
+    settingsIO.open();
+    settingsIO.add(boardTest, 'import');
+    settingsIO.add(boardTest, 'export');
+
+    var labels = gui.addFolder('Labels');
+    labels.open();
+    labels.add(boardTest, 'showLabels');
+    labels.add(boardTest, 'labelPosition', 0, 100).listen();
+    labels.add(boardTest, 'labelShade', 0, 100).listen();
+    labels.add(boardTest, 'labelSize', 0, 100).listen();
+    labels.add(boardTest, 'labelDefaults');
 
 
-        var boardTest2 = new board2();
-        var gui2 = new dat.GUI();
-        var appearance2 = gui2.addFolder('Appearance2');
-        appearance2.open();
-        appearance2.add(boardTest2, 'test1', 0, 255);
-        appearance2.add(boardTest2, 'test2', 0, 255);
-
-//        var gui_container = document.getElementById('blah');
-//        gui_container.appendChild(gui.domElement);
+    var outputLocation = gui.addFolder('Log Output Location');
+    outputLocation.open();
+    outputLocation.add(boardTest, 'outputLoc');
 
 
 
-    };
     //END GUI
 </script>
 
