@@ -20,7 +20,6 @@
 
 </head>
 <body>
-<table class="stim-table"></table>
 <script src="js/three.js"></script>
 <script src="js/Mirror.js"></script>
 <script src="js/OrbitControls.js"></script>
@@ -99,19 +98,7 @@
         board.rotation.x = 1;
         scene.add( board );
 
-        // create box
-        var geometry_box = new THREE.BoxGeometry(40, 40, 40);
-        var object = new THREE.Mesh(geometry_box, new THREE.MeshLambertMaterial({color: 0x0000ff}));
-        object.position.x = board.position.x;
-        object.position.y = board.position.y+20;
-        object.position.z = board.position.z;
-        object.rotation.x = board.rotation.x;
-        object.rotation.y = board.rotation.y;
-        object.rotation.z = board.rotation.z;
-        object.castShadow = true;
-        object.receiveShadow = true;
-        scene.add(object);
-        objects.push(object);
+
         plane = new THREE.Mesh(
                 new THREE.PlaneBufferGeometry(2000, 2000, 8, 8),
                 new THREE.MeshBasicMaterial({visible: false})
@@ -209,6 +196,8 @@
         controls.enabled = true;
         if (INTERSECTED) {
             plane.position.copy(INTERSECTED.position);
+            INTERSECTED.rotation.copy(board.rotation);
+
             SELECTED = null;
         }
         container.style.cursor = 'auto';
@@ -225,6 +214,11 @@
 
         renderer.render( scene, camera );
     }
+
+
+    var finishExperiment = function() {
+        console.log('Finished Experiment');
+    };
 
     //Start GUI
     //GUI params
@@ -277,7 +271,21 @@
         };
 
         this.outputLoc = function(){};
+        this.startExperiment = function() {
+            document.getElementsByClassName('dg main a')[0].style.display = 'none';
+
+
+            //create new gui with a Finish Experiment button
+            var finish_gui = new dat.GUI();
+            var finish = finish_gui.addFolder('Finish Experiment');
+            finish.open();
+            var finish_exp = { finishExperiment:function(){ finishExperiment(); }};
+            finish_gui.add(finish_exp,'finishExperiment');
+
+        };
     };
+
+
 
     //GUI creation
     //vars for rgb color strings
@@ -301,34 +309,34 @@
 
         board.rotation.x = (boardTest.rotationX);
 
-        for (var i = 0; i < objects.length; i++ ){
-
-            //TODO: ROTATE CUBE ABOUT BOARD HAVE TO TRANSLATE TO ORIGIN, ROTATE, THEN TRANSLATE BACK
-            //TODO: WHAT I HAVE HERE IS CONCEPTUALLY CORRECT, BUT INSTEAD OF SETTING THE POSITION BACK TO X, Y, AND Z,
-            //TODO: WE NEED TO TRANSLATE BY THE SAME AMOUNT IN A NEW VECTOR'S DIRECTION. PLAY WITH IT
-
-
-            var x = objects[i].position.x;
-            var y = objects[i].position.y;
-            var z = objects[i].position.z;
-
-            objects[i].position.x -= x;
-            objects[i].position.y -= y;
-            objects[i].position.z -= z;
-
-            objects[i].rotation.x = boardTest.rotationX;
-
-            objects[i].position.x += x;
-            objects[i].position.y += y;
-            objects[i].position.z += z;
-
-//            var y = (objects[i].position.y * Math.cos(board.rotation.x) + objects[i].position.z * Math.sin(board.rotation.x));
-//            var z = (objects[i].position.y * -Math.sin(board.rotation.x) + objects[i].position.z * Math.cos(board.rotation.x));
-//            console.log(y + ", "+ z);
-//            objects[i].position.y *= y;
-//            objects[i].position.z *= z;
-
-        }
+//        for (var i = 0; i < objects.length; i++ ){
+//
+//            //TODO: ROTATE CUBE ABOUT BOARD HAVE TO TRANSLATE TO ORIGIN, ROTATE, THEN TRANSLATE BACK
+//            //TODO: WHAT I HAVE HERE IS CONCEPTUALLY CORRECT, BUT INSTEAD OF SETTING THE POSITION BACK TO X, Y, AND Z,
+//            //TODO: WE NEED TO TRANSLATE BY THE SAME AMOUNT IN A NEW VECTOR'S DIRECTION. PLAY WITH IT
+//
+//
+//            var x = objects[i].position.x;
+//            var y = objects[i].position.y;
+//            var z = objects[i].position.z;
+//
+//            objects[i].position.x -= x;
+//            objects[i].position.y -= y;
+//            objects[i].position.z -= z;
+//
+//            objects[i].rotation.x = boardTest.rotationX;
+//
+//            objects[i].position.x += x;
+//            objects[i].position.y += y;
+//            objects[i].position.z += z;
+//
+////            var y = (objects[i].position.y * Math.cos(board.rotation.x) + objects[i].position.z * Math.sin(board.rotation.x));
+////            var z = (objects[i].position.y * -Math.sin(board.rotation.x) + objects[i].position.z * Math.cos(board.rotation.x));
+////            console.log(y + ", "+ z);
+////            objects[i].position.y *= y;
+////            objects[i].position.z *= z;
+//
+//        }
     });
     boardAppearance.add(boardTest, 'boardR', 0, 255).listen().onChange( function(){
         boardColor = "rgb("+Math.round(boardTest.boardR)+", "+Math.round(boardTest.boardG)+", "+Math.round(boardTest.boardB)+")";
@@ -379,12 +387,14 @@
     outputLocation.open();
     outputLocation.add(boardTest, 'outputLoc');
 
+    var startExperiment = gui.addFolder('Start Experiment');
+    startExperiment.open();
+    startExperiment.add(boardTest, 'startExperiment');
+
 
 
     //END GUI
-</script>
 
-<script>
 
     // Handle the listbox that will contain stimuli
 
@@ -399,31 +409,31 @@
         stimuli: {
             Stimulus1: {
                 Name: 'StimDefault1',
-                Image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c2/Faust_bei_der_Arbeit.JPG/220px-Faust_bei_der_Arbeit.JPG',
+                Image: 'img/test1.png',
                 sizeX: '300px',
                 sizeY: '300px'
             },
             Stimulus2: {
                 Name: 'StimDefault2',
-                Image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c2/Faust_bei_der_Arbeit.JPG/220px-Faust_bei_der_Arbeit.JPG',
+                Image: 'img/test2.png',
                 sizeX: '300px',
                 sizeY: '300px'
             },
             Stimulus3: {
                 Name: 'StimDefault3',
-                Image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c2/Faust_bei_der_Arbeit.JPG/220px-Faust_bei_der_Arbeit.JPG',
+                Image: 'img/test3.png',
                 sizeX: '300px',
                 sizeY: '300px'
             },
             Stimulus4: {
                 Name: 'StimDefault4',
-                Image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c2/Faust_bei_der_Arbeit.JPG/220px-Faust_bei_der_Arbeit.JPG',
+                Image: 'img/test4.jpg',
                 sizeX: '300px',
                 sizeY: '300px'
             },
             Stimulus5: {
                 Name: 'StimDefault5',
-                Image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c2/Faust_bei_der_Arbeit.JPG/220px-Faust_bei_der_Arbeit.JPG',
+                Image: 'img/test5.jpg',
                 sizeX: '300px',
                 sizeY: '300px'
             }
@@ -482,38 +492,24 @@
         return preppedStim;
     };
 
-    // Creates a table of stimuli given an array of stimuli objects
-    var createStimTable = function(stimuli) {
+    var makeStims = function(stimuli) {
+        for (var i = 0; i < stimuli.length; i++){
 
-        var arrayLength = stimuli.length;
-        var theTable = document.createElement('table');
+            // create box
+            var geometry_box = new THREE.BoxGeometry(40, 40, 40);
+            var object = new THREE.Mesh(geometry_box, new THREE.MeshBasicMaterial({map:THREE.ImageUtils.loadTexture(stimuli[i].Image)}));
+            object.position.x = -500 + (i * 10);
+            object.position.y = 100 + (i * 70);
+            object.position.z = -i * 10;
+            object.rotation.x = 20;
+            object.rotation.z = -15;
+            object.castShadow = true;
+            object.receiveShadow = true;
+            scene.add(object);
+            objects.push(object);
 
-        console.log(theTable);
-        console.log(theTable.tagName);
-        if(document.getElementsByTagName('TABLE')) {
-            console.log(document.getElementsByTagName('TABLE'));
         }
 
-        for (var i = 0, tr, td; i < arrayLength; i++) {
-            tr = document.createElement('tr');
-            td = document.createElement('td');
-
-            try {
-                var img = document.createElement('img');
-                img.src = stimuli[i].Image;
-                console.log('here is a child');
-//                td.appendChild(document.createTextNode(stimuli[i].Name));
-                td.appendChild(img)
-            }
-            catch (annoyingError) {
-                console.log('something went wrong');
-            }
-
-            tr.appendChild(td);
-            theTable.appendChild(tr);
-        }
-
-        document.getElementsByClassName('stim-table')[0].appendChild(theTable);
     };
 
     var preppedStim = convertExperimentToThing(importJSON);
@@ -521,8 +517,7 @@
 
     // createStimTable is a WIP. Currently breaks the GUI
 //    createStimTable(preppedStim);
-
+    makeStims(preppedStim);
 </script>
-
 </body>
 </html>
