@@ -383,5 +383,108 @@
     //END GUI
 </script>
 
+<script>
+
+    // Handle the listbox that will contain stimuli
+
+    // For now this will be our sample JSON
+    var importJSON = {
+        orders: {
+            order1: ['Stimulus1', 'Stimulus2', 'Stimulus3', 'Stimulus4', 'Stimulus5'],
+            order2: ['Stimulus5', 'Stimulus4', 'Stimulus3', 'Stimulus2', 'Stimulus1'],
+            order3: ['Stimulus2', 'Stimulus3', 'Stimulus1', 'Stimulus4', 'Stimulus5']
+        },
+
+        stimuli: {
+            Stimulus1: {
+                Name: 'StimDefault1',
+                Image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c2/Faust_bei_der_Arbeit.JPG/220px-Faust_bei_der_Arbeit.JPG',
+                sizeX: '300px',
+                sizeY: '300px'
+            },
+            Stimulus2: {
+                Name: 'StimDefault2',
+                Image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c2/Faust_bei_der_Arbeit.JPG/220px-Faust_bei_der_Arbeit.JPG',
+                sizeX: '300px',
+                sizeY: '300px'
+            },
+            Stimulus3: {
+                Name: 'StimDefault3',
+                Image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c2/Faust_bei_der_Arbeit.JPG/220px-Faust_bei_der_Arbeit.JPG',
+                sizeX: '300px',
+                sizeY: '300px'
+            },
+            Stimulus4: {
+                Name: 'StimDefault4',
+                Image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c2/Faust_bei_der_Arbeit.JPG/220px-Faust_bei_der_Arbeit.JPG',
+                sizeX: '300px',
+                sizeY: '300px'
+            },
+            Stimulus5: {
+                Name: 'StimDefault5',
+                Image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c2/Faust_bei_der_Arbeit.JPG/220px-Faust_bei_der_Arbeit.JPG',
+                sizeX: '300px',
+                sizeY: '300px'
+            }
+        }
+    };
+
+    // Read in the file instead of using this darn sample
+    var readExperimentFromFile = function(fname) {
+
+        // Variable initialization
+
+        // Checks to ensure that the file is in the correct format
+        console.log('just kidding ', fname);
+
+        // Converts file to JSON
+        console.log('currently already JSON heya');
+
+        // Turns JSON to object
+        var asObject;
+
+        try {
+            asObject = JSON.parse(fname);
+        }
+
+        catch (spookyScaryMonsterException) {
+            asObject = fname;
+        }
+        return asObject;
+
+    };
+
+    // Create an object containing objects for each order.
+    // Should not be named this
+    var convertExperimentToThing = function(fname) {
+
+        // Variable initialization
+        var experiment = readExperimentFromFile(fname);
+        var preppedStim = [];
+
+        // Determine our order
+        console.log('for now Im just assuming the first order');
+        if (experiment.orders) {
+            var order = experiment.orders.order1;
+        }
+
+        // Organize our stimuli based on our selected order
+        for(var i=0; i<order.length; i++) {
+
+            var key = order[i];
+
+            if(key in experiment.stimuli) {
+                preppedStim[i] = experiment.stimuli[key];
+            }
+        }
+
+        return preppedStim;
+    };
+
+    var preppedStim = convertExperimentToThing(importJSON);
+    console.log(preppedStim);
+
+</script>
+
 </body>
 </html>
