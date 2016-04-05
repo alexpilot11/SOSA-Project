@@ -20,6 +20,7 @@
 
 </head>
 <body>
+<table class="stim-table"></table>
 <script src="js/three.js"></script>
 <script src="js/Mirror.js"></script>
 <script src="js/OrbitControls.js"></script>
@@ -481,8 +482,45 @@
         return preppedStim;
     };
 
+    // Creates a table of stimuli given an array of stimuli objects
+    var createStimTable = function(stimuli) {
+
+        var arrayLength = stimuli.length;
+        var theTable = document.createElement('table');
+
+        console.log(theTable);
+        console.log(theTable.tagName);
+        if(document.getElementsByTagName('TABLE')) {
+            console.log(document.getElementsByTagName('TABLE'));
+        }
+
+        for (var i = 0, tr, td; i < arrayLength; i++) {
+            tr = document.createElement('tr');
+            td = document.createElement('td');
+
+            try {
+                var img = document.createElement('img');
+                img.src = stimuli[i].Image;
+                console.log('here is a child');
+//                td.appendChild(document.createTextNode(stimuli[i].Name));
+                td.appendChild(img)
+            }
+            catch (annoyingError) {
+                console.log('something went wrong');
+            }
+
+            tr.appendChild(td);
+            theTable.appendChild(tr);
+        }
+
+        document.getElementsByClassName('stim-table')[0].appendChild(theTable);
+    };
+
     var preppedStim = convertExperimentToThing(importJSON);
     console.log(preppedStim);
+
+    // createStimTable is a WIP. Currently breaks the GUI
+//    createStimTable(preppedStim);
 
 </script>
 
