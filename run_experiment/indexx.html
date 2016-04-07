@@ -43,7 +43,7 @@
             offset = new THREE.Vector3(),
             INTERSECTED, SELECTED;
 
-    var outputLocation;
+    var outputLocationString;
 
     init();
     animate();
@@ -71,8 +71,8 @@
         controls.rotateSpeed = 0.0;
         controls.zoomSpeed = 1.2;
         controls.panSpeed = 0.8;
-        controls.noZoom = true;
-        controls.noPan = true;
+        controls.noZoom = false;
+        controls.noPan = false;
         controls.staticMoving = true;
         controls.dynamicDampingFactor = 0.3;
         scene = new THREE.Scene();
@@ -284,7 +284,7 @@
 //            input.dispatchEvent(evt);
 //            console.log(input);
 
-            outputLocation = prompt('File in pc. click in bar. paste in this bar. profit.');
+            outputLocationString = prompt('File in pc. click in bar. paste in this bar. profit.');
 
 
         };
@@ -616,9 +616,6 @@
 
 
             if (i >= 0 && i <= 2) {
-
-
-
                 object.position.x = board.position.x + (i * 90) - 100;
                 object.position.y = board.position.y + 150;
                 object.position.z = board.position.z - 30;
@@ -634,12 +631,6 @@
                 object.position.y = board.position.y - 100;
                 object.position.z = board.position.z + 110;
             }
-
-
-//            object.position.x = board.position.x + (i * 60);
-//            object.position.y = board.position.y + (i * 40);
-//            object.position.z = board.position.z + 100;
-
 
             object.rotation = board.rotation;
 
