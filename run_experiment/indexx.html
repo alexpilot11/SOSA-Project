@@ -50,6 +50,7 @@
     function init() {
 
         container = document.createElement( 'div' );
+        container.setAttribute('class', 'draggable');
         document.body.appendChild( container );
 
         var info = document.createElement( 'div' );
@@ -57,7 +58,7 @@
         info.style.top = '10px';
         info.style.width = '100%';
         info.style.textAlign = 'center';
-        info.style.color = '#ffffff';
+        info.style.color = '#000000';
         info.innerHTML = '<p>Preview Experiment</p>';
         container.appendChild( info );
 
@@ -97,6 +98,7 @@
         board.position.y = 200;
         board.rotation.x = 1;
         scene.add( board );
+        board.visible = true;
 
 
         plane = new THREE.Mesh(
@@ -127,6 +129,7 @@
 
     }
 
+
     //MAKE THIS SCALE SHIT
     function onWindowResize() {
         windowHalfX = window.innerWidth / 2;
@@ -147,10 +150,10 @@
             var intersects_board = raycaster.intersectObject(board);
             if (intersects_board.length > 0) {
                 SELECTED.position.copy(intersects_board[0].point.sub(offset));
-                SELECTED.position.x += 20;
-                SELECTED.position.y += 20;
-                SELECTED.position.z += 20;
-                SELECTED.rotation = board.rotation;
+                SELECTED.position.x += 30;
+                SELECTED.position.y += 30;
+                SELECTED.position.z += 30;
+                SELECTED.rotation.copy(board.rotation);
 
             }
 
@@ -196,7 +199,6 @@
         controls.enabled = true;
         if (INTERSECTED) {
             plane.position.copy(INTERSECTED.position);
-            INTERSECTED.rotation.copy(board.rotation);
 
             SELECTED = null;
         }
@@ -271,21 +273,69 @@
         };
 
         this.outputLoc = function(){};
-        this.startExperiment = function() {
+        this.launchExperiment = function() {
             document.getElementsByClassName('dg main a')[0].style.display = 'none';
+            document.getElementsByClassName('draggable')[0].style.display = 'none';
+            board.visible = false;
+            createViewStimuli();
 
-
-            //create new gui with a Finish Experiment button
-            var finish_gui = new dat.GUI();
-            var finish = finish_gui.addFolder('Finish Experiment');
-            finish.open();
-            var finish_exp = { finishExperiment:function(){ finishExperiment(); }};
-            finish_gui.add(finish_exp,'finishExperiment');
 
         };
     };
 
+    function viewStimuli() {
+        document.getElementsByClassName('view_stims')[0].style.display = 'none';
+        document.getElementsByClassName('draggable')[0].style.display = 'initial';
 
+        createBeginExperiment();
+
+
+    }
+
+    function createBeginExperiment() {
+
+        //create new gui with a Finish Experiment button
+        var begin_gui = new dat.GUI();
+        var begin = begin_gui.addFolder('Begin Experiment');
+        begin.open();
+        var begin_exp = { beginExperiment:function(){ createFinishExperiment(); }};
+        begin_gui.add(begin_exp,'beginExperiment');
+        begin_gui.domElement.style.position = 'absolute';
+        begin_gui.domElement.style.top = windowHalfY - 50 + 'px';
+        begin_gui.domElement.style.left = windowHalfX - 100 + 'px';
+        begin_gui.domElement.setAttribute('class', 'begin_gui');
+
+
+
+    }
+
+    function createViewStimuli() {
+        //create new gui with a Finish Experiment button
+        var view_stims = new dat.GUI();
+        var stims = view_stims.addFolder('View Stimuli');
+        stims.open();
+        var view = { viewStimuli:function(){ viewStimuli(); }};
+        view_stims.add(view,'viewStimuli');
+        view_stims.domElement.style.position = 'absolute';
+        view_stims.domElement.style.top = windowHalfY - 50 + 'px';
+        view_stims.domElement.style.left = windowHalfX - 100 + 'px';
+        view_stims.domElement.setAttribute('class', 'view_stims');
+
+    }
+
+
+
+    function createFinishExperiment() {
+        //create new gui with a Finish Experiment button
+        document.getElementsByClassName('begin_gui')[0].style.display = 'none';
+        board.visible = true;
+        var finish_gui = new dat.GUI();
+        var finish = finish_gui.addFolder('Finish Experiment');
+        finish.open();
+        var finish_exp = { finishExperiment:function(){ finishExperiment(); }};
+        finish_gui.add(finish_exp,'finishExperiment');
+
+    }
 
     //GUI creation
     //vars for rgb color strings
@@ -387,9 +437,9 @@
     outputLocation.open();
     outputLocation.add(boardTest, 'outputLoc');
 
-    var startExperiment = gui.addFolder('Start Experiment');
-    startExperiment.open();
-    startExperiment.add(boardTest, 'startExperiment');
+    var launchExperiment = gui.addFolder('Launch Experiment');
+    launchExperiment.open();
+    launchExperiment.add(boardTest, 'launchExperiment');
 
 
 
