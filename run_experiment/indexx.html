@@ -51,18 +51,18 @@
     //Scene setup
     function init() {
 
-        container = document.createElement( 'div' );
+        container = document.createElement('div');
         container.setAttribute('class', 'draggable');
-        document.body.appendChild( container );
+        document.body.appendChild(container);
 
-        var info = document.createElement( 'div' );
+        var info = document.createElement('div');
         info.style.position = 'absolute';
         info.style.top = '10px';
         info.style.width = '100%';
         info.style.textAlign = 'center';
         info.style.color = '#FFFFFF';
         info.innerHTML = '<p>Preview Experiment</p>';
-        container.appendChild( info );
+        container.appendChild(info);
 
         camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 1, 10000);
         camera.position.z = 700;
@@ -89,17 +89,17 @@
         scene.add(light);
 
         //Board
-        var geometry = new THREE.BoxGeometry( 400, 20, 400 );
-        for ( var i = 0; i < geometry.faces.length; i += 2 ) {
-            var colo =  "rgb(255, 255, 255)";
-            geometry.faces[ i ].color.set(new THREE.Color(colo));
-            geometry.faces[ i + 1 ].color.set(new THREE.Color(colo));
+        var geometry = new THREE.BoxGeometry(400, 20, 400);
+        for (var i = 0; i < geometry.faces.length; i += 2) {
+            var colo = "rgb(255, 255, 255)";
+            geometry.faces[i].color.set(new THREE.Color(colo));
+            geometry.faces[i + 1].color.set(new THREE.Color(colo));
         }
-        var material = new THREE.MeshBasicMaterial( { vertexColors: THREE.FaceColors, overdraw: 0.5 } );
-        board = new THREE.Mesh( geometry, material );
+        var material = new THREE.MeshBasicMaterial({vertexColors: THREE.FaceColors, overdraw: 0.5});
+        board = new THREE.Mesh(geometry, material);
         board.position.y = 160;
         board.rotation.x = 1;
-        scene.add( board );
+        scene.add(board);
         board.visible = true;
 
 
@@ -111,22 +111,21 @@
 
         //Renderer
         renderer = new THREE.WebGLRenderer({antialias: true});
-        renderer.setClearColor( 0x000000 );
-        renderer.setPixelRatio( window.devicePixelRatio );
-        renderer.setSize( window.innerWidth, window.innerHeight );
+        renderer.setClearColor(0x000000);
+        renderer.setPixelRatio(window.devicePixelRatio);
+        renderer.setSize(window.innerWidth, window.innerHeight);
         renderer.sortObjects = false;
         renderer.shadowMap.enabled = true;
         renderer.shadowMap.type = THREE.PCFShadowMap;
-        container.appendChild( renderer.domElement );
+        container.appendChild(renderer.domElement);
 
         //Resize event listener
-        window.addEventListener( 'resize', onWindowResize, false );
+        window.addEventListener('resize', onWindowResize, false);
 
         //mouse event listeners
         renderer.domElement.addEventListener('mousemove', onDocumentMouseMove, false);
         renderer.domElement.addEventListener('mousedown', onDocumentMouseDown, false);
         renderer.domElement.addEventListener('mouseup', onDocumentMouseUp, false);
-
 
 
     }
@@ -158,7 +157,6 @@
                 SELECTED.rotation.copy(board.rotation);
 
             }
-
 
 
             return;
@@ -209,42 +207,42 @@
 
     //
     function animate() {
-        requestAnimationFrame( animate );
+        requestAnimationFrame(animate);
         render();
     }
 
     function render() {
         controls.update();
 
-        renderer.render( scene, camera );
+        renderer.render(scene, camera);
     }
 
 
     //Start GUI
     //GUI params
-    var gui_controls = function() {
+    var gui_controls = function () {
         this.rotationX = 1;
         this.boardR = 255;
         this.boardG = 255;
         this.boardB = 255;
 
         //sets the defaults
-        this.setDefault = function(){
+        this.setDefault = function () {
             boardTest.boardR = 255;
             boardTest.boardG = 255;
             boardTest.boardB = 255;
             board.material.color.setRGB(boardTest.boardR, boardTest.boardG, boardTest.boardB);
         };
 
-        this.boardTiltDefaults = function() {
+        this.boardTiltDefaults = function () {
             boardTest.rotationX = 0;
-            board.rotation.x =  1.15;
+            board.rotation.x = 1.15;
         };
 
         this.bgR = 255;
         this.bgG = 255;
         this.bgB = 255;
-        this.backgroundDefaults = function() {
+        this.backgroundDefaults = function () {
             boardTest.bgR = 255;
             boardTest.bgG = 255;
             boardTest.bgB = 255;
@@ -254,23 +252,26 @@
         this.hasBG = true;
 
         //MAKE THESE DO JSON THINGS
-        this.import = function(){};
-        this.export = function(){};
+        this.import = function () {
+        };
+        this.export = function () {
+        };
 
         //MAKE THESE DO LABEL THINGS
-        this.showLabels = function(){};
+        this.showLabels = function () {
+        };
         this.labelPosition = 60;
         this.labelShade = 100;
         this.labelSize = 75;
 
-        this.labelDefaults = function(){
+        this.labelDefaults = function () {
             boardTest.labelPosition = 60;
             boardTest.labelShade = 100;
             boardTest.labelSize = 75;
 
         };
 
-        this.outputLoc = function(){
+        this.outputLoc = function () {
 
 //            var input = document.createElement('input');
 //            input.setAttribute('type', 'file');
@@ -286,23 +287,16 @@
             outputLocation = prompt('File in pc. click in bar. paste in this bar. profit.');
 
 
-
-
-
-
         };
 
-        this.launchExperiment = function() {
+        this.launchExperiment = function () {
             document.getElementsByClassName('dg main a')[0].style.display = 'none';
             document.getElementsByClassName('draggable')[0].style.display = 'none';
             board.visible = false;
             createViewStimuli();
 
-
         };
     };
-
-
 
 
     function createViewStimuli() {
@@ -310,8 +304,12 @@
         var view_stims = new dat.GUI();
         var stims = view_stims.addFolder('View Stimuli');
         stims.open();
-        var view = { viewStimuli:function(){ viewStimuli(); }};
-        view_stims.add(view,'viewStimuli');
+        var view = {
+            viewStimuli: function () {
+                viewStimuli();
+            }
+        };
+        view_stims.add(view, 'viewStimuli');
         view_stims.domElement.style.position = 'absolute';
         view_stims.domElement.style.top = windowHalfY - 50 + 'px';
         view_stims.domElement.style.left = windowHalfX - 100 + 'px';
@@ -333,13 +331,17 @@
         var begin_gui = new dat.GUI();
         var begin = begin_gui.addFolder('Begin Experiment');
         begin.open();
-        var begin_exp = { beginExperiment:function(){ createFinishExperiment(); }};
-        begin_gui.add(begin_exp,'beginExperiment');
+        var begin_exp = {
+            beginExperiment: function () {
+                createFinishExperiment();
+            }
+        };
+        begin_gui.add(begin_exp, 'beginExperiment');
         begin_gui.domElement.style.position = 'absolute';
-        begin_gui.domElement.style.top = windowHalfY - 50 + 'px';
+        begin_gui.domElement.style.top = window.innerHeight - 50 + 'px';
         begin_gui.domElement.style.left = windowHalfX - 100 + 'px';
         begin_gui.domElement.setAttribute('class', 'begin_gui');
-
+        board.visible = true;
 
 
     }
@@ -347,19 +349,26 @@
     function createFinishExperiment() {
         //create new gui with a Finish Experiment button
         document.getElementsByClassName('begin_gui')[0].style.display = 'none';
-        for (var i = 0; i  < objects.length; i++){
+        for (var i = 0; i < objects.length; i++) {
             objects[i].canMove = true;
+            objects[i].position.x = -500 - (i * 30);
+            objects[i].position.y = 400 - (i * 100);
+            objects[i].position.z = i * 20;
+
         }
-        board.visible = true;
         var finish_gui = new dat.GUI();
         var finish = finish_gui.addFolder('Finish Experiment');
         finish.open();
-        var finish_exp = { finishExperiment:function(){ finishExperiment(); }};
-        finish_gui.add(finish_exp,'finishExperiment');
+        var finish_exp = {
+            finishExperiment: function () {
+                finishExperiment();
+            }
+        };
+        finish_gui.add(finish_exp, 'finishExperiment');
 
     }
 
-    var finishExperiment = function() {
+    var finishExperiment = function () {
         console.log('Finished Experiment');
     };
 
@@ -381,7 +390,7 @@
 
     var boardAppearance = appearance.addFolder('Board1');
     boardAppearance.open();
-    boardAppearance.add(boardTest, 'rotationX', -0.3, 1).listen().onChange( function(){
+    boardAppearance.add(boardTest, 'rotationX', -0.3, 1).listen().onChange(function () {
 
         board.rotation.x = (boardTest.rotationX);
 
@@ -414,16 +423,16 @@
 //
 //        }
     });
-    boardAppearance.add(boardTest, 'boardR', 0, 255).listen().onChange( function(){
-        boardColor = "rgb("+Math.round(boardTest.boardR)+", "+Math.round(boardTest.boardG)+", "+Math.round(boardTest.boardB)+")";
+    boardAppearance.add(boardTest, 'boardR', 0, 255).listen().onChange(function () {
+        boardColor = "rgb(" + Math.round(boardTest.boardR) + ", " + Math.round(boardTest.boardG) + ", " + Math.round(boardTest.boardB) + ")";
         board.material.color.set(new THREE.Color(boardColor));
     });
-    boardAppearance.add(boardTest, 'boardG', 0, 255).listen().onChange( function(){
-        boardColor = "rgb("+Math.round(boardTest.boardR)+", "+Math.round(boardTest.boardG)+", "+Math.round(boardTest.boardB)+")";
+    boardAppearance.add(boardTest, 'boardG', 0, 255).listen().onChange(function () {
+        boardColor = "rgb(" + Math.round(boardTest.boardR) + ", " + Math.round(boardTest.boardG) + ", " + Math.round(boardTest.boardB) + ")";
         board.material.color.set(new THREE.Color(boardColor));
     });
-    boardAppearance.add(boardTest, 'boardB', 0, 255).listen().onChange( function(){
-        boardColor = "rgb("+Math.round(boardTest.boardR)+", "+Math.round(boardTest.boardG)+", "+Math.round(boardTest.boardB)+")";
+    boardAppearance.add(boardTest, 'boardB', 0, 255).listen().onChange(function () {
+        boardColor = "rgb(" + Math.round(boardTest.boardR) + ", " + Math.round(boardTest.boardG) + ", " + Math.round(boardTest.boardB) + ")";
         board.material.color.set(new THREE.Color(boardColor));
     });
     boardAppearance.add(boardTest, 'setDefault');
@@ -431,16 +440,16 @@
 
     var backgroundAppearance = appearance.addFolder('Background');
     backgroundAppearance.open();
-    backgroundAppearance.add(boardTest, 'bgR', 0, 255).listen().onChange( function(){
-        bgColor = "rgb("+Math.round(boardTest.bgR)+", "+Math.round(boardTest.bgG)+", "+Math.round(boardTest.bgB)+")";
+    backgroundAppearance.add(boardTest, 'bgR', 0, 255).listen().onChange(function () {
+        bgColor = "rgb(" + Math.round(boardTest.bgR) + ", " + Math.round(boardTest.bgG) + ", " + Math.round(boardTest.bgB) + ")";
         renderer.setClearColor(new THREE.Color(bgColor));
     });
-    backgroundAppearance.add(boardTest, 'bgG', 0, 255).listen().onChange( function(){
-        bgColor = "rgb("+Math.round(boardTest.bgR)+", "+Math.round(boardTest.bgG)+", "+Math.round(boardTest.bgB)+")";
+    backgroundAppearance.add(boardTest, 'bgG', 0, 255).listen().onChange(function () {
+        bgColor = "rgb(" + Math.round(boardTest.bgR) + ", " + Math.round(boardTest.bgG) + ", " + Math.round(boardTest.bgB) + ")";
         renderer.setClearColor(new THREE.Color(bgColor));
     });
-    backgroundAppearance.add(boardTest, 'bgB', 0, 255).listen().onChange( function(){
-        bgColor = "rgb("+Math.round(boardTest.bgR)+", "+Math.round(boardTest.bgG)+", "+Math.round(boardTest.bgB)+")";
+    backgroundAppearance.add(boardTest, 'bgB', 0, 255).listen().onChange(function () {
+        bgColor = "rgb(" + Math.round(boardTest.bgR) + ", " + Math.round(boardTest.bgG) + ", " + Math.round(boardTest.bgB) + ")";
         renderer.setClearColor(new THREE.Color(bgColor));
     });
     backgroundAppearance.add(boardTest, 'backgroundDefaults');
@@ -468,7 +477,6 @@
     launchExperiment.add(boardTest, 'launchExperiment');
 
 
-
     //END GUI
 
 
@@ -477,7 +485,7 @@
     // For now this will be our sample JSON
     var importJSON = {
         orders: {
-            order1: ['Stimulus1', 'Stimulus2', 'Stimulus3', 'Stimulus4', 'Stimulus5'],
+            order1: ['Stimulus1', 'Stimulus2', 'Stimulus3', 'Stimulus4', 'Stimulus5', 'Stimulus6', 'Stimulus7', 'Stimulus8', 'Stimulus9'],
             order2: ['Stimulus5', 'Stimulus4', 'Stimulus3', 'Stimulus2', 'Stimulus1'],
             order3: ['Stimulus2', 'Stimulus3', 'Stimulus1', 'Stimulus4', 'Stimulus5']
         },
@@ -512,12 +520,37 @@
                 Image: 'img/test5.jpg',
                 sizeX: '300px',
                 sizeY: '300px'
+            },
+            Stimulus6: {
+                Name: 'StimDefault5',
+                Image: 'img/test5.jpg',
+                sizeX: '300px',
+                sizeY: '300px'
+            },
+            Stimulus7: {
+                Name: 'StimDefault5',
+                Image: 'img/test5.jpg',
+                sizeX: '300px',
+                sizeY: '300px'
+            },
+            Stimulus8: {
+                Name: 'StimDefault5',
+                Image: 'img/test5.jpg',
+                sizeX: '300px',
+                sizeY: '300px'
+            },
+            Stimulus9: {
+                Name: 'StimDefault5',
+                Image: 'img/test5.jpg',
+                sizeX: '300px',
+                sizeY: '300px'
             }
+
         }
     };
 
     // Read in the file instead of using this darn sample
-    var readExperimentFromFile = function(fname) {
+    var readExperimentFromFile = function (fname) {
 
         // Variable initialization
 
@@ -543,7 +576,7 @@
 
     // Create an object containing objects for each order.
     // Should not be named this
-    var convertExperimentToThing = function(fname) {
+    var convertExperimentToThing = function (fname) {
 
         // Variable initialization
         var experiment = readExperimentFromFile(fname);
@@ -556,11 +589,11 @@
         }
 
         // Organize our stimuli based on our selected order
-        for(var i=0; i<order.length; i++) {
+        for (var i = 0; i < order.length; i++) {
 
             var key = order[i];
 
-            if(key in experiment.stimuli) {
+            if (key in experiment.stimuli) {
                 preppedStim[i] = experiment.stimuli[key];
             }
         }
@@ -568,22 +601,47 @@
         return preppedStim;
     };
 
-    var makeStims = function(stimuli) {
-        for (var i = 0; i < stimuli.length; i++){
+    var makeStims = function (stimuli) {
+        for (var i = 0; i < stimuli.length; i++) {
 
             // create box
             var geometry_box = new THREE.BoxGeometry(40, 40, 40);
-            var object = new THREE.Mesh(geometry_box, new THREE.MeshBasicMaterial({map:THREE.ImageUtils.loadTexture(stimuli[i].Image)}));
-            object.position.x = -500 + (i * 15);
-            object.position.y = 100 + (i * 70);
-            object.position.z = -i * 10;
-            object.rotation.x = 20;
-            object.rotation.z = -15;
+            var object = new THREE.Mesh(geometry_box, new THREE.MeshBasicMaterial({map: THREE.ImageUtils.loadTexture(stimuli[i].Image)}));
+
             object.castShadow = true;
             object.receiveShadow = true;
             objects.canMove = false;
             scene.add(object);
             objects.push(object);
+
+
+            if (i >= 0 && i <= 2) {
+
+
+
+                object.position.x = board.position.x + (i * 90) - 100;
+                object.position.y = board.position.y + 150;
+                object.position.z = board.position.z - 30;
+            }
+
+            else if (i >= 3 && i <= 5) {
+                object.position.x = board.position.x - 200 + (i * 90) - 180;
+                object.position.y = board.position.y;
+                object.position.z = board.position.z + 30;
+            }
+            else if (i >= 6 && i <= 8) {
+                object.position.x = board.position.x - 200 + ((i-3) * 90) - 180;
+                object.position.y = board.position.y - 100;
+                object.position.z = board.position.z + 110;
+            }
+
+
+//            object.position.x = board.position.x + (i * 60);
+//            object.position.y = board.position.y + (i * 40);
+//            object.position.z = board.position.z + 100;
+
+
+            object.rotation = board.rotation;
 
         }
 
@@ -593,7 +651,7 @@
     console.log(preppedStim);
 
     // createStimTable is a WIP. Currently breaks the GUI
-//    createStimTable(preppedStim);
+    //    createStimTable(preppedStim);
     makeStims(preppedStim);
 </script>
 </body>
