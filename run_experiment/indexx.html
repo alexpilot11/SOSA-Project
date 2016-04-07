@@ -314,6 +314,7 @@
         stim_board.visible = true;
     }
 
+
     function createViewStimuli() {
         //create new gui with a Finish Experiment button
         var view_stims = new dat.GUI();
@@ -360,18 +361,21 @@
 
 
     }
+    function centerStimsOnBoard() {
+        for (var i = 0; i < objects.length; i++) {
+            objects[i].canMove = true;
+            objects[i].position.x = stim_board.position.x - (i * 10) + 100;
+            objects[i].position.y = stim_board.position.y + 300 - (i * 60);
+            objects[i].position.z = i * 20;
+
+        }
+    }
 
     function createFinishExperiment() {
         //create new gui with a Finish Experiment button
         document.getElementsByClassName('begin_gui')[0].style.display = 'none';
         createStimBoard();
-        for (var i = 0; i < objects.length; i++) {
-            objects[i].canMove = true;
-            objects[i].position.x = stim_board.position.x - (i * 10) + 100;
-            objects[i].position.y = board.position.y + 150 - (i * 60);
-            objects[i].position.z = i * 20;
-
-        }
+        centerStimsOnBoard();
         var finish_gui = new dat.GUI();
         var finish = finish_gui.addFolder('Finish Experiment');
         finish.open();
