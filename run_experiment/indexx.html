@@ -32,7 +32,7 @@
 
 <script>
 
-    var container, board;
+    var container, board, stim_board;
     var camera, controls, scene, renderer;
     var windowHalfX = window.innerWidth / 2;
     var windowHalfY = window.innerHeight / 2;
@@ -129,7 +129,6 @@
 
 
     }
-
 
     //MAKE THIS SCALE SHIT
     function onWindowResize() {
@@ -298,6 +297,22 @@
         };
     };
 
+    function createStimBoard() {
+        //Stim Board
+        var stim_geometry = new THREE.BoxGeometry(100, 20, 700);
+        for (var i = 0; i < stim_geometry.faces.length; i += 2) {
+            var stim_colo = "rgb(255, 255, 255)";
+            stim_geometry.faces[i].color.set(new THREE.Color(stim_colo));
+            stim_geometry.faces[i + 1].color.set(new THREE.Color(stim_colo));
+        }
+        var stim_material = new THREE.MeshBasicMaterial({vertexColors: THREE.FaceColors, overdraw: 0.5});
+        stim_board = new THREE.Mesh(stim_geometry, stim_material);
+        stim_board.position.y = 0;
+        stim_board.position.x = -windowHalfX + 100;
+        stim_board.rotation.x = 1;
+        scene.add(stim_board);
+        stim_board.visible = true;
+    }
 
     function createViewStimuli() {
         //create new gui with a Finish Experiment button
@@ -349,10 +364,11 @@
     function createFinishExperiment() {
         //create new gui with a Finish Experiment button
         document.getElementsByClassName('begin_gui')[0].style.display = 'none';
+        createStimBoard();
         for (var i = 0; i < objects.length; i++) {
             objects[i].canMove = true;
-            objects[i].position.x = -500 - (i * 30);
-            objects[i].position.y = 400 - (i * 100);
+            objects[i].position.x = stim_board.position.x - (i * 10) + 100;
+            objects[i].position.y = board.position.y + 150 - (i * 60);
             objects[i].position.z = i * 20;
 
         }
@@ -627,7 +643,7 @@
                 object.position.z = board.position.z + 30;
             }
             else if (i >= 6 && i <= 8) {
-                object.position.x = board.position.x - 200 + ((i-3) * 90) - 180;
+                object.position.x = board.position.x - 200 + ((i - 3) * 90) - 180;
                 object.position.y = board.position.y - 100;
                 object.position.z = board.position.z + 110;
             }
