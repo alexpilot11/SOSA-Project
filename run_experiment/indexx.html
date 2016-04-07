@@ -7,7 +7,7 @@
     <style>
         body {
             font-family: Monospace;
-            background-color: #f0f0f0;
+            background-color: #000000;
             margin: 0px;
             overflow: hidden;
         }
@@ -43,6 +43,8 @@
             offset = new THREE.Vector3(),
             INTERSECTED, SELECTED;
 
+    var outputLocation;
+
     init();
     animate();
 
@@ -58,7 +60,7 @@
         info.style.top = '10px';
         info.style.width = '100%';
         info.style.textAlign = 'center';
-        info.style.color = '#000000';
+        info.style.color = '#FFFFFF';
         info.innerHTML = '<p>Preview Experiment</p>';
         container.appendChild( info );
 
@@ -95,7 +97,7 @@
         }
         var material = new THREE.MeshBasicMaterial( { vertexColors: THREE.FaceColors, overdraw: 0.5 } );
         board = new THREE.Mesh( geometry, material );
-        board.position.y = 200;
+        board.position.y = 160;
         board.rotation.x = 1;
         scene.add( board );
         board.visible = true;
@@ -109,7 +111,7 @@
 
         //Renderer
         renderer = new THREE.WebGLRenderer({antialias: true});
-        renderer.setClearColor( 0xf0f0f0 );
+        renderer.setClearColor( 0x000000 );
         renderer.setPixelRatio( window.devicePixelRatio );
         renderer.setSize( window.innerWidth, window.innerHeight );
         renderer.sortObjects = false;
@@ -148,7 +150,7 @@
         raycaster.setFromCamera(mouse, camera);
         if (SELECTED) {
             var intersects_board = raycaster.intersectObject(board);
-            if (intersects_board.length > 0) {
+            if (intersects_board.length > 0 && SELECTED.canMove) {
                 SELECTED.position.copy(intersects_board[0].point.sub(offset));
                 SELECTED.position.x += 30;
                 SELECTED.position.y += 30;
@@ -218,10 +220,6 @@
     }
 
 
-    var finishExperiment = function() {
-        console.log('Finished Experiment');
-    };
-
     //Start GUI
     //GUI params
     var gui_controls = function() {
@@ -260,7 +258,7 @@
         this.export = function(){};
 
         //MAKE THESE DO LABEL THINGS
-        this.showLabels = true;
+        this.showLabels = function(){};
         this.labelPosition = 60;
         this.labelShade = 100;
         this.labelSize = 75;
@@ -272,7 +270,28 @@
 
         };
 
-        this.outputLoc = function(){};
+        this.outputLoc = function(){
+
+//            var input = document.createElement('input');
+//            input.setAttribute('type', 'file');
+//            input.setAttribute('id', 'outputLoc');
+//            input.setAttribute('webkitdirectory', 'webkitdirectory');
+//            input.setAttribute('directory', 'directory');
+//            input.setAttribute('multiple', 'multiple');
+//            var evt = document.createEvent("MouseEvents");
+//            evt.initEvent("click", true, false);
+//            input.dispatchEvent(evt);
+//            console.log(input);
+
+            outputLocation = prompt('File in pc. click in bar. paste in this bar. profit.');
+
+
+
+
+
+
+        };
+
         this.launchExperiment = function() {
             document.getElementsByClassName('dg main a')[0].style.display = 'none';
             document.getElementsByClassName('draggable')[0].style.display = 'none';
@@ -283,12 +302,28 @@
         };
     };
 
+
+
+
+    function createViewStimuli() {
+        //create new gui with a Finish Experiment button
+        var view_stims = new dat.GUI();
+        var stims = view_stims.addFolder('View Stimuli');
+        stims.open();
+        var view = { viewStimuli:function(){ viewStimuli(); }};
+        view_stims.add(view,'viewStimuli');
+        view_stims.domElement.style.position = 'absolute';
+        view_stims.domElement.style.top = windowHalfY - 50 + 'px';
+        view_stims.domElement.style.left = windowHalfX - 100 + 'px';
+        view_stims.domElement.setAttribute('class', 'view_stims');
+
+    }
+
     function viewStimuli() {
         document.getElementsByClassName('view_stims')[0].style.display = 'none';
         document.getElementsByClassName('draggable')[0].style.display = 'initial';
 
         createBeginExperiment();
-
 
     }
 
@@ -309,25 +344,12 @@
 
     }
 
-    function createViewStimuli() {
-        //create new gui with a Finish Experiment button
-        var view_stims = new dat.GUI();
-        var stims = view_stims.addFolder('View Stimuli');
-        stims.open();
-        var view = { viewStimuli:function(){ viewStimuli(); }};
-        view_stims.add(view,'viewStimuli');
-        view_stims.domElement.style.position = 'absolute';
-        view_stims.domElement.style.top = windowHalfY - 50 + 'px';
-        view_stims.domElement.style.left = windowHalfX - 100 + 'px';
-        view_stims.domElement.setAttribute('class', 'view_stims');
-
-    }
-
-
-
     function createFinishExperiment() {
         //create new gui with a Finish Experiment button
         document.getElementsByClassName('begin_gui')[0].style.display = 'none';
+        for (var i = 0; i  < objects.length; i++){
+            objects[i].canMove = true;
+        }
         board.visible = true;
         var finish_gui = new dat.GUI();
         var finish = finish_gui.addFolder('Finish Experiment');
@@ -336,6 +358,10 @@
         finish_gui.add(finish_exp,'finishExperiment');
 
     }
+
+    var finishExperiment = function() {
+        console.log('Finished Experiment');
+    };
 
     //GUI creation
     //vars for rgb color strings
@@ -548,13 +574,14 @@
             // create box
             var geometry_box = new THREE.BoxGeometry(40, 40, 40);
             var object = new THREE.Mesh(geometry_box, new THREE.MeshBasicMaterial({map:THREE.ImageUtils.loadTexture(stimuli[i].Image)}));
-            object.position.x = -500 + (i * 10);
+            object.position.x = -500 + (i * 15);
             object.position.y = 100 + (i * 70);
             object.position.z = -i * 10;
             object.rotation.x = 20;
             object.rotation.z = -15;
             object.castShadow = true;
             object.receiveShadow = true;
+            objects.canMove = false;
             scene.add(object);
             objects.push(object);
 
