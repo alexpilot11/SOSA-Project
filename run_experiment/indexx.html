@@ -37,7 +37,7 @@
     var windowHalfX = window.innerWidth / 2;
     var windowHalfY = window.innerHeight / 2;
 
-    var objects = [], plane;
+    var objects = [], stim_labels = [], plane;
     var raycaster = new THREE.Raycaster();
     var mouse = new THREE.Vector2(),
             offset = new THREE.Vector3(),
@@ -627,6 +627,7 @@
             // create box
             var geometry_box = new THREE.BoxGeometry(40, 40, 40);
             var object = new THREE.Mesh(geometry_box, new THREE.MeshBasicMaterial({map: THREE.ImageUtils.loadTexture(stimuli[i].Image)}));
+            var labelYoffset;
 
             object.castShadow = true;
             object.receiveShadow = true;
@@ -639,24 +640,52 @@
                 object.position.x = board.position.x + (i * 90) - 100;
                 object.position.y = board.position.y + 150;
                 object.position.z = board.position.z - 30;
+                labelYoffset = 60;
             }
 
             else if (i >= 3 && i <= 5) {
                 object.position.x = board.position.x - 200 + (i * 90) - 180;
                 object.position.y = board.position.y;
                 object.position.z = board.position.z + 30;
+                labelYoffset = 75;
             }
             else if (i >= 6 && i <= 8) {
                 object.position.x = board.position.x - 200 + ((i - 3) * 90) - 180;
                 object.position.y = board.position.y - 100;
                 object.position.z = board.position.z + 110;
+                labelYoffset = 20;
             }
 
             object.rotation = board.rotation;
 
+            var text = document.createElement('div');
+            text.style.position = 'absolute';
+            //text2.style.zIndex = 1;    // if you still don't see the label, try uncommenting this
+            text.style.width = 100;
+            text.style.height = 100;
+            text.style.backgroundColor = "transparent";
+            text.style.color = "blue";
+            text.innerHTML = "hi there!";
+            text.style.top = object.position.y + labelYoffset + 'px';
+            text.style.left =  windowHalfX + object.position.x - 20 + 'px';
+            document.body.appendChild(text);
+            stim_labels.push(text);
+
         }
 
     };
+
+    function transformStim(x, y){
+        //transforms stims in 2D on screen by x and y
+        stim_labels[0].style.top = parseInt(stim_labels[0].style.top.split('p')[0]) + x + "px";
+        stim_labels[0].style.left = parseInt(stim_labels[0].style.left.split('p')[0]) + y + "px";
+    }
+
+    function moveStimTo(x, y){
+        //moves stims to x and y positions on screen in 2D
+        stim_labels[0].style.top = x + "px";
+        stim_labels[0].style.left = y + "px";
+    }
 
     var preppedStim = convertExperimentToThing(importJSON);
     console.log(preppedStim);
