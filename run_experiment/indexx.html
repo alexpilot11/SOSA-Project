@@ -688,6 +688,8 @@
             object.rotation = board.rotation;
             object.onStimBoard = false;
 
+
+            //MAKE LABELS
             // create a canvas element
             var canvaslabel = document.createElement('canvas');
             canvaslabel.width = 100;
@@ -699,7 +701,6 @@
 
 
             wrapText(contextlabel, "blah bl " + i, 0, 50, 100, 20);
-//            context1.fillText("blah blah blah blah blah " + i, 0, 50);
             context1.push(contextlabel);
             canvas1.push(canvaslabel);
 
@@ -743,23 +744,10 @@
         }
         context.fillText(line, x, y);
     }
-    //    function transformStim(x, y){
-    //        //transforms stims in 2D on screen by x and y
-    //        stim_labels[0].style.top = parseInt(stim_labels[0].style.top.split('p')[0]) + x + "px";
-    //        stim_labels[0].style.left = parseInt(stim_labels[0].style.left.split('p')[0]) + y + "px";
-    //    }
-    //
-    //    function moveStimTo(x, y){
-    //        //moves stims to x and y positions on screen in 2D
-    //        stim_labels[0].style.top = x + "px";
-    //        stim_labels[0].style.left = y + "px";
-    //    }
+
 
     var preppedStim = convertExperimentToThing(importJSON);
-    console.log(preppedStim);
 
-    // createStimTable is a WIP. Currently breaks the GUI
-    //    createStimTable(preppedStim);
     makeStims(preppedStim);
 </script>
 </body>
