@@ -148,6 +148,7 @@
         if (SELECTED) {
             var intersects_board = raycaster.intersectObject(board);
             if (intersects_board.length > 0 && SELECTED.canMove) {
+                SELECTED.onStimBoard = false;
                 SELECTED.position.copy(intersects_board[0].point.sub(offset));
                 SELECTED.position.x += 30;
                 SELECTED.position.y += 30;
@@ -300,7 +301,7 @@
     function updateLabels() {
         for (var i = 0; i < objects.length; i++) {
             var offsetY;
-            if (objects[i].position.x <= -windowHalfX + 300) {
+            if (objects[i].onStimBoard) {
                 objects[i].label.position.set(objects[i].position.x - 100, objects[i].position.y, objects[i].position.z);
             }
             else {
@@ -391,6 +392,7 @@
     function centerStimsOnBoard() {
         for (var i = 0; i < objects.length; i++) {
             objects[i].canMove = true;
+            objects[i].onStimBoard = true;
             objects[i].position.x = stim_board.position.x - (i * 10) + 130;
             objects[i].position.y = stim_board.position.y + 350 - (i * 80);
 //            objects[i].position.z = i * 30;
@@ -672,20 +674,19 @@
             }
 
             else if (i >= 3 && i <= 5) {
-                object.position.x = board.position.x - ((i - 3) * 300) + 300;
+                object.position.x = board.position.x + ((i - 4) * 300);
                 object.position.y = board.position.y;
                 object.position.z = board.position.z + 30;
                 labelYoffset = 75;
             }
             else if (i >= 6 && i <= 8) {
-                object.position.x = board.position.x - ((i - 6) * 300) + 300;
+                object.position.x = board.position.x + ((i - 7) * 300);
                 object.position.y = board.position.y - 150;
                 object.position.z = board.position.z + 110;
                 labelYoffset = 20;
             }
-
             object.rotation = board.rotation;
-
+            object.onStimBoard = false;
 
             // create a canvas element
             var canvaslabel = document.createElement('canvas');
@@ -697,7 +698,7 @@
             contextlabel.fillStyle = "rgba(255,0,0,.95)";
 
 
-            wrapText(contextlabel, "blah blah", 0, 50, 100, 20);
+            wrapText(contextlabel, "blah bl " + i, 0, 50, 100, 20);
 //            context1.fillText("blah blah blah blah blah " + i, 0, 50);
             context1.push(contextlabel);
             canvas1.push(canvaslabel);
