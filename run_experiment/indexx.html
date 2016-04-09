@@ -31,7 +31,6 @@
 
 
 <script>
-
     var container, board, stim_board;
     var camera, controls, scene, renderer;
     var windowHalfX = window.innerWidth / 2;
@@ -89,7 +88,7 @@
         scene.add(light);
 
         //Board
-        var geometry = new THREE.BoxGeometry(400, 20, 400);
+        var geometry = new THREE.BoxGeometry(windowHalfX * 1.5, 20, windowHalfY * 1.8);
         for (var i = 0; i < geometry.faces.length; i += 2) {
             var colo = "rgb(255, 255, 255)";
             geometry.faces[i].color.set(new THREE.Color(colo));
@@ -97,7 +96,7 @@
         }
         var material = new THREE.MeshBasicMaterial({vertexColors: THREE.FaceColors, overdraw: 0.5});
         board = new THREE.Mesh(geometry, material);
-        board.position.y = 160;
+        board.position.y = 0;
         board.rotation.x = 1;
         scene.add(board);
         board.visible = true;
@@ -214,6 +213,7 @@
         controls.update();
 
         renderer.render(scene, camera);
+        updateLabels();
     }
 
 
@@ -297,9 +297,32 @@
         };
     };
 
+    function updateLabels() {
+        for (var i = 0; i < objects.length; i++){
+            console.log(objects[i].position.x);
+            if (objects[i].position.x <= -windowHalfX + 300) {
+                objects[i].label.position.set(objects[i].position.x + 100,objects[i].position.y,objects[i].position.z);
+            }
+            else if (objects[i].position.y >= 150) {
+                objects[i].label.position.set(objects[i].position.x + 130,objects[i].position.y + 20,objects[i].position.z);
+
+            }
+            else if (objects[i].position.y >= 0){
+                objects[i].label.position.set(objects[i].position.x + 130,objects[i].position.y + 40,objects[i].position.z);
+
+            }
+            else {
+                objects[i].label.position.set(objects[i].position.x + 130,objects[i].position.y + 20,objects[i].position.z);
+
+            }
+
+
+        }
+    }
+
     function createStimBoard() {
         //Stim Board
-        var stim_geometry = new THREE.BoxGeometry(100, 20, 700);
+        var stim_geometry = new THREE.BoxGeometry(200, 20, 800);
         for (var i = 0; i < stim_geometry.faces.length; i += 2) {
             var stim_colo = "rgb(255, 255, 255)";
             stim_geometry.faces[i].color.set(new THREE.Color(stim_colo));
@@ -312,6 +335,8 @@
         stim_board.rotation.x = 1;
         scene.add(stim_board);
         stim_board.visible = true;
+        board.position.x += 200;
+        board.position.y -= 100;
     }
 
 
@@ -360,13 +385,14 @@
         board.visible = true;
 
 
+
     }
     function centerStimsOnBoard() {
         for (var i = 0; i < objects.length; i++) {
             objects[i].canMove = true;
-            objects[i].position.x = stim_board.position.x - (i * 10) + 100;
-            objects[i].position.y = stim_board.position.y + 300 - (i * 60);
-            objects[i].position.z = i * 20;
+            objects[i].position.x = stim_board.position.x - (i * 10) + 130;
+            objects[i].position.y = stim_board.position.y + 350 - (i * 70);
+            objects[i].position.z = i * 30;
 
         }
     }
@@ -658,34 +684,49 @@
 
             object.rotation = board.rotation;
 
-            var text = document.createElement('div');
-            text.style.position = 'absolute';
-            //text2.style.zIndex = 1;    // if you still don't see the label, try uncommenting this
-            text.style.width = 100;
-            text.style.height = 100;
-            text.style.backgroundColor = "transparent";
-            text.style.color = "blue";
-            text.innerHTML = "hi there!";
-            text.style.top = object.position.y + labelYoffset + 'px';
-            text.style.left =  windowHalfX + object.position.x - 20 + 'px';
-            document.body.appendChild(text);
-            stim_labels.push(text);
+
+
+
+            // create a canvas element
+            var canvas1 = document.createElement('canvas');
+            var context1 = canvas1.getContext('2d');
+            context1.font = "Bold 20px Arial";
+            context1.fillStyle = "rgba(255,0,0,0.5)";
+            context1.fillText(i, 0, 50);
+
+
+
+            // canvas contents will be used for a texture
+            var texture1 = new THREE.Texture(canvas1);
+            texture1.needsUpdate = true;
+
+            var material1 = new THREE.MeshBasicMaterial( {map: texture1, side:THREE.DoubleSide } );
+            material1.transparent = true;
+
+            var label = new THREE.Mesh(
+                    new THREE.PlaneGeometry(canvas1.width, canvas1.height),
+                    material1
+            );
+            label.position.set(object.position.x + 130,object.position.y + 10,object.position.z);
+            console.log(label);
+            scene.add( label );
+            object.label = label;
 
         }
 
     };
 
-    function transformStim(x, y){
-        //transforms stims in 2D on screen by x and y
-        stim_labels[0].style.top = parseInt(stim_labels[0].style.top.split('p')[0]) + x + "px";
-        stim_labels[0].style.left = parseInt(stim_labels[0].style.left.split('p')[0]) + y + "px";
-    }
-
-    function moveStimTo(x, y){
-        //moves stims to x and y positions on screen in 2D
-        stim_labels[0].style.top = x + "px";
-        stim_labels[0].style.left = y + "px";
-    }
+//    function transformStim(x, y){
+//        //transforms stims in 2D on screen by x and y
+//        stim_labels[0].style.top = parseInt(stim_labels[0].style.top.split('p')[0]) + x + "px";
+//        stim_labels[0].style.left = parseInt(stim_labels[0].style.left.split('p')[0]) + y + "px";
+//    }
+//
+//    function moveStimTo(x, y){
+//        //moves stims to x and y positions on screen in 2D
+//        stim_labels[0].style.top = x + "px";
+//        stim_labels[0].style.left = y + "px";
+//    }
 
     var preppedStim = convertExperimentToThing(importJSON);
     console.log(preppedStim);
