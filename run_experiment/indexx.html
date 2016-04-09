@@ -43,7 +43,7 @@
             INTERSECTED, SELECTED;
 
     var outputLocationString;
-var canvas1 = [], context1 = [];
+    var canvas1 = [], context1 = [];
     init();
     animate();
 
@@ -298,15 +298,22 @@ var canvas1 = [], context1 = [];
     };
 
     function updateLabels() {
-        for (var i = 0; i < objects.length; i++){
+        for (var i = 0; i < objects.length; i++) {
+            var offsetY;
             if (objects[i].position.x <= -windowHalfX + 300) {
-                objects[i].label.position.set(objects[i].position.x - 100,objects[i].position.y,objects[i].position.z);
-            }
-            else if (objects[i].position.y > 0){
-                objects[i].label.position.set(objects[i].position.x,objects[i].position.y + 70,objects[i].position.z);
+                objects[i].label.position.set(objects[i].position.x - 100, objects[i].position.y, objects[i].position.z);
             }
             else {
-                objects[i].label.position.set(objects[i].position.x,objects[i].position.y + 120,objects[i].position.z);
+                if (objects[i].position.y > 0) {
+                    offsetY = 70;
+                }
+                else if (objects[i].position.y > -100) {
+                    offsetY = 90;
+                }
+                else {
+                    offsetY = 120;
+                }
+                objects[i].label.position.set(objects[i].position.x, objects[i].position.y + offsetY, objects[i].position.z);
 
             }
 
@@ -378,7 +385,6 @@ var canvas1 = [], context1 = [];
         begin_gui.domElement.style.left = windowHalfX - 100 + 'px';
         begin_gui.domElement.setAttribute('class', 'begin_gui');
         board.visible = true;
-
 
 
     }
@@ -659,28 +665,26 @@ var canvas1 = [], context1 = [];
 
 
             if (i >= 0 && i <= 2) {
-                object.position.x = board.position.x + (i * 90) - 100;
-                object.position.y = board.position.y + 150;
+                object.position.x = board.position.x + (i * 300) - 300;
+                object.position.y = board.position.y + 200;
                 object.position.z = board.position.z - 30;
                 labelYoffset = 60;
             }
 
             else if (i >= 3 && i <= 5) {
-                object.position.x = board.position.x - 200 + (i * 90) - 180;
+                object.position.x = board.position.x - ((i - 3) * 300) + 300;
                 object.position.y = board.position.y;
                 object.position.z = board.position.z + 30;
                 labelYoffset = 75;
             }
             else if (i >= 6 && i <= 8) {
-                object.position.x = board.position.x - 200 + ((i - 3) * 90) - 180;
-                object.position.y = board.position.y - 100;
+                object.position.x = board.position.x - ((i - 6) * 300) + 300;
+                object.position.y = board.position.y - 150;
                 object.position.z = board.position.z + 110;
                 labelYoffset = 20;
             }
 
             object.rotation = board.rotation;
-
-
 
 
             // create a canvas element
@@ -693,7 +697,6 @@ var canvas1 = [], context1 = [];
             contextlabel.fillStyle = "rgba(255,0,0,.95)";
 
 
-
             wrapText(contextlabel, "blah blah", 0, 50, 100, 20);
 //            context1.fillText("blah blah blah blah blah " + i, 0, 50);
             context1.push(contextlabel);
@@ -704,16 +707,16 @@ var canvas1 = [], context1 = [];
             var texture1 = new THREE.Texture(canvaslabel);
             texture1.needsUpdate = true;
 
-            var material1 = new THREE.MeshBasicMaterial( {map: texture1, side:THREE.DoubleSide } );
+            var material1 = new THREE.MeshBasicMaterial({map: texture1, side: THREE.DoubleSide});
             material1.transparent = true;
 
             var label = new THREE.Mesh(
                     new THREE.PlaneGeometry(canvaslabel.width, canvaslabel.height),
                     material1
             );
-            label.position.set(object.position.x - 130,object.position.y + 10,object.position.z);
+            label.position.set(object.position.x - 130, object.position.y + 10, object.position.z);
             label.rotation.x = -.5;
-            scene.add( label );
+            scene.add(label);
             object.label = label;
 
         }
@@ -724,7 +727,7 @@ var canvas1 = [], context1 = [];
         var words = text.split(' ');
         var line = '';
 
-        for(var n = 0; n < words.length; n++) {
+        for (var n = 0; n < words.length; n++) {
             var testLine = line + words[n] + ' ';
             var metrics = context.measureText(testLine);
             var testWidth = metrics.width;
@@ -739,17 +742,17 @@ var canvas1 = [], context1 = [];
         }
         context.fillText(line, x, y);
     }
-//    function transformStim(x, y){
-//        //transforms stims in 2D on screen by x and y
-//        stim_labels[0].style.top = parseInt(stim_labels[0].style.top.split('p')[0]) + x + "px";
-//        stim_labels[0].style.left = parseInt(stim_labels[0].style.left.split('p')[0]) + y + "px";
-//    }
-//
-//    function moveStimTo(x, y){
-//        //moves stims to x and y positions on screen in 2D
-//        stim_labels[0].style.top = x + "px";
-//        stim_labels[0].style.left = y + "px";
-//    }
+    //    function transformStim(x, y){
+    //        //transforms stims in 2D on screen by x and y
+    //        stim_labels[0].style.top = parseInt(stim_labels[0].style.top.split('p')[0]) + x + "px";
+    //        stim_labels[0].style.left = parseInt(stim_labels[0].style.left.split('p')[0]) + y + "px";
+    //    }
+    //
+    //    function moveStimTo(x, y){
+    //        //moves stims to x and y positions on screen in 2D
+    //        stim_labels[0].style.top = x + "px";
+    //        stim_labels[0].style.left = y + "px";
+    //    }
 
     var preppedStim = convertExperimentToThing(importJSON);
     console.log(preppedStim);
