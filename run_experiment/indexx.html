@@ -499,8 +499,9 @@ createGUI();
 			this.hideLabels = function () {
 					for(var i = 0; i < objects.length; i++){
 			context1[i].save();
-			context1[i].fillStyle = '#ffffff';
-			context1[i].fillRect(0, 0, 100, 50);			
+			context1[i].fillStyle = boardColor = "rgba(" + Math.round(boardTest.boardR) + ", " + Math.round(boardTest.boardG) + ", " + Math.round(boardTest.boardB) + ", .95)";
+			context1[i].font = 'Bold 20px Arial';
+			context1[i].clearRect(0, 0, 100, 50);			
 			labelTexture = new THREE.Texture(canvas1[i]);
             labelTexture.needsUpdate = true;
 			objects[i].label.material.map = labelTexture;
@@ -845,7 +846,7 @@ createGUI();
 
 	function overwriteLabel(count){		
 			context1[count].fillStyle = '#ffffff';
-			context1[count].fillRect(0, 0, 100, 50);			
+			context1[count].clearRect(0, 0, 100, 50);			
 			labelTexture = new THREE.Texture(canvas1[count]);
             labelTexture.needsUpdate = true;
 			objects[count].label.material.map = labelTexture;
