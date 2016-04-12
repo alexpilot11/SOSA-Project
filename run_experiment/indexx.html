@@ -50,6 +50,8 @@
     var outputLocationString;
     var canvas1 = [], context1 = [];
 	
+	var boardColor;
+	var bgColor;
 	var labelPos = 0;
 	var labelColor = "rgba(255,0,0,.95)";
 	var labelTexture;
@@ -57,7 +59,7 @@
 	var contextlabel = canvaslabel.getContext('2d');
 	var labelsChanged = false;
     var preppedStim;
-    var boardTest;
+	var labelsShowing = true;
 
 	//Sample JSON
 	var importJSON = {
@@ -125,7 +127,10 @@
 
         }
     };
-    init();
+    
+	
+	
+	init();
     animate();
 
     //Scene setup
@@ -214,7 +219,8 @@
         renderer.domElement.addEventListener('mouseup', onDocumentMouseUp, false);
 		
     }
-    function onWindowResize() {
+    
+	function onWindowResize() {
         windowHalfX = window.innerWidth / 2;
         windowHalfY = window.innerHeight / 2;
 
@@ -296,28 +302,6 @@
 		
     }
 
-/*
-	function updateLabels() {
-        for (var i = 0; i < objects.length; i++) {
-            var offsetY;
-            if (objects[i].onStimBoard) {
-                objects[i].label.position.set(objects[i].position.x - 100, objects[i].position.y, objects[i].position.z);
-            }
-            else {
-                if (objects[i].position.y > 0) {
-                    offsetY = 70;
-                }
-                else if (objects[i].position.y > -100) {
-                    offsetY = 90;
-                }
-                else {
-                    offsetY = 120;
-                }
-                objects[i].label.position.set(objects[i].position.x, objects[i].position.y + offsetY, objects[i].position.z);
-            }
-        }
-    }
-*/
 	function updateLabels() {
         for (var i = 0; i < objects.length; i++) {
             var offsetY;
@@ -336,7 +320,8 @@
 
         }
     }
-    function createStimBoard() {
+    
+	function createStimBoard() {
         //Stim Board
         var stim_geometry = new THREE.BoxGeometry(200, 20, 800);
         for (var i = 0; i < stim_geometry.faces.length; i += 2) {
@@ -438,7 +423,7 @@
 
     }
 
-    var finishExperiment = function (obj, movement, finalLocation, finalDistances) {
+    function finishExperiment(obj, movement, finalLocation, finalDistances) {
         console.log('Finished Experiment');
 
         // Any cleaning to these objects should happen here
@@ -481,9 +466,6 @@
     };
 	
 	function createGUI(){
-		
-		var labelsShowing = true;
-		
 		//Start GUI
 		//GUI params
 		var gui_controls = function () {
@@ -512,12 +494,15 @@
 				boardTest.bgR = 255;
 				boardTest.bgG = 255;
 				boardTest.bgB = 255;
+				document.getElementsByClassName('dg ac')[0].style.backgroundColor = bgColor;
+				document.getElementsByTagName('body')[0].style.backgroundColor = bgColor;
+				document.getElementsById('myInput')[0].style.backgroundColor = bgColor;
+				document.getElementsByClassName('dg ac')[0].style.backgroundColor = bgColor;
 				renderer.setClearColor(0x000000);
 	
 			};
 			this.hasBG = true;
 	
-			//MAKE THESE DO JSON THINGS
 			this.import = function () {
                 // Fires the click event on the invisible input
                 document.getElementById("myInput").click();
@@ -552,7 +537,7 @@
                 document.getElementById('myInput').addEventListener('change', readSingleFile, false);
 
 			};
-            // Export the board settings into JSON
+			
 			this.export = function () {
 
                 var exportJSON = JSON.stringify(this);
@@ -599,42 +584,10 @@
                 document.getElementById('myInput').addEventListener('change', readSingleFile, false);
 
             };
-	
-			//MAKE THESE DO LABEL THINGS
-			this.showLabels = function () {
-			if(labelsChanged != true){
-		for(var i = 0; i < objects.length; i++){
-			context1[i].restore();
-			labelTexture = new THREE.Texture(canvas1[i]);
-            labelTexture.needsUpdate = true;
-			objects[i].label.material.map = labelTexture;
-			wrapText(context1[i], "Stim #" + (i+1), 0, 50, 100, 20);
-		}
-		} else {
-			labelColor = "rgba(" + Math.round(boardTest.labelR) + ", " + Math.round(boardTest.labelG) + ", " + Math.round(boardTest.labelB) + ", " + boardTest.labelShade + ")";
-				for (var i = 0; i < objects.length; i++) {
-					overwriteLabel(i);
-					context1[i].fillStyle = labelColor;
-					labelTexture = new THREE.Texture(canvas1[i]);
-					labelTexture.needsUpdate = true;
-					objects[i].label.material.map = labelTexture;
-					wrapText(context1[i], "Stim #" + (i+1), 0, 50, 100, 20);
-				}
-		}
 			
+			this.toggleLabels = function () {
 			};
-			this.hideLabels = function () {
-					for(var i = 0; i < objects.length; i++){
-			context1[i].save();
-			context1[i].fillStyle = boardColor = "rgba(" + Math.round(boardTest.boardR) + ", " + Math.round(boardTest.boardG) + ", " + Math.round(boardTest.boardB) + ", " + boardTest.labelShade + ")";
-			context1[i].font = 'Bold 20px Arial';
-			context1[i].clearRect(0, 0, 100, 50);			
-			labelTexture = new THREE.Texture(canvas1[i]);
-            labelTexture.needsUpdate = true;
-			objects[i].label.material.map = labelTexture;
-			wrapText(context1[i], "Stim #" + (i+1), 0, 50, 100, 20);		
-		}
-			};
+			
 			this.labelUp = function() {};
 			this.labelDown = function() {};
 			this.labelShade = 1;
@@ -647,21 +600,6 @@
 			};
 	
 			this.outputLoc = function () {
-	
-	//            var input = document.createElement('input');
-	//            input.setAttribute('type', 'file');
-	//            input.setAttribute('id', 'outputLoc');
-	//            input.setAttribute('webkitdirectory', 'webkitdirectory');
-	//            input.setAttribute('directory', 'directory');
-	//            input.setAttribute('multiple', 'multiple');
-	//            var evt = document.createEvent("MouseEvents");
-	//            evt.initEvent("click", true, false);
-	//            input.dispatchEvent(evt);
-	//            console.log(input);
-	
-				outputLocationString = prompt('File in pc. click in bar. paste in this bar. profit.');
-	
-	
 			};
 	
 			this.launchExperiment = function () {
@@ -672,11 +610,7 @@
 	
 			};
 		};
-		//GUI creation
-		//vars for rgb color strings
-		var boardColor;
-		var bgColor;
-	
+		//GUI creation	
 		/*
 		*	listen() on the gui panels allows the gui to react to outside input i.e. setDefault etc
 		*	onChange() updates the scene based off gui values
@@ -724,16 +658,13 @@
 	//        }
 		});
 		boardAppearance.add(boardTest, 'boardR', 0, 255).listen().onChange(function () {
-			boardColor = "rgb(" + Math.round(boardTest.boardR) + ", " + Math.round(boardTest.boardG) + ", " + Math.round(boardTest.boardB) + ")";
-			board.material.color.set(new THREE.Color(boardColor));
+			setBoardColor(boardTest);
 		});
 		boardAppearance.add(boardTest, 'boardG', 0, 255).listen().onChange(function () {
-			boardColor = "rgb(" + Math.round(boardTest.boardR) + ", " + Math.round(boardTest.boardG) + ", " + Math.round(boardTest.boardB) + ")";
-			board.material.color.set(new THREE.Color(boardColor));
+			setBoardColor(boardTest);
 		});
 		boardAppearance.add(boardTest, 'boardB', 0, 255).listen().onChange(function () {
-			boardColor = "rgb(" + Math.round(boardTest.boardR) + ", " + Math.round(boardTest.boardG) + ", " + Math.round(boardTest.boardB) + ")";
-			board.material.color.set(new THREE.Color(boardColor));
+			setBoardColor(boardTest);
 		});
 		boardAppearance.add(boardTest, 'setDefault');
 		boardAppearance.add(boardTest, 'boardTiltDefaults');
@@ -741,16 +672,13 @@
 		var backgroundAppearance = appearance.addFolder('Background');
 		backgroundAppearance.open();
 		backgroundAppearance.add(boardTest, 'bgR', 0, 255).listen().onChange(function () {
-			bgColor = "rgb(" + Math.round(boardTest.bgR) + ", " + Math.round(boardTest.bgG) + ", " + Math.round(boardTest.bgB) + ")";
-			renderer.setClearColor(new THREE.Color(bgColor));
+			setBackgroundColor(boardTest);
 		});
 		backgroundAppearance.add(boardTest, 'bgG', 0, 255).listen().onChange(function () {
-			bgColor = "rgb(" + Math.round(boardTest.bgR) + ", " + Math.round(boardTest.bgG) + ", " + Math.round(boardTest.bgB) + ")";
-			renderer.setClearColor(new THREE.Color(bgColor));
+			setBackgroundColor(boardTest);
 		});
 		backgroundAppearance.add(boardTest, 'bgB', 0, 255).listen().onChange(function () {
-			bgColor = "rgb(" + Math.round(boardTest.bgR) + ", " + Math.round(boardTest.bgG) + ", " + Math.round(boardTest.bgB) + ")";
-			renderer.setClearColor(new THREE.Color(bgColor));
+			setBackgroundColor(boardTest);
 		});
 		backgroundAppearance.add(boardTest, 'backgroundDefaults');
 	
@@ -761,16 +689,8 @@
 	
 		var labels = gui.addFolder('Labels');
 		labels.open();
-		labels.add(boardTest, 'showLabels').listen().onChange(function(){
-			if(labelsShowing != true){
-
-			labelsShowing = true;
-			}
-		});
-		labels.add(boardTest, 'hideLabels').listen().onChange(function(){
-			if(labelsShowing != false){
-			labelsShowing = false;
-			}
+		labels.add(boardTest, 'toggleLabels').listen().onChange(function(){
+			toggleLabels(boardTest);
 		});
 		labels.add(boardTest, 'labelUp').listen().onChange(function(){ 
 		for (var i = 0; i < objects.length; i++) {
@@ -783,60 +703,16 @@
 			}
 		});	
 		labels.add(boardTest, 'labelR', 0, 255).listen().onChange(function () {
-			if(labelsShowing == true){
-			labelColor = "rgba(" + Math.round(boardTest.labelR) + ", " + Math.round(boardTest.labelG) + ", " + Math.round(boardTest.labelB) + ", " + boardTest.labelShade + ")";
-			for (var i = 0; i < objects.length; i++) {
-				overwriteLabel(i);
-				context1[i].fillStyle = labelColor;
-				labelTexture = new THREE.Texture(canvas1[i]);
-				labelTexture.needsUpdate = true;
-				objects[i].label.material.map = labelTexture;
-				wrapText(context1[i], "Stim #" + (i+1), 0, 50, 100, 20);
-			}
-			}
-			labelsChanged = true;
+			setLabelColor(boardTest);
 		});
 		labels.add(boardTest, 'labelG', 0, 255).listen().onChange(function () {
-		if(labelsShowing == true){
-			labelColor = "rgba(" + Math.round(boardTest.labelR) + ", " + Math.round(boardTest.labelG) + ", " + Math.round(boardTest.labelB) + ", " + boardTest.labelShade + ")";
-			for (var i = 0; i < objects.length; i++) {
-				overwriteLabel(i);
-				context1[i].fillStyle = labelColor;
-				labelTexture = new THREE.Texture(canvas1[i]);
-				labelTexture.needsUpdate = true;
-				objects[i].label.material.map = labelTexture;
-				wrapText(context1[i], "Stim #" + (i+1), 0, 50, 100, 20);
-			}
-			}
-			labelsChanged = true;
+			setLabelColor(boardTest);
 		});
 		labels.add(boardTest, 'labelB', 0, 255).listen().onChange(function () {
-		if(labelsShowing == true){
-			labelColor = "rgba(" + Math.round(boardTest.labelR) + ", " + Math.round(boardTest.labelG) + ", " + Math.round(boardTest.labelB) + ", " + boardTest.labelShade + ")";
-			for (var i = 0; i < objects.length; i++) {
-				overwriteLabel(i);
-				context1[i].fillStyle = labelColor;
-				labelTexture = new THREE.Texture(canvas1[i]);
-				labelTexture.needsUpdate = true;
-				objects[i].label.material.map = labelTexture;
-				wrapText(context1[i], "Stim #" + (i+1), 0, 50, 100, 20);
-			}
-			}
-			labelsChanged = true;
+			setLabelColor(boardTest);
 		});
 		labels.add(boardTest, 'labelShade', 0, 1).step(.01).listen().onChange(function () {
-            if(labelsShowing == true){
-                labelColor = "rgba(" + Math.round(boardTest.labelR) + ", " + Math.round(boardTest.labelG) + ", " + Math.round(boardTest.labelB) + ", " + boardTest.labelShade + ")";
-                for (var i = 0; i < objects.length; i++) {
-                    overwriteLabel(i);
-                    context1[i].fillStyle = labelColor;
-                    labelTexture = new THREE.Texture(canvas1[i]);
-                    labelTexture.needsUpdate = true;
-                    objects[i].label.material.map = labelTexture;
-                    wrapText(context1[i], "Stim #" + (i+1), 0, 50, 100, 20);
-                }
-            }
-            labelsChanged = true;
+			setLabelColor(boardTest);
         });
 		labels.add(boardTest, 'labelSize', 0, 100).listen();
 		labels.add(boardTest, 'labelDefaults');
@@ -851,7 +727,6 @@
 		//END GUI
 	}
 		
-
 	// Handle the listbox that will contain stimuli
     // Read in the file instead of using this darn sample
 	function readExperimentFromFile(fname) {
@@ -985,7 +860,7 @@
 	}
 
 	function overwriteLabel(count){		
-			context1[count].fillStyle = '#ffffff';
+			context1[count].fillStyle = boardColor = "rgba(" + Math.round(boardTest.boardR) + ", " + Math.round(boardTest.boardG) + ", " + Math.round(boardTest.boardB) + ", " + boardTest.labelShade + ")";
 			context1[count].clearRect(0, 0, 100, 50);			
 			labelTexture = new THREE.Texture(canvas1[count]);
             labelTexture.needsUpdate = true;
@@ -997,6 +872,7 @@
         console.log(b);
         console.log(obj);
 
+		//updates the gui
         b.bgB = obj.bgB;
         b.bgG = obj.bgG;
         b.bgR = obj.bgR;
@@ -1012,28 +888,13 @@
         b.rotationX = obj.rotationX;
 
         // Handles boardR, boardG, and boardB
-        boardColor = "rgb(" + Math.round(b.boardR) + ", " + Math.round(b.boardG) + ", " + Math.round(b.boardB) + ")";
-        board.material.color.set(new THREE.Color(boardColor));
+        setBackgroundColor(b);
 
         // Handles bgR, bgG, and bgB
-        bgColor = "rgb(" + Math.round(b.bgR) + ", " + Math.round(b.bgG) + ", " + Math.round(b.bgB) + ")";
-        renderer.setClearColor(new THREE.Color(bgColor));
+        setBoardColor(b);
 
-
-        // TODO: Fix all this duplicate logic
         // Handles labelR, labelG, labelB, and labelShade
-        labelColor = "rgba(" + Math.round(b.labelR) + ", " + Math.round(b.labelG) + ", " + Math.round(b.labelB) + ", " + b.labelShade + ")";
-        for (var i = 0; i < objects.length; i++) {
-            overwriteLabel(i);
-            context1[i].fillStyle = labelColor;
-            labelTexture = new THREE.Texture(canvas1[i]);
-            labelTexture.needsUpdate = true;
-            objects[i].label.material.map = labelTexture;
-            // This needs to be the stim name
-            wrapText(context1[i], "Stim #" + (i+1), 0, 50, 100, 20);
-        }
-
-        labelsChanged = true;
+		setLabelColor(b);
 
         // Handles rotationX
         board.rotation.x = (b.rotationX);
@@ -1041,45 +902,6 @@
         // Unhandled: hasBG, labelSize
 
     }
-/*	
-	function hideLabels(){		
-				for(var i = 0; i < objects.length; i++){
-			context1[i].save();
-			context1[i].fillStyle = '#ffffff';
-			context1[i].fillRect(0, 0, 100, 50);			
-			labelTexture = new THREE.Texture(canvas1[i]);
-            labelTexture.needsUpdate = true;
-			objects[i].label.material.map = labelTexture;
-			wrapText(context1[i], "Stim #" + (i+1), 0, 50, 100, 20);		
-		}
-	}
-	
-	function showLabels(){
-		if(labelsChanged != true){
-		for(var i = 0; i < objects.length; i++){
-			context1[i].restore();
-			labelTexture = new THREE.Texture(canvas1[i]);
-            labelTexture.needsUpdate = true;
-			objects[i].label.material.map = labelTexture;
-			wrapText(context1[i], "Stim #" + (i+1), 0, 50, 100, 20);
-		}
-		} else {
-			labelColor = "rgba(" + Math.round(boardTest.labelR) + ", " + Math.round(boardTest.labelG) + ", " + Math.round(boardTest.labelB) + ", " + boardTest.labelShade + ")";
-				for (var i = 0; i < objects.length; i++) {
-					overwriteLabel(i);
-					context1[i].fillStyle = labelColor;
-					labelTexture = new THREE.Texture(canvas1[i]);
-					labelTexture.needsUpdate = true;
-					objects[i].label.material.map = labelTexture;
-					wrapText(context1[i], "Stim #" + (i+1), 0, 50, 100, 20);
-				}
-		}
-	}
-	
-	*/
-	
-	
-    
 	
 	function wrapText(context, text, x, y, maxWidth, lineHeight) {
         var words = text.split(' ');
@@ -1101,7 +923,77 @@
         context.fillText(line, x, y);
     }
 
+	function setBoardColor(gui){
+		boardColor = "rgb(" + Math.round(gui.boardR) + ", " + Math.round(gui.boardG) + ", " + Math.round(gui.boardB) + ")";
+		board.material.color.set(new THREE.Color(boardColor));	
+	}
 
+	function setBackgroundColor(gui){
+		bgColor = "rgb(" + Math.round(gui.bgR) + ", " + Math.round(gui.bgG) + ", " + Math.round(gui.bgB) + ")";
+		renderer.setClearColor(new THREE.Color(bgColor));
+	}
+
+	function setLabelColor(gui){
+		if(labelsShowing == true){
+			labelColor = "rgba(" + Math.round(gui.labelR) + ", " + Math.round(gui.labelG) + ", " + Math.round(gui.labelB) + ", " + gui.labelShade + ")";
+			for (var i = 0; i < objects.length; i++) {
+				overwriteLabel(i);
+				context1[i].fillStyle = labelColor;
+				labelTexture = new THREE.Texture(canvas1[i]);
+				labelTexture.needsUpdate = true;
+				objects[i].label.material.map = labelTexture;
+				wrapText(context1[i], "Stim #" + (i+1), 0, 50, 100, 20);
+			}
+		}
+		labelsChanged = true;
+	}
+	
+	function toggleLabels(gui){
+		// if the labels are not showing
+		if(labelsShowing != true){
+			// if the labels have not been changed
+			// redraw labels from the last value the context had
+			if(labelsChanged != true){
+				for(var i = 0; i < objects.length; i++){
+					context1[i].restore();
+					labelTexture = new THREE.Texture(canvas1[i]);
+					labelTexture.needsUpdate = true;
+					objects[i].label.material.map = labelTexture;
+					wrapText(context1[i], "Stim #" + (i+1), 0, 50, 100, 20);
+				}
+			} 
+			// if the labels have been changed
+			// overwrite the labels for a blank canvas
+			// remake the texture and write the text using the new colors
+			else {
+				labelColor = "rgba(" + Math.round(gui.labelR) + ", " + Math.round(gui.labelG) + ", " + Math.round(gui.labelB) + ", " + gui.labelShade + ")";
+				for (var i = 0; i < objects.length; i++) {
+					overwriteLabel(i);
+					context1[i].fillStyle = labelColor;
+					labelTexture = new THREE.Texture(canvas1[i]);
+					labelTexture.needsUpdate = true;
+					objects[i].label.material.map = labelTexture;
+					wrapText(context1[i], "Stim #" + (i+1), 0, 50, 100, 20);
+					labelsChanged = false;
+				}
+			}
+			labelsShowing = true;
+		}
+		// if the labels are not showing
+		else {			
+			for(var i = 0; i < objects.length; i++){
+				context1[i].save();
+				context1[i].fillStyle = "rgba(" + Math.round(gui.boardR) + ", " + Math.round(gui.boardG) + ", " + Math.round(gui.boardB) + ", " + gui.labelShade + ")";
+				context1[i].font = 'Bold 20px Arial';
+				context1[i].clearRect(0, 0, 100, 50);			
+				labelTexture = new THREE.Texture(canvas1[i]);
+				labelTexture.needsUpdate = true;
+				objects[i].label.material.map = labelTexture;
+				wrapText(context1[i], "Stim #" + (i+1), 0, 50, 100, 20);
+				labelsShowing = false;
+			}
+		}
+	}
 </script>
 </body>
 </html>
