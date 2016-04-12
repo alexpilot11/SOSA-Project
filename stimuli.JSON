@@ -2,7 +2,7 @@
 	"Stimulus": {
 		"Name": "StimDefault",
 		"Image": "C:\Users\"
-		"sizeX": 300px,
-		"sizeY": 300px
+		"sizeX": '300px',
+		"sizeY": '300px'
 	}
-{
+}

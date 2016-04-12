@@ -20,6 +20,10 @@
 
 </head>
 <body>
+
+<!-- This is a hack for the file input -->
+<input id="myInput" type="file" style="visibility:hidden" />
+
 <script src="js/three.js"></script>
 <script src="js/Mirror.js"></script>
 <script src="js/OrbitControls.js"></script>
@@ -469,6 +473,35 @@ createGUI();
 	
 			//MAKE THESE DO JSON THINGS
 			this.import = function () {
+                // Fires the click event on the invisible input
+                document.getElementById("myInput").click();
+
+                function readSingleFile(evt) {
+                    //Retrieve the first (and only!) File from the FileList object
+                    var file = evt.target.files[0];
+
+                    if (file) {
+                        var reader = new FileReader();
+                        reader.onload = function(e) {
+                            var contents = e.target.result;
+                            var contentsObj;
+                            try {
+                                contentsObj = JSON.parse(contents);
+                                // Test log
+                                console.log(contentsObj);
+                            }
+
+                            catch (spookyScaryMonsterException) {
+                                console.log('Your input file is in the wrong format.');
+                            }
+                        };
+                      reader.readAsText(file);
+                    } else {
+                        alert('Unable to load in a file.');
+                    }
+                }
+                document.getElementById('myInput').addEventListener('change', readSingleFile, false);
+
 			};
 			this.export = function () {
 			};

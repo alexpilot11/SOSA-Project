@@ -1,0 +1,39 @@
+{
+	"orders": {
+		"order1": "['Stimulus1', 'Stimulus2', 'Stimulus3', 'Stimulus4', 'Stimulus5']",
+		"order2": "['Stimulus5', 'Stimulus4', 'Stimulus3', 'Stimulus2', 'Stimulus1']",
+		"order3": "['Stimulus2', 'Stimulus3', 'Stimulus1', 'Stimulus4', 'Stimulus5']"
+	},
+	"stimuli": {
+		"Stimulus1": {
+			"Name": "StimDefault1",
+			"Image": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c2/Faust_bei_der_Arbeit.JPG/220px-Faust_bei_der_Arbeit.JPG",
+			"sizeX": "300px",
+			"sizeY": "300px"
+		},
+		"Stimulus2": {
+			"Name": "StimDefault2",
+			"Image": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c2/Faust_bei_der_Arbeit.JPG/220px-Faust_bei_der_Arbeit.JPG",
+			"sizeX": "300px",
+			"sizeY": "300px"
+		},
+		"Stimulus3": {
+			"Name": "StimDefault3",
+			"Image": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c2/Faust_bei_der_Arbeit.JPG/220px-Faust_bei_der_Arbeit.JPG",
+			"sizeX": "300px",
+			"sizeY": "300px"
+		},
+		"Stimulus4": {
+			"Name": "StimDefault4",
+			"Image": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c2/Faust_bei_der_Arbeit.JPG/220px-Faust_bei_der_Arbeit.JPG",
+			"sizeX": "300px",
+			"sizeY": "300px"
+		},
+		"Stimulus5": {
+			"Name": "StimDefault5",
+			"Image": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c2/Faust_bei_der_Arbeit.JPG/220px-Faust_bei_der_Arbeit.JPG",
+			"sizeX": "300px",
+			"sizeY": "300px"
+		}
+	}
+}
