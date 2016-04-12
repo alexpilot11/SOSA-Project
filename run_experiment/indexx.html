@@ -57,6 +57,7 @@
 	var contextlabel = canvaslabel.getContext('2d');
 	var labelsChanged = false;
     var preppedStim;
+    var boardTest;
 
 	//Sample JSON
 	var importJSON = {
@@ -144,8 +145,8 @@
         container.appendChild(info);
 
         camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 1, 10000);
-        camera.position.z = 1000;
-        camera.position.y = 640;
+        camera.position.z = 800;
+        camera.position.y = 515;
         controls = new THREE.TrackballControls(camera);
         controls.rotateSpeed = 0.0;
         controls.zoomSpeed = 1.2;
@@ -177,6 +178,7 @@
         var material = new THREE.MeshBasicMaterial({vertexColors: THREE.FaceColors, overdraw: 0.5});
         board = new THREE.Mesh(geometry, material);
         board.position.y = 0;
+        board.position.x = -100;
         board.rotation.x = 1;
         scene.add(board);
         board.visible = true;
@@ -290,6 +292,7 @@
         controls.update();
         renderer.render(scene, camera);
         updateLabels();
+        document.getElementsByTagName('body')[0].style.backgroundColor = "rgb(" + Math.round(boardTest.bgR) + ", " + Math.round(boardTest.bgG) + ", " + Math.round(boardTest.bgB) + ")"
 		
     }
 
@@ -395,6 +398,10 @@
         begin_gui.domElement.style.top = window.innerHeight - 50 + 'px';
         begin_gui.domElement.style.left = windowHalfX - 100 + 'px';
         begin_gui.domElement.setAttribute('class', 'begin_gui');
+        for (var i = 0; i < objects.length; i++){
+            objects[i].position.x += 100;
+        }
+        board.position.x = 0;
         board.visible = true;
 
 
@@ -415,6 +422,8 @@
     function createFinishExperiment() {
         //create new gui with a Finish Experiment button
         document.getElementsByClassName('begin_gui')[0].style.display = 'none';
+        camera.position.z += 200;
+        camera.position.y += 100;
         createStimBoard();
         centerStimsOnBoard();
         var finish_gui = new dat.GUI();
@@ -458,9 +467,9 @@
 				board.rotation.x = 1;
 			};
 	
-			this.bgR = 255;
-			this.bgG = 255;
-			this.bgB = 255;
+			this.bgR = 0;
+			this.bgG = 0;
+			this.bgB = 0;
 			this.backgroundDefaults = function () {
 				boardTest.bgR = 255;
 				boardTest.bgG = 255;
@@ -639,7 +648,7 @@
 		*	onChange() updates the scene based off gui values
 		*
 		*/
-		var boardTest = new gui_controls();
+		boardTest = new gui_controls();
 		var gui = new dat.GUI();
 	
 		var appearance = gui.addFolder('Appearance');
