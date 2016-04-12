@@ -438,8 +438,46 @@
 
     }
 
-    var finishExperiment = function () {
+    var finishExperiment = function (obj, movement, finalLocation, finalDistances) {
         console.log('Finished Experiment');
+
+        // Any cleaning to these objects should happen here
+        // End object cleaning
+
+        var output = {
+            'Experiment Name': 'Test name',
+            'Experiment Version': 'Test version',
+            'Date': '3/4/2015',
+            'Stimuli': obj,
+            'Stimuli Movement': movement,
+            'Final Stimuli Location': finalLocation,
+            'Final Stimuli Distances': finalDistances
+        };
+        console.log(output);
+
+        var exportJSON = JSON.stringify(output);
+        // Download solution from http://stackoverflow.com/questions/19721439/download-json-object-as-a-file-from-browser
+        var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(exportJSON);
+        var dlAnchorElem = document.getElementById('downloadHack');
+        dlAnchorElem.setAttribute("href",     dataStr     );
+        dlAnchorElem.setAttribute("download", "CompletedExperiment.json");
+        dlAnchorElem.click();
+
+        /*
+        "Output": {
+		"Experiment Name": "default name",
+		"Experiment Version": "default version",
+		"Date": "1/1/2016",
+		"Stimuli": {
+			"Stimulus Order":{
+				"1": "Stimulus 1",
+				"2": "Stimulus 3",
+				"3": "Stimulus 2",
+				"4": "Stimulus 5",
+				"5": "Stimulus 4",
+        */
+        // What we want here:
+        // A finished object containing timestamps and positions of all stimuli (his data)
     };
 	
 	function createGUI(){
@@ -518,15 +556,11 @@
 			this.export = function () {
 
                 var exportJSON = JSON.stringify(this);
-
-                // Download exportJSON to file
-                console.log(exportJSON);
-
                 // Download solution from http://stackoverflow.com/questions/19721439/download-json-object-as-a-file-from-browser
                 var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(exportJSON);
                 var dlAnchorElem = document.getElementById('downloadHack');
                 dlAnchorElem.setAttribute("href",     dataStr     );
-                dlAnchorElem.setAttribute("download", "scene.json");
+                dlAnchorElem.setAttribute("download", "experimentSettings.json");
                 dlAnchorElem.click();
 
 
@@ -564,7 +598,7 @@
                 }
                 document.getElementById('myInput').addEventListener('change', readSingleFile, false);
 
-            }
+            };
 	
 			//MAKE THESE DO LABEL THINGS
 			this.showLabels = function () {
