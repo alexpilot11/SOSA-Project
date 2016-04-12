@@ -23,6 +23,7 @@
 
 <!-- This is a hack for the file input -->
 <input id="myInput" type="file" style="visibility:hidden" />
+<a id="downloadHack" style="display:none"></a>
 
 <script src="js/three.js"></script>
 <script src="js/Mirror.js"></script>
@@ -55,6 +56,7 @@
 	var canvaslabel = document.createElement('canvas');
 	var contextlabel = canvaslabel.getContext('2d');
 	var labelsChanged = false;
+    var preppedStim;
 	
 	//Sample JSON
 	var importJSON = {
@@ -186,7 +188,8 @@
         );
         scene.add(plane);
 
-		var preppedStim = convertExperimentToThing(importJSON);
+        // placeholder - change this to import from file
+		preppedStim = convertExperimentToThing(importJSON);
 createGUI();
 		makeStims(preppedStim);
 
@@ -487,6 +490,8 @@ createGUI();
                             var contentsObj;
                             try {
                                 contentsObj = JSON.parse(contents);
+                                preppedStim = contentsObj;
+                                makeStims(contentsObj);
                                 // Test log
                                 console.log(contentsObj);
                             }
@@ -503,7 +508,22 @@ createGUI();
                 document.getElementById('myInput').addEventListener('change', readSingleFile, false);
 
 			};
+            // Export the board settings into JSON
 			this.export = function () {
+
+                var exportJSON = JSON.stringify(this);
+
+                // Download exportJSON to file
+                console.log(exportJSON);
+
+                // Download solution from http://stackoverflow.com/questions/19721439/download-json-object-as-a-file-from-browser
+                var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(exportJSON);
+                var dlAnchorElem = document.getElementById('downloadHack');
+                dlAnchorElem.setAttribute("href",     dataStr     );
+                dlAnchorElem.setAttribute("download", "scene.json");
+                dlAnchorElem.click();
+
+
 			};
 	
 			//MAKE THESE DO LABEL THINGS
@@ -744,7 +764,7 @@ createGUI();
 		//END GUI
 	}
 		
-	
+
 	// Handle the listbox that will contain stimuli
     // Read in the file instead of using this darn sample
 	function readExperimentFromFile(fname) {
@@ -769,7 +789,7 @@ createGUI();
         }
         return asObject;
 
-    };
+    }
 
     // Create an object containing objects for each order.
     // Should not be named this
@@ -796,7 +816,7 @@ createGUI();
         }
 
         return preppedStim;
-    };
+    }
 
 	function makeStims(stimuli) {
         for (var i = 0; i < stimuli.length; i++) {
