@@ -188,8 +188,8 @@
         );
         scene.add(plane);
 
-		var preppedStim = convertExperimentToThing(importJSON);
         createGUI();
+        var preppedStim = convertExperimentToThing(importJSON);
 		makeStims(preppedStim);
 
 		
@@ -481,6 +481,58 @@
                 function readSingleFile(evt) {
                     //Retrieve the first (and only!) File from the FileList object
                     var file = evt.target.files[0];
+                    var contentsObj;
+
+                    if (file) {
+                        var reader = new FileReader();
+                        reader.onload = function(e) {
+                            var contents = e.target.result;
+                            try {
+                                contentsObj = JSON.parse(contents);
+                                preppedStim = contentsObj;
+                                console.log(contentsObj);
+
+                                updateBoard(boardTest, contentsObj);
+                            }
+
+                            catch (spookyScaryMonsterException) {
+                                console.log('Your input file is in the wrong format.', spookyScaryMonsterException);
+                            }
+                        };
+                        reader.readAsText(file);
+
+                    } else {
+                        alert('Unable to load in a file.');
+                    }
+                }
+                document.getElementById('myInput').addEventListener('change', readSingleFile, false);
+
+			};
+            // Export the board settings into JSON
+			this.export = function () {
+
+                var exportJSON = JSON.stringify(this);
+
+                // Download exportJSON to file
+                console.log(exportJSON);
+
+                // Download solution from http://stackoverflow.com/questions/19721439/download-json-object-as-a-file-from-browser
+                var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(exportJSON);
+                var dlAnchorElem = document.getElementById('downloadHack');
+                dlAnchorElem.setAttribute("href",     dataStr     );
+                dlAnchorElem.setAttribute("download", "scene.json");
+                dlAnchorElem.click();
+
+
+			};
+
+            this.stimPlaceHolderFunc = function() {
+                // Fires the click event on the invisible input
+                document.getElementById("myInput").click();
+
+                function readSingleFile(evt) {
+                    //Retrieve the first (and only!) File from the FileList object
+                    var file = evt.target.files[0];
 
                     if (file) {
                         var reader = new FileReader();
@@ -506,24 +558,7 @@
                 }
                 document.getElementById('myInput').addEventListener('change', readSingleFile, false);
 
-			};
-            // Export the board settings into JSON
-			this.export = function () {
-
-                var exportJSON = JSON.stringify(this);
-
-                // Download exportJSON to file
-                console.log(exportJSON);
-
-                // Download solution from http://stackoverflow.com/questions/19721439/download-json-object-as-a-file-from-browser
-                var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(exportJSON);
-                var dlAnchorElem = document.getElementById('downloadHack');
-                dlAnchorElem.setAttribute("href",     dataStr     );
-                dlAnchorElem.setAttribute("download", "scene.json");
-                dlAnchorElem.click();
-
-
-			};
+            }
 	
 			//MAKE THESE DO LABEL THINGS
 			this.showLabels = function () {
@@ -917,6 +952,32 @@
 			objects[count].label.material.map = labelTexture;
 			wrapText(context1[count], "Stim #" + (count+1), 0, 50, 100, 20);		
 	}
+
+    function updateBoard(b, obj) {
+        console.log(b);
+        console.log(obj);
+
+        b.bgB = obj.bgB;
+        b.bgG = obj.bgG;
+        b.bgR = obj.bgR;
+        b.boardB = obj.boardB;
+        b.boardG = obj.boardG;
+        b.boardR = obj.boardR;
+        b.hasBG = obj.hasBG;
+        b.labelB = obj.labelB;
+        b.labelG = obj.labelG;
+        b.labelR = obj.labelR;
+        b.labelShade = obj.labelShade;
+        b.labelSize = obj.labelSize;
+        b.rotationX = obj.rotationX;
+
+        boardColor = "rgb(" + Math.round(b.boardR) + ", " + Math.round(b.boardG) + ", " + Math.round(b.boardB) + ")";
+        board.material.color.set(new THREE.Color(boardColor));
+
+        bgColor = "rgb(" + Math.round(b.bgR) + ", " + Math.round(b.bgG) + ", " + Math.round(b.bgB) + ")";
+        renderer.setClearColor(new THREE.Color(bgColor));
+
+    }
 /*	
 	function hideLabels(){		
 				for(var i = 0; i < objects.length; i++){
