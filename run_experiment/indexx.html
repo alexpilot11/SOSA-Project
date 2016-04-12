@@ -419,6 +419,15 @@
 
     function finishExperiment(obj, movement, finalLocation, finalDistances) {
         console.log('Finished Experiment');
+	
+		for(var i = 0; i<objects.length; i++){
+			console.log(objects[i].position.x);
+			console.log(objects[i].position.y);
+			for(var j = 1+i; j<objects.length; j++){
+				//gets distance between points
+				console.log(calculateDistance(objects[i], objects[j]));
+			}
+		}
 
         // Any cleaning to these objects should happen here
         // End object cleaning
@@ -989,6 +998,12 @@
 		}
 	}
 
+	function calculateDistance(point1, point2){
+		var xDiff = (point2.position.x - point1.position.x);
+		var yDiff = (point2.position.y - point1.position.y);
+		var distance = Math.round(Math.sqrt(Math.pow(xDiff, 2) + Math.pow(yDiff, 2)));
+		return distance;
+	}
 	init();
     animate();	
 </script>
