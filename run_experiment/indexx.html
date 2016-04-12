@@ -977,11 +977,34 @@
         b.labelSize = obj.labelSize;
         b.rotationX = obj.rotationX;
 
+        // Handles boardR, boardG, and boardB
         boardColor = "rgb(" + Math.round(b.boardR) + ", " + Math.round(b.boardG) + ", " + Math.round(b.boardB) + ")";
         board.material.color.set(new THREE.Color(boardColor));
 
+        // Handles bgR, bgG, and bgB
         bgColor = "rgb(" + Math.round(b.bgR) + ", " + Math.round(b.bgG) + ", " + Math.round(b.bgB) + ")";
         renderer.setClearColor(new THREE.Color(bgColor));
+
+
+        // TODO: Fix all this duplicate logic
+        // Handles labelR, labelG, labelB, and labelShade
+        labelColor = "rgba(" + Math.round(b.labelR) + ", " + Math.round(b.labelG) + ", " + Math.round(b.labelB) + ", " + b.labelShade + ")";
+        for (var i = 0; i < objects.length; i++) {
+            overwriteLabel(i);
+            context1[i].fillStyle = labelColor;
+            labelTexture = new THREE.Texture(canvas1[i]);
+            labelTexture.needsUpdate = true;
+            objects[i].label.material.map = labelTexture;
+            // This needs to be the stim name
+            wrapText(context1[i], "Stim #" + (i+1), 0, 50, 100, 20);
+        }
+
+        labelsChanged = true;
+
+        // Handles rotationX
+        board.rotation.x = (b.rotationX);
+
+        // Unhandled: hasBG, labelSize
 
     }
 /*	
