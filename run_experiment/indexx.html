@@ -57,7 +57,7 @@
 	var contextlabel = canvaslabel.getContext('2d');
 	var labelsChanged = false;
     var preppedStim;
-	
+
 	//Sample JSON
 	var importJSON = {
         orders: {
@@ -188,9 +188,8 @@
         );
         scene.add(plane);
 
-        // placeholder - change this to import from file
-		preppedStim = convertExperimentToThing(importJSON);
-createGUI();
+		var preppedStim = convertExperimentToThing(importJSON);
+        createGUI();
 		makeStims(preppedStim);
 
 		
@@ -537,7 +536,7 @@ createGUI();
 			wrapText(context1[i], "Stim #" + (i+1), 0, 50, 100, 20);
 		}
 		} else {
-			labelColor = "rgba(" + Math.round(boardTest.labelR) + ", " + Math.round(boardTest.labelG) + ", " + Math.round(boardTest.labelB) + ", .95)";
+			labelColor = "rgba(" + Math.round(boardTest.labelR) + ", " + Math.round(boardTest.labelG) + ", " + Math.round(boardTest.labelB) + ", " + boardTest.labelShade + ")";
 				for (var i = 0; i < objects.length; i++) {
 					overwriteLabel(i);
 					context1[i].fillStyle = labelColor;
@@ -552,7 +551,7 @@ createGUI();
 			this.hideLabels = function () {
 					for(var i = 0; i < objects.length; i++){
 			context1[i].save();
-			context1[i].fillStyle = boardColor = "rgba(" + Math.round(boardTest.boardR) + ", " + Math.round(boardTest.boardG) + ", " + Math.round(boardTest.boardB) + ", .95)";
+			context1[i].fillStyle = boardColor = "rgba(" + Math.round(boardTest.boardR) + ", " + Math.round(boardTest.boardG) + ", " + Math.round(boardTest.boardB) + ", " + boardTest.labelShade + ")";
 			context1[i].font = 'Bold 20px Arial';
 			context1[i].clearRect(0, 0, 100, 50);			
 			labelTexture = new THREE.Texture(canvas1[i]);
@@ -563,7 +562,7 @@ createGUI();
 			};
 			this.labelUp = function() {};
 			this.labelDown = function() {};
-			this.labelShade = 100;
+			this.labelShade = 1;
 			this.labelSize = 75;
 			this.labelR = 255;
 			this.labelG = 0;
@@ -710,7 +709,7 @@ createGUI();
 		});	
 		labels.add(boardTest, 'labelR', 0, 255).listen().onChange(function () {
 			if(labelsShowing == true){
-			labelColor = "rgba(" + Math.round(boardTest.labelR) + ", " + Math.round(boardTest.labelG) + ", " + Math.round(boardTest.labelB) + ", .95)";
+			labelColor = "rgba(" + Math.round(boardTest.labelR) + ", " + Math.round(boardTest.labelG) + ", " + Math.round(boardTest.labelB) + ", " + boardTest.labelShade + ")";
 			for (var i = 0; i < objects.length; i++) {
 				overwriteLabel(i);
 				context1[i].fillStyle = labelColor;
@@ -724,7 +723,7 @@ createGUI();
 		});
 		labels.add(boardTest, 'labelG', 0, 255).listen().onChange(function () {
 		if(labelsShowing == true){
-			labelColor = "rgba(" + Math.round(boardTest.labelR) + ", " + Math.round(boardTest.labelG) + ", " + Math.round(boardTest.labelB) + ", .95)";
+			labelColor = "rgba(" + Math.round(boardTest.labelR) + ", " + Math.round(boardTest.labelG) + ", " + Math.round(boardTest.labelB) + ", " + boardTest.labelShade + ")";
 			for (var i = 0; i < objects.length; i++) {
 				overwriteLabel(i);
 				context1[i].fillStyle = labelColor;
@@ -738,7 +737,7 @@ createGUI();
 		});
 		labels.add(boardTest, 'labelB', 0, 255).listen().onChange(function () {
 		if(labelsShowing == true){
-			labelColor = "rgba(" + Math.round(boardTest.labelR) + ", " + Math.round(boardTest.labelG) + ", " + Math.round(boardTest.labelB) + ", .95)";
+			labelColor = "rgba(" + Math.round(boardTest.labelR) + ", " + Math.round(boardTest.labelG) + ", " + Math.round(boardTest.labelB) + ", " + boardTest.labelShade + ")";
 			for (var i = 0; i < objects.length; i++) {
 				overwriteLabel(i);
 				context1[i].fillStyle = labelColor;
@@ -750,7 +749,20 @@ createGUI();
 			}
 			labelsChanged = true;
 		});
-		labels.add(boardTest, 'labelShade', 0, 100).listen();
+		labels.add(boardTest, 'labelShade', 0, 1).step(.01).listen().onChange(function () {
+            if(labelsShowing == true){
+                labelColor = "rgba(" + Math.round(boardTest.labelR) + ", " + Math.round(boardTest.labelG) + ", " + Math.round(boardTest.labelB) + ", " + boardTest.labelShade + ")";
+                for (var i = 0; i < objects.length; i++) {
+                    overwriteLabel(i);
+                    context1[i].fillStyle = labelColor;
+                    labelTexture = new THREE.Texture(canvas1[i]);
+                    labelTexture.needsUpdate = true;
+                    objects[i].label.material.map = labelTexture;
+                    wrapText(context1[i], "Stim #" + (i+1), 0, 50, 100, 20);
+                }
+            }
+            labelsChanged = true;
+        });
 		labels.add(boardTest, 'labelSize', 0, 100).listen();
 		labels.add(boardTest, 'labelDefaults');
 	
@@ -928,7 +940,7 @@ createGUI();
 			wrapText(context1[i], "Stim #" + (i+1), 0, 50, 100, 20);
 		}
 		} else {
-			labelColor = "rgba(" + Math.round(boardTest.labelR) + ", " + Math.round(boardTest.labelG) + ", " + Math.round(boardTest.labelB) + ", .95)";
+			labelColor = "rgba(" + Math.round(boardTest.labelR) + ", " + Math.round(boardTest.labelG) + ", " + Math.round(boardTest.labelB) + ", " + boardTest.labelShade + ")";
 				for (var i = 0; i < objects.length; i++) {
 					overwriteLabel(i);
 					context1[i].fillStyle = labelColor;
