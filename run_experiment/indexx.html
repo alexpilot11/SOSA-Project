@@ -144,8 +144,8 @@
         container.appendChild(info);
 
         camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 1, 10000);
-        camera.position.z = 700;
-        camera.position.y = 700;
+        camera.position.z = 1000;
+        camera.position.y = 640;
         controls = new THREE.TrackballControls(camera);
         controls.rotateSpeed = 0.0;
         controls.zoomSpeed = 1.2;
@@ -325,11 +325,8 @@
                 if (objects[i].position.y > 0) {
                     offsetY = 70;
                 }
-                else if (objects[i].position.y > -100) {
-                    offsetY = 90;
-                }
                 else {
-                    offsetY = 120;
+                    offsetY = 100;
                 }
                 objects[i].label.position.set(objects[i].position.x, objects[i].position.y + offsetY + labelPos, objects[i].position.z);
             }
@@ -457,8 +454,8 @@
 			};
 	
 			this.boardTiltDefaults = function () {
-				boardTest.rotationX = 0;
-				board.rotation.x = 1.15;
+				boardTest.rotationX = 1;
+				board.rotation.x = 1;
 			};
 	
 			this.bgR = 255;
