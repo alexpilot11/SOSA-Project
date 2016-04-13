@@ -55,11 +55,13 @@
 	var labelPos = 0;
 	var labelColor = "rgba(255,0,0,.95)";
 	var labelTexture;
+    var labelSize;
 	var canvaslabel = document.createElement('canvas');
 	var contextlabel = canvaslabel.getContext('2d');
 	var labelsChanged = false;
     var preppedStim;
 	var labelsShowing = true;
+//    var dummy;
 	//Sample JSON
 	var importJSON = {
         orders: {
@@ -182,6 +184,10 @@
         scene.add(board);
         board.visible = true;
 
+//        dummy = new THREE.Object3D();
+//        dummy.rotation.x = board.rotation.x - 1;
+//        scene.add(dummy);
+
 
         plane = new THREE.Mesh(
                 new THREE.PlaneBufferGeometry(2000, 2000, 8, 8),
@@ -296,6 +302,24 @@
 		
     }
 
+    function getTodaysDate(){
+        var today = new Date();
+        var dd = today.getDate();
+        var mm = today.getMonth()+1; //January is 0!
+        var yyyy = today.getFullYear();
+
+        if(dd<10) {
+            dd='0'+dd
+        }
+
+        if(mm<10) {
+            mm='0'+mm
+        }
+
+        today = mm+'/'+dd+'/'+yyyy;
+        return today;
+    }
+
 	function updateLabels() {
         for (var i = 0; i < objects.length; i++) {
             var offsetY;
@@ -309,7 +333,7 @@
                 else {
                     offsetY = 100;
                 }
-                objects[i].label.position.set(objects[i].position.x, objects[i].position.y + offsetY + labelPos, objects[i].position.z);
+                objects[i].label.position.set(objects[i].position.x + 35, objects[i].position.y + offsetY + labelPos, objects[i].position.z);
             }
 
         }
@@ -435,7 +459,7 @@
         var output = {
             'Experiment Name': 'Test name',
             'Experiment Version': 'Test version',
-            'Date': '3/4/2015',
+            'Date': getTodaysDate(),
             'Stimuli': obj,
             'Stimuli Movement': movement,
             'Final Stimuli Location': finalLocation,
@@ -494,15 +518,16 @@
 			this.bgG = 0;
 			this.bgB = 0;
 			this.backgroundDefaults = function () {
-				boardTest.bgR = 255;
-				boardTest.bgG = 255;
-				boardTest.bgB = 255;
+				boardTest.bgR = 0;
+				boardTest.bgG = 0;
+				boardTest.bgB = 0;
 				document.getElementsByClassName('dg ac')[0].style.backgroundColor = bgColor;
 				document.getElementsByTagName('body')[0].style.backgroundColor = bgColor;
-				document.getElementsById('myInput')[0].style.backgroundColor = bgColor;
+				document.getElementById('myInput').style.backgroundColor = bgColor;
 				document.getElementsByClassName('dg ac')[0].style.backgroundColor = bgColor;
+                setBackgroundColor(boardTest);
 				renderer.setClearColor(0x000000);
-	
+
 			};
 			this.hasBG = true;
 	
@@ -594,7 +619,7 @@
 			this.labelUp = function() {};
 			this.labelDown = function() {};
 			this.labelShade = 1;
-			this.labelSize = 75;
+			this.labelSize = 20;
 			this.labelR = 255;
 			this.labelG = 0;
 			this.labelB = 0;
@@ -630,35 +655,49 @@
 		boardAppearance.add(boardTest, 'rotationX', -0.3, 1).listen().onChange(function () {
 	
 			board.rotation.x = (boardTest.rotationX);
-	
-	//        for (var i = 0; i < objects.length; i++ ){
-	//
-	//            //TODO: ROTATE CUBE ABOUT BOARD HAVE TO TRANSLATE TO ORIGIN, ROTATE, THEN TRANSLATE BACK
-	//            //TODO: WHAT I HAVE HERE IS CONCEPTUALLY CORRECT, BUT INSTEAD OF SETTING THE POSITION BACK TO X, Y, AND Z,
-	//            //TODO: WE NEED TO TRANSLATE BY THE SAME AMOUNT IN A NEW VECTOR'S DIRECTION. PLAY WITH IT
-	//
-	//
-	//            var x = objects[i].position.x;
-	//            var y = objects[i].position.y;
-	//            var z = objects[i].position.z;
-	//
-	//            objects[i].position.x -= x;
-	//            objects[i].position.y -= y;
-	//            objects[i].position.z -= z;
-	//
-	//            objects[i].rotation.x = boardTest.rotationX;
-	//
-	//            objects[i].position.x += x;
-	//            objects[i].position.y += y;
-	//            objects[i].position.z += z;
-	//
-	////            var y = (objects[i].position.y * Math.cos(board.rotation.x) + objects[i].position.z * Math.sin(board.rotation.x));
-	////            var z = (objects[i].position.y * -Math.sin(board.rotation.x) + objects[i].position.z * Math.cos(board.rotation.x));
-	////            console.log(y + ", "+ z);
-	////            objects[i].position.y *= y;
-	////            objects[i].position.z *= z;
-	//
-	//        }
+
+//            dummy.rotation.x = board.rotation.x - 1.2;
+
+
+
+
+
+
+
+
+
+
+
+//	        for (var i = 0; i < objects.length; i++ ){
+
+	            //TODO: ROTATE CUBE ABOUT BOARD HAVE TO TRANSLATE TO ORIGIN, ROTATE, THEN TRANSLATE BACK
+	            //TODO: WHAT I HAVE HERE IS CONCEPTUALLY CORRECT, BUT INSTEAD OF SETTING THE POSITION BACK TO X, Y, AND Z,
+	            //TODO: WE NEED TO TRANSLATE BY THE SAME AMOUNT IN A NEW VECTOR'S DIRECTION. PLAY WITH IT
+
+
+//                objects[i].rotateOnAxis(new THREE.Vector3(board.rotation.x,board.rotation.y,board.rotation.z, boardTest.rotationX));
+
+//	            var x = objects[i].position.x;
+//	            var y = objects[i].position.y;
+//	            var z = objects[i].position.z;
+//
+//	            objects[i].position.x -= x;
+//	            objects[i].position.y -= y;
+//	            objects[i].position.z -= z;
+//
+//	            objects[i].rotation.x = boardTest.rotationX;
+//
+//	            objects[i].position.x += x;
+//	            objects[i].position.y += y;
+//	            objects[i].position.z += z;
+
+	//            var y = (objects[i].position.y * Math.cos(board.rotation.x) + objects[i].position.z * Math.sin(board.rotation.x));
+	//            var z = (objects[i].position.y * -Math.sin(board.rotation.x) + objects[i].position.z * Math.cos(board.rotation.x));
+	//            console.log(y + ", "+ z);
+	//            objects[i].position.y *= y;
+	//            objects[i].position.z *= z;
+
+//	        }
 		});
 		boardAppearance.add(boardTest, 'boardR', 0, 255).listen().onChange(function () {
 			setBoardColor(boardTest);
@@ -717,7 +756,9 @@
 		labels.add(boardTest, 'labelShade', 0, 1).step(.01).listen().onChange(function () {
 			setLabelColor(boardTest);
         });
-		labels.add(boardTest, 'labelSize', 0, 100).listen();
+		labels.add(boardTest, 'labelSize', 6, 32).listen().onChange(function () {
+            setLabelSize(boardTest);
+        });;
 		labels.add(boardTest, 'labelDefaults');
 	
 		var outputLocation = gui.addFolder('Log Output Location');
@@ -729,7 +770,7 @@
 		launchExperiment.add(boardTest, 'launchExperiment');
 		//END GUI
 	}
-		
+
 	// Handle the listbox that will contain stimuli
     // Read in the file instead of using this darn sample
 	function readExperimentFromFile(fname) {
@@ -817,10 +858,11 @@
                 object.position.z = board.position.z + 110;
                 labelYoffset = 20;
             }
-            object.rotation = board.rotation;
+            object.rotation.x = board.rotation.x;
             object.onStimBoard = false;
 			scene.add(object);	
 			makeLabel(stimuli, object, i);
+//            dummy.add(object);
         }
 
     }
@@ -831,15 +873,15 @@
 		var canvaslabel = document.createElement('canvas');
 		var contextlabel = canvaslabel.getContext('2d');
 		
-            canvaslabel.width = 100;
+            canvaslabel.width = 125;
             canvaslabel.height = 50;
-            
-            contextlabel.clearRect(0, 0, 100, 50);
+
+            contextlabel.clearRect(0, 0, 125, 50);
             contextlabel.font = "Bold 20px Arial";
             contextlabel.fillStyle = labelColor;
 
 
-            wrapText(contextlabel, "Stim #" + (count+1), 0, 50, 100, 20);
+            wrapText(contextlabel, "Stim #" + (count+1), 0, 50, 125, 20);
             context1.push(contextlabel);
             canvas1.push(canvaslabel);
 
@@ -862,13 +904,13 @@
 			objects.push(obj);
 	}
 
-	function overwriteLabel(count){		
+	function overwriteLabel(count){
 			context1[count].fillStyle = boardColor = "rgba(" + Math.round(boardTest.boardR) + ", " + Math.round(boardTest.boardG) + ", " + Math.round(boardTest.boardB) + ", " + boardTest.labelShade + ")";
-			context1[count].clearRect(0, 0, 100, 50);			
+			context1[count].clearRect(0, 0, 125, 50);
 			labelTexture = new THREE.Texture(canvas1[count]);
             labelTexture.needsUpdate = true;
 			objects[count].label.material.map = labelTexture;
-			wrapText(context1[count], "Stim #" + (count+1), 0, 50, 100, 20);		
+			wrapText(context1[count], "Stim #" + (count+1), 0, 50, 125, 20);
 	}
 
     function updateBoard(b, obj) {
@@ -905,7 +947,7 @@
         // Unhandled: hasBG, labelSize
 
     }
-	
+
 	function wrapText(context, text, x, y, maxWidth, lineHeight) {
         var words = text.split(' ');
         var line = '';
@@ -928,7 +970,7 @@
 
 	function setBoardColor(gui){
 		boardColor = "rgb(" + Math.round(gui.boardR) + ", " + Math.round(gui.boardG) + ", " + Math.round(gui.boardB) + ")";
-		board.material.color.set(new THREE.Color(boardColor));	
+		board.material.color.set(new THREE.Color(boardColor));
 	}
 
 	function setBackgroundColor(gui){
@@ -938,64 +980,89 @@
 
 	function setLabelColor(gui){
 		if(labelsShowing == true){
-			labelColor = "rgba(" + Math.round(gui.labelR) + ", " + Math.round(gui.labelG) + ", " + Math.round(gui.labelB) + ", " + gui.labelShade + ")";
+            labelSize = gui.labelSize + "px";
+            labelColor = "rgba(" + Math.round(gui.labelR) + ", " + Math.round(gui.labelG) + ", " + Math.round(gui.labelB) + ", " + gui.labelShade + ")";
 			for (var i = 0; i < objects.length; i++) {
 				overwriteLabel(i);
-				context1[i].fillStyle = labelColor;
+                context1[i].font = 'Bold ' + labelSize + ' Arial';
+                context1[i].fillStyle = labelColor;
 				labelTexture = new THREE.Texture(canvas1[i]);
 				labelTexture.needsUpdate = true;
 				objects[i].label.material.map = labelTexture;
-				wrapText(context1[i], "Stim #" + (i+1), 0, 50, 100, 20);
+				wrapText(context1[i], "Stim #" + (i+1), 0, 50, 125, 20);
 			}
 		}
 		labelsChanged = true;
 	}
-	
+
+    function setLabelSize(gui){
+        if(labelsShowing == true){
+            labelSize = gui.labelSize + "px";
+            labelColor = "rgba(" + Math.round(gui.labelR) + ", " + Math.round(gui.labelG) + ", " + Math.round(gui.labelB) + ", " + gui.labelShade + ")";
+
+            for(var i = 0; i < objects.length; i++){
+                overwriteLabel(i);
+                context1[i].font = 'Bold ' + labelSize + ' Arial';
+                context1[i].fillStyle = labelColor;
+                labelTexture = new THREE.Texture(canvas1[i]);
+                labelTexture.needsUpdate = true;
+                objects[i].label.material.map = labelTexture;
+                wrapText(context1[i], "Stim #" + (i+1), 0, 50, 125, 20);
+            }
+        }
+        labelsChanged = true;
+    }
+
 	function toggleLabels(gui){
 		// if the labels are not showing
-		if(labelsShowing != true){
-			// if the labels have not been changed
-			// redraw labels from the last value the context had
-			if(labelsChanged != true){
-				for(var i = 0; i < objects.length; i++){
-					context1[i].restore();
-					labelTexture = new THREE.Texture(canvas1[i]);
-					labelTexture.needsUpdate = true;
-					objects[i].label.material.map = labelTexture;
-					wrapText(context1[i], "Stim #" + (i+1), 0, 50, 100, 20);
-				}
-			} 
-			// if the labels have been changed
-			// overwrite the labels for a blank canvas
-			// remake the texture and write the text using the new colors
-			else {
-				labelColor = "rgba(" + Math.round(gui.labelR) + ", " + Math.round(gui.labelG) + ", " + Math.round(gui.labelB) + ", " + gui.labelShade + ")";
-				for (var i = 0; i < objects.length; i++) {
-					overwriteLabel(i);
-					context1[i].fillStyle = labelColor;
-					labelTexture = new THREE.Texture(canvas1[i]);
-					labelTexture.needsUpdate = true;
-					objects[i].label.material.map = labelTexture;
-					wrapText(context1[i], "Stim #" + (i+1), 0, 50, 100, 20);
-					labelsChanged = false;
-				}
-			}
-			labelsShowing = true;
-		}
-		// if the labels are not showing
-		else {			
-			for(var i = 0; i < objects.length; i++){
-				context1[i].save();
-				context1[i].fillStyle = "rgba(" + Math.round(gui.boardR) + ", " + Math.round(gui.boardG) + ", " + Math.round(gui.boardB) + ", " + gui.labelShade + ")";
-				context1[i].font = 'Bold 20px Arial';
-				context1[i].clearRect(0, 0, 100, 50);			
-				labelTexture = new THREE.Texture(canvas1[i]);
-				labelTexture.needsUpdate = true;
-				objects[i].label.material.map = labelTexture;
-				wrapText(context1[i], "Stim #" + (i+1), 0, 50, 100, 20);
-				labelsShowing = false;
-			}
-		}
+//		if(labelsShowing != true){
+//			// if the labels have not been changed
+//			// redraw labels from the last value the context had
+//			if(labelsChanged != true){
+//				for(var i = 0; i < objects.length; i++){
+//					context1[i].restore();
+//					labelTexture = new THREE.Texture(canvas1[i]);
+//					labelTexture.needsUpdate = true;
+//					objects[i].label.material.map = labelTexture;
+//					wrapText(context1[i], "Stim #" + (i+1), 0, 50, 125, 20);
+//				}
+//			}
+//			// if the labels have been changed
+//			// overwrite the labels for a blank canvas
+//			// remake the texture and write the text using the new colors
+//			else {
+//                labelSize = gui.labelSize + "px";
+//                labelColor = "rgba(" + Math.round(gui.labelR) + ", " + Math.round(gui.labelG) + ", " + Math.round(gui.labelB) + ", " + gui.labelShade + ")";
+//				for (var i = 0; i < objects.length; i++) {
+//					overwriteLabel(i);
+//                    context1[i].font = 'Bold ' + labelSize + ' Arial';
+//                    context1[i].fillStyle = labelColor;
+//					labelTexture = new THREE.Texture(canvas1[i]);
+//					labelTexture.needsUpdate = true;
+//					objects[i].label.material.map = labelTexture;
+//					wrapText(context1[i], "Stim #" + (i+1), 0, 50, 125, 20);
+//					labelsChanged = false;
+//				}
+//			}
+//			labelsShowing = true;
+//		}
+//		// if the labels are not showing
+//		else {
+//			for(var i = 0; i < objects.length; i++){
+//				context1[i].save();
+//				context1[i].fillStyle = "rgba(" + Math.round(gui.boardR) + ", " + Math.round(gui.boardG) + ", " + Math.round(gui.boardB) + ", " + gui.labelShade + ")";
+//				context1[i].font = 'Bold 20px Arial';
+//				context1[i].clearRect(0, 0, 125, 50);
+//				labelTexture = new THREE.Texture(canvas1[i]);
+//				labelTexture.needsUpdate = true;
+//				objects[i].label.material.map = labelTexture;
+//				wrapText(context1[i], "Stim #" + (i+1), 0, 50, 125, 20);
+//				labelsShowing = false;
+//			}
+//		}
+        for (var i = 0; i < objects.length; i++){
+            objects[i].label.visible = !objects[i].label.visible
+        }
 	}
 
 	function calculateDistance(point1, point2){
