@@ -61,6 +61,8 @@
 	var labelsChanged = false;
     var preppedStim;
 	var labelsShowing = true;
+
+    var objMovementTracker = {};
 //    var dummy;
 	//Sample JSON
 	var importJSON = {
@@ -271,6 +273,8 @@
         if (intersects.length > 0) {
             controls.enabled = false;
             SELECTED = intersects[0].object;
+
+
             var intersects = raycaster.intersectObject(plane);
             if (intersects.length > 0) {
                 offset.copy(intersects[0].point).sub(plane.position);
@@ -284,6 +288,14 @@
         controls.enabled = true;
         if (INTERSECTED) {
             plane.position.copy(INTERSECTED.position);
+
+            // I'm a wild man, here I make a key for the obj movement tracker of the object to be the date
+            // Needs to be selected.name or something but these guys dont have names yet
+            if (objMovementTracker[SELECTED.id] == undefined) {
+                objMovementTracker[SELECTED.id] = {};
+            }
+            objMovementTracker[SELECTED.id][new Date().toLocaleString()] = INTERSECTED.position;
+
             SELECTED = null;
         }
         container.style.cursor = 'auto';
@@ -419,6 +431,9 @@
 //            objects[i].position.z = i * 30;
             objects[i].position.z = stim_board.position.z + (i * 50);
 
+            // Probably shouldn't handle this here
+            objMovementTracker[i] = objects[i];
+
         }
     }
 
@@ -435,7 +450,7 @@
         var finish_exp = {
             finishExperiment: function () {
                 // Placeholder I need to pass in all my values
-                finishExperiment();
+                finishExperiment(undefined, objMovementTracker, undefined, undefined);
             }
         };
         finish_gui.add(finish_exp, 'finishExperiment');
@@ -449,6 +464,7 @@
         var stimMovement = (movement !== undefined) ? movement : {};
         var finalStimLocation = (finalLocation !== undefined) ? finalLocation : {};
         var finalStimDistances = (finalDistances !== undefined) ? finalDistances : {};
+
 	
 		for(var i = 0; i<objects.length; i++){
 
@@ -456,6 +472,11 @@
             finalStimDistances[i] = {};
             finalStimLocation[i].x = objects[i].position.x;
             finalStimLocation[i].y = objects[i].position.y;
+
+            // Cleans movement inside this loop for now
+            if (typeof stimMovement[i] != object) {
+                delete stimMovement[i];
+            }
 
 			for(var j = 1+i; j<objects.length; j++){
 				//gets distance between points
