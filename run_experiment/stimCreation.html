@@ -35,11 +35,15 @@
 		
 		<script>
 
-			var container, stats;
+			var container;
 			var camera, scene, renderer;
 			var stim;
 			var windowHalfX = window.innerWidth / 2;
 			var windowHalfY = window.innerHeight / 2;
+			var count = 0;
+			
+			var stimColor;
+			var bgColor;
 			
 			//Scene setup 
 			function init() {
@@ -82,11 +86,7 @@
 				renderer.setSize( window.innerWidth, window.innerHeight );
 				container.appendChild( renderer.domElement );
 
-				//Stats
-				stats = new Stats();
-				stats.domElement.style.position = 'absolute';
-				stats.domElement.style.top = '0px';
-				container.appendChild( stats.domElement );
+				createGui();
 
 				//Resize event listener
 				window.addEventListener( 'resize', onWindowResize, false );
@@ -108,14 +108,15 @@
 			//
 			function animate() {
 				requestAnimationFrame( animate );
-				stats.begin();
 				render();
-				stats.end();
+
 			}
 
 			function render() {
 				renderer.render( scene, camera );
 			}
+			
+
 
 			//Start GUI
 			//GUI params
@@ -128,132 +129,185 @@
 			*
 			*/
 			
-			var controls = function() {
-			
-				this.stimName = 'stimName';
-				this.stimLabel = 'stimLabel';
+			function createGui() {
+				var controls = function() {
+				
+					this.stimName = 'stimName';
+					this.stimLabel = 'stimLabel';
 
-				this.rotationX = 1;
+					this.rotationX = 1;
 
-				this.bgR = 255;
-				this.bgG = 255;
-				this.bgB = 255;
-				
-				this.stimR = 255;
-				this.stimG = 255;
-				this.stimB = 255;
-				
-				this.sizeX = 1;
-				this.sizeY = 1;
-				this.sizeZ = 1;
-				
-				this.imageName = '';
-				this.uploadImage = function() {
-				
+					this.bgR = 255;
+					this.bgG = 255;
+					this.bgB = 255;
+					
+					this.stimR = 255;
+					this.stimG = 255;
+					this.stimB = 255;
+					
+					this.sizeX = 1;
+					this.sizeY = 1;
+					this.sizeZ = 1;
+					
+					this.imageName = '';
+					this.uploadImage = function() {
+						var input = document.getElementById('img-path');
+						input.addEventListener('change', function() {
+							var file = input.files[0];
+							stimTest.imageName = file.name;
+						});
+						input.click();
+					};
+					
+					this.add = function(){				
+					};
 
-					var input = document.getElementById('img-path');
-					input.addEventListener('change', function() {
-						var file = input.files[0];
-						stimTest.imageName = file.name;
-					});
-					input.click();
 				};
+
+				//GUI creation		
+				/*
+				*	listen() on the gui panels allows the gui to react to outside input i.e. setDefault etc
+				*	onChange() updates the scene based off gui values
+				*
+				*
+				*	An Example addition to the gui
+				*
+				*	scale.add(stimTest, ).listen().onChange( function(){
+				*	});
+				*/
+		
+				//The variables object for the gui
+				var stimTest = new controls();
 				
-				this.finish = function(){
-					alert("Code this to pump out a json file");
-				};
+				//The gui object
+				var gui = new dat.GUI();
 
-			};
+				var stimGuiControls = function(){			
+					this.stim = 25;		
+					this.stimList = [];
+					this.stimJSONString = [];
+				}
+				
+				var stimGui = new stimGuiControls();
+				var guiLeft = new dat.GUI();
+				guiLeft.domElement.style.position = 'absolute';
+				guiLeft.domElement.style.float = 'left';	
+				
+				//var stimHeader = guiLeft.addFolder('Current Stimuli');
+				guiLeft.add(stimGui, 'stimList', ['yeet']);				
 
-			//GUI creation		
-			/*
-			*	listen() on the gui panels allows the gui to react to outside input i.e. setDefault etc
-			*	onChange() updates the scene based off gui values
-			*
-			*
-			*	An Example addition to the gui
-			*
-			*	scale.add(stimTest, ).listen().onChange( function(){
-			*	});
-			*/
-						
-			//vars for rgb color strings
-			var stimColor;
-			var bgColor;
-			
-			//The variables object for the gui
-			var stimTest = new controls();
-			
-			//The gui object
-			var gui = new dat.GUI();
-
-			//all gui functionality
-			var rotate = gui.addFolder('Rotate');
-			rotate.open();
-			rotate.add(stimTest, 'rotationX', -3.14, 3.14).listen().onChange( function(){
-				stim.rotation.x = (stimTest.rotationX);
-			});
-			
-			var backgroundAppearance = gui.addFolder('Background');
-			backgroundAppearance.open();
-			backgroundAppearance.add(stimTest, 'bgR', 0, 255).listen().onChange( function(){
-				bgColor = "rgb("+Math.round(stimTest.bgR)+", "+Math.round(stimTest.bgG)+", "+Math.round(stimTest.bgB)+")";
-				renderer.setClearColor(new THREE.Color(bgColor));
-			});
-			backgroundAppearance.add(stimTest, 'bgG', 0, 255).listen().onChange( function(){
-				bgColor = "rgb("+Math.round(stimTest.bgR)+", "+Math.round(stimTest.bgG)+", "+Math.round(stimTest.bgB)+")";
-				renderer.setClearColor(new THREE.Color(bgColor));
-			});
-			backgroundAppearance.add(stimTest, 'bgB', 0, 255).listen().onChange( function(){
-				bgColor = "rgb("+Math.round(stimTest.bgR)+", "+Math.round(stimTest.bgG)+", "+Math.round(stimTest.bgB)+")";
-				renderer.setClearColor(new THREE.Color(bgColor));
-			});
-			
-			var color = gui.addFolder('Color');
-			color.open();
-			color.add(stimTest, 'stimR', 0, 255).listen().onChange( function(){
+				//all gui functionality
+				var stimName = gui.addFolder('Stim Name');
+				gui.add(stimTest, 'stimName');
+				
+				var rotate = gui.addFolder('Rotate');
+				rotate.open();
+				rotate.add(stimTest, 'rotationX', -3.14, 3.14).listen().onChange( function(){
+					stim.rotation.x = (stimTest.rotationX);
+				});
+				
+				var backgroundAppearance = gui.addFolder('Background');
+				backgroundAppearance.open();
+				backgroundAppearance.add(stimTest, 'bgR', 0, 255).listen().onChange( function(){
+					bgColor = "rgb("+Math.round(stimTest.bgR)+", "+Math.round(stimTest.bgG)+", "+Math.round(stimTest.bgB)+")";
+					renderer.setClearColor(new THREE.Color(bgColor));
+				});
+				backgroundAppearance.add(stimTest, 'bgG', 0, 255).listen().onChange( function(){
+					bgColor = "rgb("+Math.round(stimTest.bgR)+", "+Math.round(stimTest.bgG)+", "+Math.round(stimTest.bgB)+")";
+					renderer.setClearColor(new THREE.Color(bgColor));
+				});
+				backgroundAppearance.add(stimTest, 'bgB', 0, 255).listen().onChange( function(){
+					bgColor = "rgb("+Math.round(stimTest.bgR)+", "+Math.round(stimTest.bgG)+", "+Math.round(stimTest.bgB)+")";
+					renderer.setClearColor(new THREE.Color(bgColor));
+				});
+				
+				var color = gui.addFolder('Color');
+				color.open();
+				color.add(stimTest, 'stimR', 0, 255).listen().onChange( function(){
+						stimColor = "rgb("+Math.round(stimTest.stimR)+", "+Math.round(stimTest.stimG)+", "+Math.round(stimTest.stimB)+")";
+						stim.material.color.set(new THREE.Color(stimColor));
+				});
+				color.add(stimTest, 'stimG', 0, 255).listen().onChange( function(){
 					stimColor = "rgb("+Math.round(stimTest.stimR)+", "+Math.round(stimTest.stimG)+", "+Math.round(stimTest.stimB)+")";
 					stim.material.color.set(new THREE.Color(stimColor));
-			});
-			color.add(stimTest, 'stimG', 0, 255).listen().onChange( function(){
-				stimColor = "rgb("+Math.round(stimTest.stimR)+", "+Math.round(stimTest.stimG)+", "+Math.round(stimTest.stimB)+")";
-				stim.material.color.set(new THREE.Color(stimColor));
-			});
-			color.add(stimTest, 'stimB', 0, 255).listen().onChange( function(){
-				stimColor = "rgb("+Math.round(stimTest.stimR)+", "+Math.round(stimTest.stimG)+", "+Math.round(stimTest.stimB)+")";
-				stim.material.color.set(new THREE.Color(stimColor));
-			});
-			
-			var size = gui.addFolder('Size');
-			size.open();
-			size.add(stimTest, 'sizeX', 1, 3).step(.01).listen().onChange( function(){
-				stim.scale.x = stimTest.sizeX;
-				stim.scale.y = stimTest.sizeY;
-				stim.scale.z = stimTest.sizeZ;
+				});
+				color.add(stimTest, 'stimB', 0, 255).listen().onChange( function(){
+					stimColor = "rgb("+Math.round(stimTest.stimR)+", "+Math.round(stimTest.stimG)+", "+Math.round(stimTest.stimB)+")";
+					stim.material.color.set(new THREE.Color(stimColor));
+				});
 				
-			});
-			size.add(stimTest, 'sizeY', 1, 3).step(.01).listen().onChange( function(){
-				stim.scale.x = stimTest.sizeX;
-				stim.scale.y = stimTest.sizeY;
-				stim.scale.z = stimTest.sizeZ;
-			
-			});
-			size.add(stimTest, 'sizeZ', 1, 3).step(.01).listen().onChange( function(){
-				stim.scale.x = stimTest.sizeX;
-				stim.scale.y = stimTest.sizeY;
-				stim.scale.z = stimTest.sizeZ;
-			
-			});
+				var size = gui.addFolder('Size');
+				size.open();
+				size.add(stimTest, 'sizeX', 1, 3).step(.01).listen().onChange( function(){
+					stim.scale.x = stimTest.sizeX;
+					stim.scale.y = stimTest.sizeY;
+					stim.scale.z = stimTest.sizeZ;
+					
+				});
+				size.add(stimTest, 'sizeY', 1, 3).step(.01).listen().onChange( function(){
+					stim.scale.x = stimTest.sizeX;
+					stim.scale.y = stimTest.sizeY;
+					stim.scale.z = stimTest.sizeZ;
+				
+				});
+				size.add(stimTest, 'sizeZ', 1, 3).step(.01).listen().onChange( function(){
+					stim.scale.x = stimTest.sizeX;
+					stim.scale.y = stimTest.sizeY;
+					stim.scale.z = stimTest.sizeZ;
+				
+				});
 
-			var image = gui.addFolder('Image');
-			image.open();
-			image.add(stimTest, 'imageName', stimTest.imageName).listen();
-			image.add(stimTest, 'uploadImage');
+				var image = gui.addFolder('Image');
+				image.open();
+				image.add(stimTest, 'imageName', stimTest.imageName).listen();
+				image.add(stimTest, 'uploadImage');
+				
+				var add = gui.addFolder('Add');
+				add.open();
+				add.add(stimTest, 'add').listen().onChange( function(){
+						var newStim = stimTest.stimName + ' ' +stimGui.stimList.length;
+						stimGui.stimList.push(newStim);
+						updateDropdown(guiLeft);
+						setDataString(stimTest);
+						//console.log(stimGui.stimJSONString);
+				});
+				
+				function updateDropdown(guiLeft) {
+					guiLeft.__controllers[0].remove();
+					guiLeft.add(stimGui, "stimList", stimGui.stimList).onChange( function(){
+						var index = document.getElementsByTagName('select')[0].selectedIndex;
+						var parse = JSON.parse(stimGui.stimJSONString[index]);
+						//console.log(parse);
+						console.log(stimTest.stimName);
+						stimTest.stimName = parse.name;
+						stimTest.stimR = parse.r;
+						stimTest.stimG = parse.g;
+						stimTest.stimB = parse.b;
+						stimTest.sizeX = parse.sizeX;
+						stimTest.sizeY = parse.sizeY;
+						stimTest.sizeZ = parse.sizeZ;				
+					});
+				}
+				
+				function setDataString(gui){	
+					stimGui.stimJSONString.push(JSON.stringify(
+					{
+						index: count,
+						name: gui.stimName,
+						r: Math.round(gui.stimR),
+						g: Math.round(gui.stimG),
+						b: Math.round(gui.stimB),
+						sizeX: gui.sizeX,
+						sizeY: gui.sizeY,
+						sizeZ: gui.sizeZ,
+						image: ''
+					}));
+					count++;
+				}
+				
+			}
 			
-			var finish = gui.addFolder('Finish');
-			finish.open();
-			finish.add(stimTest, 'finish');
-
+					
 			init();
 			animate();
 			//END GUI
