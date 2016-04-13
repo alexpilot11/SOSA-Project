@@ -44,6 +44,8 @@
 			
 			var stimColor;
 			var bgColor;
+
+			var stimGui, stimTest;
 			
 			//Scene setup 
 			function init() {
@@ -137,9 +139,9 @@
 
 					this.rotationX = 1;
 
-					this.bgR = 255;
-					this.bgG = 255;
-					this.bgB = 255;
+					this.bgR = 0;
+					this.bgG = 0;
+					this.bgB = 0;
 					
 					this.stimR = 255;
 					this.stimG = 255;
@@ -177,7 +179,7 @@
 				*/
 		
 				//The variables object for the gui
-				var stimTest = new controls();
+				stimTest = new controls();
 				
 				//The gui object
 				var gui = new dat.GUI();
@@ -186,15 +188,17 @@
 					this.stim = 25;		
 					this.stimList = [];
 					this.stimJSONString = [];
-				}
+				};
 				
-				var stimGui = new stimGuiControls();
+				stimGui = new stimGuiControls();
 				var guiLeft = new dat.GUI();
 				guiLeft.domElement.style.position = 'absolute';
 				guiLeft.domElement.style.float = 'left';	
 				
 				//var stimHeader = guiLeft.addFolder('Current Stimuli');
-				guiLeft.add(stimGui, 'stimList', ['yeet']);				
+				guiLeft.add(stimGui, 'stimList', []).listen().onChange( function(){
+					console.log('stimList Changed');
+				});
 
 				//all gui functionality
 				var stimName = gui.addFolder('Stim Name');
@@ -265,11 +269,17 @@
 				var add = gui.addFolder('Add');
 				add.open();
 				add.add(stimTest, 'add').listen().onChange( function(){
-						var newStim = stimTest.stimName + ' ' +stimGui.stimList.length;
-						stimGui.stimList.push(newStim);
-						updateDropdown(guiLeft);
-						setDataString(stimTest);
-						//console.log(stimGui.stimJSONString);
+					var newStim = stimTest.stimName;
+
+					for (var i = 0; i < stimGui.stimList.length; i++){
+						if (newStim == stimGui.stimList[i]) {
+							newStim += ' ' + stimGui.stimList.length;
+							break;
+						}
+					}
+					stimGui.stimList.push(newStim);
+					updateDropdown(guiLeft);
+					setDataString(stimTest);
 				});
 				
 				function updateDropdown(guiLeft) {
