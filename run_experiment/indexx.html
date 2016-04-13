@@ -434,6 +434,7 @@
         finish.open();
         var finish_exp = {
             finishExperiment: function () {
+                // Placeholder I need to pass in all my values
                 finishExperiment();
             }
         };
@@ -443,27 +444,33 @@
 
     function finishExperiment(obj, movement, finalLocation, finalDistances) {
         console.log('Finished Experiment');
+
+        var object = (obj !== undefined) ? obj : {};
+        var stimMovement = (movement !== undefined) ? movement : {};
+        var finalStimLocation = (finalLocation !== undefined) ? finalLocation : {};
+        var finalStimDistances = (finalDistances !== undefined) ? finalDistances : {};
 	
 		for(var i = 0; i<objects.length; i++){
-			console.log(objects[i].position.x);
-			console.log(objects[i].position.y);
+
+            finalStimLocation[i] = {};
+            finalStimDistances[i] = {};
+            finalStimLocation[i].x = objects[i].position.x;
+            finalStimLocation[i].y = objects[i].position.y;
+
 			for(var j = 1+i; j<objects.length; j++){
 				//gets distance between points
-				console.log(calculateDistance(objects[i], objects[j]));
+                finalStimDistances[i]['distance to ' + j] = calculateDistance(objects[i], objects[j]);
 			}
 		}
-
-        // Any cleaning to these objects should happen here
-        // End object cleaning
 
         var output = {
             'Experiment Name': 'Test name',
             'Experiment Version': 'Test version',
             'Date': getTodaysDate(),
-            'Stimuli': obj,
-            'Stimuli Movement': movement,
-            'Final Stimuli Location': finalLocation,
-            'Final Stimuli Distances': finalDistances
+            'Stimuli': object,
+            'Stimuli Movement': stimMovement,
+            'Final Stimuli Location': finalStimLocation,
+            'Final Stimuli Distances': finalStimDistances
         };
         console.log(output);
 
