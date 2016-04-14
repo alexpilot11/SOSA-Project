@@ -36,7 +36,7 @@
 
 
 <script>
-    var container, board, stim_board;
+    var container, board, stim_board, info;
     var camera, controls, scene, renderer;
     var windowHalfX = window.innerWidth / 2;
     var windowHalfY = window.innerHeight / 2;
@@ -138,7 +138,7 @@
         container.setAttribute('class', 'draggable');
         document.body.appendChild(container);
 
-        var info = document.createElement('div');
+        info = document.createElement('div');
         info.style.position = 'absolute';
         info.style.top = '10px';
         info.style.width = '100%';
@@ -372,6 +372,7 @@
     }
 
     function createViewStimuli() {
+        info.innerHTML = '<p>Prompt</p>';
         //create new gui with a Finish Experiment button
         var view_stims = new dat.GUI();
         var stims = view_stims.addFolder('View Stimuli');
@@ -390,6 +391,8 @@
     }
 
     function viewStimuli() {
+        info.innerHTML = '<p>Experiment Preview</p>';
+
         document.getElementsByClassName('view_stims')[0].style.display = 'none';
         document.getElementsByClassName('draggable')[0].style.display = 'initial';
 
@@ -440,6 +443,8 @@
     }
 
     function createFinishExperiment() {
+        info.innerHTML = '<p>SOSA Modeling Experiment</p>';
+
         //create new gui with a Finish Experiment button
         document.getElementsByClassName('begin_gui')[0].style.display = 'none';
         camera.position.z += 200;
