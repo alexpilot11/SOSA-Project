@@ -272,23 +272,28 @@
 
 				var add = gui.addFolder('Add');
 				add.open();
-				add.add(stimTest, 'add').listen().onChange( function(){
-					var newStim = stimTest.stimName;
-                    var isThere = false;
-                    var isThereIndex = -1;
+                add.add(stimTest, 'add').listen().onChange(function () {
+                    if (stimNamesList.length < 9) {
+                        var newStim = stimTest.stimName;
+                        var isThere = false;
+                        var isThereIndex = -1;
 
-                    for (var i = 0; i < stimGui.stimJSONString.length; i++) {
-                        var parse = JSON.parse(stimGui.stimJSONString[i]);
-                        if (parse.name == stimTest.stimName) {
-                            isThere = true;
-                            isThereIndex = i;
-                            break;
+                        for (var i = 0; i < stimGui.stimJSONString.length; i++) {
+                            var parse = JSON.parse(stimGui.stimJSONString[i]);
+                            if (parse.name == stimTest.stimName) {
+                                isThere = true;
+                                isThereIndex = i;
+                                break;
+                            }
                         }
+                        stimNamesList.push(newStim);
+                        updateDropdown(guiLeft);
+                        setDataString(stimTest, isThere, isThereIndex);
                     }
-					stimNamesList.push(newStim);
-					updateDropdown(guiLeft);
-					setDataString(stimTest, isThere, isThereIndex);
-				});
+                    else {
+                        alert("Only 9 stims may be created.");
+                    }
+                });
 
                 function updateDropdown(guiLeft) {
                     guiLeft.__controllers[0].remove();
