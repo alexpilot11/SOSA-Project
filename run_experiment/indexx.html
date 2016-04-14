@@ -63,7 +63,7 @@
 	var labelsShowing = true;
 
     var objMovementTracker = {};
-//    var dummy;
+    var dummy;
 	//Sample JSON
 	var importJSON = {
         orders: {
@@ -186,9 +186,9 @@
         scene.add(board);
         board.visible = true;
 
-//        dummy = new THREE.Object3D();
-//        dummy.rotation.x = board.rotation.x - 1;
-//        scene.add(dummy);
+        dummy = new THREE.Object3D();
+        dummy.rotation.x = board.rotation.x - 1;
+        scene.add(dummy);
 
 
         plane = new THREE.Mesh(
@@ -424,12 +424,14 @@
     
 	function centerStimsOnBoard() {
         for (var i = 0; i < objects.length; i++) {
+            dummy.rotation.x = 0;
             objects[i].canMove = true;
             objects[i].onStimBoard = true;
             objects[i].position.x = stim_board.position.x - (i * 10) + 130;
             objects[i].position.y = stim_board.position.y + 350 - (i * 80);
-//            objects[i].position.z = i * 30;
             objects[i].position.z = stim_board.position.z + (i * 50);
+            objects[i].label.rotation.x = -.5;
+
 
             // Probably shouldn't handle this here
             objMovementTracker[i] = objects[i];
@@ -684,7 +686,11 @@
 	
 			board.rotation.x = (boardTest.rotationX);
 
-//            dummy.rotation.x = board.rotation.x - 1.2;
+            dummy.rotation.x = board.rotation.x - 1.2;
+
+            for(var i = 0; i < objects.length; i++){
+                objects[i].label.rotation.x = 1-board.rotation.x;
+            }
 
 
 
@@ -890,7 +896,7 @@
             object.onStimBoard = false;
 			scene.add(object);	
 			makeLabel(stimuli, object, i);
-//            dummy.add(object);
+            dummy.add(object);
         }
 
     }
@@ -929,6 +935,7 @@
             label.rotation.x = -.5;
             scene.add(label);
             obj.label = label;
+            dummy.add(label);
 			objects.push(obj);
 	}
 
