@@ -164,6 +164,9 @@
 
 					this.add = function(){
 					};
+					
+					this.save = function(){
+					};
 
 				};
 
@@ -217,51 +220,41 @@
 				var backgroundAppearance = gui.addFolder('Background');
 				backgroundAppearance.open();
 				backgroundAppearance.add(stimTest, 'bgR', 0, 255).listen().onChange( function(){
-					bgColor = "rgb("+Math.round(stimTest.bgR)+", "+Math.round(stimTest.bgG)+", "+Math.round(stimTest.bgB)+")";
-					renderer.setClearColor(new THREE.Color(bgColor));
+					setBackgroundColor(stimTest);
 				});
 				backgroundAppearance.add(stimTest, 'bgG', 0, 255).listen().onChange( function(){
-					bgColor = "rgb("+Math.round(stimTest.bgR)+", "+Math.round(stimTest.bgG)+", "+Math.round(stimTest.bgB)+")";
-					renderer.setClearColor(new THREE.Color(bgColor));
+					setBackgroundColor(stimTest);
 				});
 				backgroundAppearance.add(stimTest, 'bgB', 0, 255).listen().onChange( function(){
-					bgColor = "rgb("+Math.round(stimTest.bgR)+", "+Math.round(stimTest.bgG)+", "+Math.round(stimTest.bgB)+")";
-					renderer.setClearColor(new THREE.Color(bgColor));
+					setBackgroundColor(stimTest);
 				});
 
 				var color = gui.addFolder('Color');
 				color.open();
 				color.add(stimTest, 'stimR', 0, 255).listen().onChange( function(){
-						stimColor = "rgb("+Math.round(stimTest.stimR)+", "+Math.round(stimTest.stimG)+", "+Math.round(stimTest.stimB)+")";
-						stim.material.color.set(new THREE.Color(stimColor));
+					setStimColor(stimTest);
 				});
 				color.add(stimTest, 'stimG', 0, 255).listen().onChange( function(){
-					stimColor = "rgb("+Math.round(stimTest.stimR)+", "+Math.round(stimTest.stimG)+", "+Math.round(stimTest.stimB)+")";
-					stim.material.color.set(new THREE.Color(stimColor));
+					setStimColor(stimTest);
 				});
 				color.add(stimTest, 'stimB', 0, 255).listen().onChange( function(){
-					stimColor = "rgb("+Math.round(stimTest.stimR)+", "+Math.round(stimTest.stimG)+", "+Math.round(stimTest.stimB)+")";
-					stim.material.color.set(new THREE.Color(stimColor));
+					setStimColor(stimTest);
 				});
 
 				var size = gui.addFolder('Size');
 				size.open();
 				size.add(stimTest, 'sizeX', 1, 3).step(.01).listen().onChange( function(){
-					stim.scale.x = stimTest.sizeX;
-					stim.scale.y = stimTest.sizeY;
-					stim.scale.z = stimTest.sizeZ;
+										setStimSize(stimTest);
+
 
 				});
 				size.add(stimTest, 'sizeY', 1, 3).step(.01).listen().onChange( function(){
-					stim.scale.x = stimTest.sizeX;
-					stim.scale.y = stimTest.sizeY;
-					stim.scale.z = stimTest.sizeZ;
+										setStimSize(stimTest);
+
 
 				});
 				size.add(stimTest, 'sizeZ', 1, 3).step(.01).listen().onChange( function(){
-					stim.scale.x = stimTest.sizeX;
-					stim.scale.y = stimTest.sizeY;
-					stim.scale.z = stimTest.sizeZ;
+					setStimSize(stimTest);
 
 				});
 
@@ -289,11 +282,21 @@
                         stimNamesList.push(newStim);
                         updateDropdown(guiLeft);
                         setDataString(stimTest, isThere, isThereIndex);
+						setDefaults(stimTest);
                     }
                     else {
                         alert("Only 9 stims may be created.");
                     }
                 });
+				
+				var save = gui.addFolder('Save');
+				save.open();
+				save.add(stimTest, 'save').onChange(function(){
+				// save stuff as a json
+				// prompt user to make another stim set or go to 
+				// run page
+				
+				});
 
                 function updateDropdown(guiLeft) {
                     guiLeft.__controllers[0].remove();
@@ -309,6 +312,12 @@
                         stimTest.sizeX = parse.sizeX;
                         stimTest.sizeY = parse.sizeY;
                         stimTest.sizeZ = parse.sizeZ;
+						stimTest.bgR = parse.bgR;
+						stimTest.bgG = parse.bgG;
+						stimTest.bgB = parse.bgB;
+						setStimColor(stimTest);
+						setStimSize(stimTest);
+						setBackgroundColor(stimTest);
                     });
 				}
 
@@ -325,6 +334,9 @@
                             sizeX: gui.sizeX,
                             sizeY: gui.sizeY,
                             sizeZ: gui.sizeZ,
+							bgR: gui.bgR,
+							bgG: gui.bgG,
+							bgB: gui.bgB,
                             image: ''
                         })
                     }
@@ -339,6 +351,9 @@
                                     sizeX: gui.sizeX,
                                     sizeY: gui.sizeY,
                                     sizeZ: gui.sizeZ,
+									bgR: gui.bgR,
+									bgG: gui.bgG,
+									bgB: gui.bgB,
                                     image: ''
                                 }));
                         count++;
@@ -346,7 +361,42 @@
 				}
 
 			}
+	
+	function setStimColor(gui){
+		stimColor = "rgb("+Math.round(gui.stimR)+", "+Math.round(gui.stimG)+", "+Math.round(gui.stimB)+")";
+		stim.material.color.set(new THREE.Color(stimColor));
+	}
 
+	function setBackgroundColor(gui){
+		bgColor = "rgb("+Math.round(gui.bgR)+", "+Math.round(gui.bgG)+", "+Math.round(gui.bgB)+")";
+		renderer.setClearColor(new THREE.Color(bgColor));
+	}
+	
+	function setStimSize(gui){
+		stim.scale.x = gui.sizeX;
+		stim.scale.y = gui.sizeY;
+		stim.scale.z = gui.sizeZ;
+	}
+	
+	function setDefaults(gui){
+		stimColor = "rgb(255,255,255)";
+		stim.material.color.set(new THREE.Color(stimColor));
+		bgColor = "rgb(0,0,0)";
+		renderer.setClearColor(new THREE.Color(bgColor));
+		stim.scale.x = 1;
+		stim.scale.y = 1;
+		stim.scale.z = 1;
+		gui.stimName = "stimName";
+		gui.stimR = 255;
+		gui.stimG = 255;
+		gui.stimB = 255;
+		gui.sizeX = 1;
+		gui.sizeY = 1;
+		gui.sizeZ = 1;
+		gui.bgR = 0;
+		gui.bgG = 0;
+		gui.bgB = 0;		
+	}
 
 			init();
 			animate();
