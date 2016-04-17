@@ -703,46 +703,6 @@
                 objects[i].label.rotation.x = 1-board.rotation.x;
             }
 
-
-
-
-
-
-
-
-
-
-
-//	        for (var i = 0; i < objects.length; i++ ){
-
-	            //TODO: ROTATE CUBE ABOUT BOARD HAVE TO TRANSLATE TO ORIGIN, ROTATE, THEN TRANSLATE BACK
-	            //TODO: WHAT I HAVE HERE IS CONCEPTUALLY CORRECT, BUT INSTEAD OF SETTING THE POSITION BACK TO X, Y, AND Z,
-	            //TODO: WE NEED TO TRANSLATE BY THE SAME AMOUNT IN A NEW VECTOR'S DIRECTION. PLAY WITH IT
-
-
-//                objects[i].rotateOnAxis(new THREE.Vector3(board.rotation.x,board.rotation.y,board.rotation.z, boardTest.rotationX));
-
-//	            var x = objects[i].position.x;
-//	            var y = objects[i].position.y;
-//	            var z = objects[i].position.z;
-//
-//	            objects[i].position.x -= x;
-//	            objects[i].position.y -= y;
-//	            objects[i].position.z -= z;
-//
-//	            objects[i].rotation.x = boardTest.rotationX;
-//
-//	            objects[i].position.x += x;
-//	            objects[i].position.y += y;
-//	            objects[i].position.z += z;
-
-	//            var y = (objects[i].position.y * Math.cos(board.rotation.x) + objects[i].position.z * Math.sin(board.rotation.x));
-	//            var z = (objects[i].position.y * -Math.sin(board.rotation.x) + objects[i].position.z * Math.cos(board.rotation.x));
-	//            console.log(y + ", "+ z);
-	//            objects[i].position.y *= y;
-	//            objects[i].position.z *= z;
-
-//	        }
 		});
 		boardAppearance.add(boardTest, 'boardR', 0, 255).listen().onChange(function () {
 			setBoardColor(boardTest);
