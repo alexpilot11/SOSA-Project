@@ -1029,51 +1029,7 @@
 
 	function toggleLabels(gui){
 		// if the labels are not showing
-//		if(labelsShowing != true){
-//			// if the labels have not been changed
-//			// redraw labels from the last value the context had
-//			if(labelsChanged != true){
-//				for(var i = 0; i < objects.length; i++){
-//					context1[i].restore();
-//					labelTexture = new THREE.Texture(canvas1[i]);
-//					labelTexture.needsUpdate = true;
-//					objects[i].label.material.map = labelTexture;
-//					wrapText(context1[i], "Stim #" + (i+1), 0, 50, 125, 20);
-//				}
-//			}
-//			// if the labels have been changed
-//			// overwrite the labels for a blank canvas
-//			// remake the texture and write the text using the new colors
-//			else {
-//                labelSize = gui.labelSize + "px";
-//                labelColor = "rgba(" + Math.round(gui.labelR) + ", " + Math.round(gui.labelG) + ", " + Math.round(gui.labelB) + ", " + gui.labelShade + ")";
-//				for (var i = 0; i < objects.length; i++) {
-//					overwriteLabel(i);
-//                    context1[i].font = 'Bold ' + labelSize + ' Arial';
-//                    context1[i].fillStyle = labelColor;
-//					labelTexture = new THREE.Texture(canvas1[i]);
-//					labelTexture.needsUpdate = true;
-//					objects[i].label.material.map = labelTexture;
-//					wrapText(context1[i], "Stim #" + (i+1), 0, 50, 125, 20);
-//					labelsChanged = false;
-//				}
-//			}
-//			labelsShowing = true;
-//		}
-//		// if the labels are not showing
-//		else {
-//			for(var i = 0; i < objects.length; i++){
-//				context1[i].save();
-//				context1[i].fillStyle = "rgba(" + Math.round(gui.boardR) + ", " + Math.round(gui.boardG) + ", " + Math.round(gui.boardB) + ", " + gui.labelShade + ")";
-//				context1[i].font = 'Bold 20px Arial';
-//				context1[i].clearRect(0, 0, 125, 50);
-//				labelTexture = new THREE.Texture(canvas1[i]);
-//				labelTexture.needsUpdate = true;
-//				objects[i].label.material.map = labelTexture;
-//				wrapText(context1[i], "Stim #" + (i+1), 0, 50, 125, 20);
-//				labelsShowing = false;
-//			}
-//		}
+
         for (var i = 0; i < objects.length; i++){
             objects[i].label.visible = !objects[i].label.visible
         }
