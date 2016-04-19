@@ -18,7 +18,7 @@ function init() {
     container = document.createElement( 'div' );
     document.body.appendChild( container );
 
-    //section at the top
+    //section at the top with the title
     var info = document.createElement( 'div' );
     info.style.position = 'absolute';
     info.style.top = '10px';
@@ -28,13 +28,16 @@ function init() {
     info.innerHTML = 'Create Stimulus';
     container.appendChild( info );
 
+    //camera
     camera = new THREE.PerspectiveCamera( 70, window.innerWidth / window.innerHeight, 1, 1000 );
     camera.position.y = 150;
     camera.position.z = 500;
 
+    //scene. Everything is added to this to show up in the html
     scene = new THREE.Scene();
 
     //stim
+    //This is the object that is in the middle for a preview of the stim being edited
     var geometry = new THREE.BoxGeometry( 50, 50, 50 );
     for ( var i = 0; i < geometry.faces.length; i += 2 ) {
         var colo =  "rgb(255, 255, 255)";
@@ -54,6 +57,7 @@ function init() {
     renderer.setSize( window.innerWidth, window.innerHeight );
     container.appendChild( renderer.domElement );
 
+    //creates the gui
     createGui();
 
     //Resize event listener
@@ -62,7 +66,8 @@ function init() {
 
 }
 
-//MAKE THIS SCALE
+//This resizes things for different stim sizes. Might be good to make it scale things later
+//This isn't as much used in this doc as it is in the runExperiment
 function onWindowResize() {
     windowHalfX = window.innerWidth / 2;
     windowHalfY = window.innerHeight / 2;
@@ -73,13 +78,14 @@ function onWindowResize() {
     renderer.setSize( window.innerWidth, window.innerHeight );
 }
 
-//
+//animate. Three.js standard
 function animate() {
     requestAnimationFrame( animate );
     render();
 
 }
 
+//render. Three.js standard
 function render() {
     renderer.render( scene, camera );
 }
@@ -99,6 +105,7 @@ function render() {
 
 function createGui() {
     var controls = function() {
+        //gui on the right to control the stim and set settings for it
 
         this.stimName = 'stimName';
         this.stimLabel = 'stimLabel';
@@ -153,6 +160,7 @@ function createGui() {
     //The gui object
     var gui = new dat.GUI();
 
+    //left gui. this is the list of stims that have been created
     var stimGuiControls = function(){
         this.stim = 25;
         this.stimList = [];
@@ -230,6 +238,7 @@ function createGui() {
 
     var add = gui.addFolder('Add');
     add.open();
+    //add stim button. saves the stim info
     add.add(stimTest, 'add').listen().onChange(function () {
         if (stimNamesList.length < 9) {
             var newStim = stimTest.stimName;
@@ -254,6 +263,7 @@ function createGui() {
         }
     });
 
+    //saves the information from the stims as JSON to user's computer
     var save = gui.addFolder('Save');
     save.open();
     save.add(stimTest, 'save').onChange(function(){
@@ -264,6 +274,7 @@ function createGui() {
     });
 
     function updateDropdown(guiLeft) {
+        //updates the left gui. called by the add button
         guiLeft.__controllers[0].remove();
         guiLeft.add(stimGui, "stimList", stimNamesList).listen().onChange(function () {
             var index = document.getElementsByTagName('select')[0].selectedIndex;
@@ -289,6 +300,7 @@ function createGui() {
 
 
     function setDataString(gui, isThere, index){
+        //saves information to the stimJSONString which is used on save
         if(isThere && index != -1){
             stimGui.stimJSONString[index] = JSON.stringify({
                 index: index,
@@ -328,22 +340,28 @@ function createGui() {
 }
 
 function setStimColor(gui){
+    //set stim color to the value of the right gui
     stimColor = "rgb("+Math.round(gui.stimR)+", "+Math.round(gui.stimG)+", "+Math.round(gui.stimB)+")";
     stim.material.color.set(new THREE.Color(stimColor));
 }
 
 function setBackgroundColor(gui){
+    //set background color to the value of the right gui. This is for viewing the stim with the expected background
+    //because background can be changed later. In the future it would be good to implement a way to lock the background color
+    //from the stim creation screen and not be able to edit it in the runExperiment screen
     bgColor = "rgb("+Math.round(gui.bgR)+", "+Math.round(gui.bgG)+", "+Math.round(gui.bgB)+")";
     renderer.setClearColor(new THREE.Color(bgColor));
 }
 
 function setStimSize(gui){
+    //set the stim size with the right gui's value
     stim.scale.x = gui.sizeX;
     stim.scale.y = gui.sizeY;
     stim.scale.z = gui.sizeZ;
 }
 
 function setDefaults(gui){
+    //set everything to the default value of the right gui
     stimColor = "rgb(255,255,255)";
     stim.material.color.set(new THREE.Color(stimColor));
     bgColor = "rgb(0,0,0)";
