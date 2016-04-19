@@ -1,3 +1,4 @@
+//global vars
 var container;
 var camera, scene, renderer;
 var stim;
@@ -13,10 +14,11 @@ var stimGui, stimTest, stimNamesList;
 
 //Scene setup
 function init() {
-
+    //container for everything
     container = document.createElement( 'div' );
     document.body.appendChild( container );
 
+    //section at the top
     var info = document.createElement( 'div' );
     info.style.position = 'absolute';
     info.style.top = '10px';
