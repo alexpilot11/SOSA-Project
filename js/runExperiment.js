@@ -1,3 +1,4 @@
+//global vars to make things easier
 var container, board, stim_board, info;
 var camera, controls, scene, renderer;
 var windowHalfX = window.innerWidth / 2;
@@ -95,11 +96,12 @@ var importJSON = {
 
 //Scene setup
 function init() {
-
+    //container of scene. this is the div that holds all the threejs stuff
     container = document.createElement('div');
     container.setAttribute('class', 'draggable');
     document.body.appendChild(container);
 
+    //top information
     info = document.createElement('div');
     info.style.position = 'absolute';
     info.style.top = '10px';
@@ -109,9 +111,12 @@ function init() {
     info.innerHTML = '<p>Preview Experiment</p>';
     container.appendChild(info);
 
+    //camera
     camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 1, 10000);
     camera.position.z = 800;
     camera.position.y = 515;
+
+    //controls. This handles things like the zoom, pan, etc.
     controls = new THREE.TrackballControls(camera);
     controls.rotateSpeed = 0.0;
     controls.zoomSpeed = 1.2;
@@ -120,8 +125,12 @@ function init() {
     controls.noPan = false;
     controls.staticMoving = true;
     controls.dynamicDampingFactor = 0.3;
+
+    //the scene. Add things to this to get them to show up in the page
     scene = new THREE.Scene();
     scene.add(new THREE.AmbientLight(0x505050));
+
+    //light stuff up
     var light = new THREE.SpotLight(0xffffff, 1.5);
     light.position.set(0, 500, 2000);
     light.castShadow = true;
@@ -134,6 +143,7 @@ function init() {
     scene.add(light);
 
     //Board
+    //the windowHalfX and Y make it so that it sets the board at different sizes for different screens
     var geometry = new THREE.BoxGeometry(windowHalfX * 1.5, 20, windowHalfY * 1.8);
     for (var i = 0; i < geometry.faces.length; i += 2) {
         var colo = "rgb(255, 255, 255)";
@@ -148,18 +158,21 @@ function init() {
     scene.add(board);
     board.visible = true;
 
+    //used to rotate stims when board rotates
     dummy = new THREE.Object3D();
     dummy.rotation.x = board.rotation.x - 1;
     scene.add(dummy);
 
-
+    //an invisible plane. used for some draggable stuff
     plane = new THREE.Mesh(
         new THREE.PlaneBufferGeometry(2000, 2000, 8, 8),
         new THREE.MeshBasicMaterial({visible: false})
     );
     scene.add(plane);
 
+    //create the gui and the stims
     createGUI();
+    //reads stims from the json
     var preppedStim = convertExperimentToThing(importJSON);
     makeStims(preppedStim);
 
@@ -185,6 +198,7 @@ function init() {
 }
 
 function onWindowResize() {
+    //This could actually scale stuff later, but for now it just changes these variables and makes the camera look right
     windowHalfX = window.innerWidth / 2;
     windowHalfY = window.innerHeight / 2;
 
@@ -193,17 +207,22 @@ function onWindowResize() {
 
     renderer.setSize(window.innerWidth, window.innerHeight);
 }
-
+//a lot of the code for the next three functions or so is from http://threejs.org/examples/#webgl_interactive_draggablecubes
 function onDocumentMouseMove(event) {
+    //this is the method used to drag stims around
     event.preventDefault();
     mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
     mouse.y = -( event.clientY / window.innerHeight ) * 2 + 1;
     raycaster.setFromCamera(mouse, camera);
     if (SELECTED) {
         var intersects_board = raycaster.intersectObject(board);
+        //only drag over the board (using a raycaster)
         if (intersects_board.length > 0 && SELECTED.canMove) {
             SELECTED.onStimBoard = false;
             SELECTED.position.copy(intersects_board[0].point.sub(offset));
+            //make sure the stims are positioned on the board correctly instead of sitting inside the board
+            //(hardcoded. probably would be good to do this dynamically later and get like half the
+            //size of SELECTED or something, but you'd need to play with it to make it look right
             SELECTED.position.x += 30;
             SELECTED.position.y += 30;
             SELECTED.position.z += 30;
@@ -229,6 +248,8 @@ function onDocumentMouseMove(event) {
 }
 
 function onDocumentMouseDown(event) {
+    //sets SELECTED to the stim that was clicked on. SELECTED is used in mouse move to make the SELECTED stim
+    //follow the mouse
     event.preventDefault();
     raycaster.setFromCamera(mouse, camera);
     var intersects = raycaster.intersectObjects(objects);
@@ -246,6 +267,7 @@ function onDocumentMouseDown(event) {
 }
 
 function onDocumentMouseUp(event) {
+    //deselects the SELECTED object
     event.preventDefault();
     controls.enabled = true;
     if (INTERSECTED) {
@@ -264,19 +286,25 @@ function onDocumentMouseUp(event) {
 }
 
 function animate() {
+    //animate function. threejs standard
     requestAnimationFrame(animate);
     render();
 }
 
 function render() {
+    //render function. threejs standard
     controls.update();
     renderer.render(scene, camera);
+    //makes labels follow stims. might be good later to just make labels children of stims (object.add(label) on create of stim
     updateLabels();
+    //changes the background behind the canvas to the same color as the background of the canvas (there will be a bar at the top
+    //of the screen that's off color
     document.getElementsByTagName('body')[0].style.backgroundColor = "rgb(" + Math.round(boardTest.bgR) + ", " + Math.round(boardTest.bgG) + ", " + Math.round(boardTest.bgB) + ")"
 
 }
 
 function getTodaysDate(){
+    //get today's date. This is used for the output stuff
     var today = new Date();
     var dd = today.getDate();
     var mm = today.getMonth()+1; //January is 0!
@@ -295,6 +323,10 @@ function getTodaysDate(){
 }
 
 function updateLabels() {
+    //makes labels follow stims. might be good later to just make labels children of stims (object.add(label) on create of stim.
+    //if the object is on the top half of the board, the labels need to be placed at a different spot than the labels of objects
+    //on the bottom half of the board.
+    //Labels are also put at different places on the left side of the screen, before they are put on the board
     for (var i = 0; i < objects.length; i++) {
         var offsetY;
         if (objects[i].onStimBoard) {
@@ -314,7 +346,7 @@ function updateLabels() {
 }
 
 function createStimBoard() {
-    //Stim Board
+    //Stim Board. This is used to line up the stims on the left side of the screen and for easy movement
     var stim_geometry = new THREE.BoxGeometry(200, 20, 800);
     for (var i = 0; i < stim_geometry.faces.length; i += 2) {
         var stim_colo = "rgb(255, 255, 255)";
@@ -333,12 +365,15 @@ function createStimBoard() {
     board.position.y -= 100;
 }
 
+
 function createViewStimuli() {
+    //This is called when someone clicks "Launch Experiment". it sets up the next page
     info.innerHTML = '<p>Prompt</p>';
     //create new gui with a Finish Experiment button
     var view_stims = new dat.GUI();
     var stims = view_stims.addFolder('View Stimuli');
     stims.open();
+    //create button to view stims
     var view = {
         viewStimuli: function () {
             viewStimuli();
@@ -353,6 +388,7 @@ function createViewStimuli() {
 }
 
 function viewStimuli() {
+    //method that calls the method to view stims
     info.innerHTML = '<p>Experiment Preview</p>';
 
     document.getElementsByClassName('view_stims')[0].style.display = 'none';
@@ -363,11 +399,13 @@ function viewStimuli() {
 }
 
 function createBeginExperiment() {
+    //makes the board visible again so you can view all your stimuli
 
     //create new gui with a Finish Experiment button
     var begin_gui = new dat.GUI();
     var begin = begin_gui.addFolder('Begin Experiment');
     begin.open();
+    //begin experiment button
     var begin_exp = {
         beginExperiment: function () {
             createFinishExperiment();
@@ -388,6 +426,8 @@ function createBeginExperiment() {
 }
 
 function centerStimsOnBoard() {
+    //this centers stims on the stim board (to the left side of the screen)
+    //the stim board is invisible, but used to line stims up easily
     for (var i = 0; i < objects.length; i++) {
         dummy.rotation.x = 0;
         objects[i].canMove = true;
@@ -405,6 +445,7 @@ function centerStimsOnBoard() {
 }
 
 function createFinishExperiment() {
+    //This is the function that sets up the actual experiement for running
     info.innerHTML = '<p>SOSA Modeling Experiment</p>';
 
     //create new gui with a Finish Experiment button
@@ -416,6 +457,7 @@ function createFinishExperiment() {
     var finish_gui = new dat.GUI();
     var finish = finish_gui.addFolder('Finish Experiment');
     finish.open();
+    //create the finish experiement button.
     var finish_exp = {
         finishExperiment: function () {
             // Placeholder I need to pass in all my values
@@ -427,6 +469,8 @@ function createFinishExperiment() {
 }
 
 function finishExperiment(obj, movement, finalLocation, finalDistances) {
+    //the function called when the user clicks "finish experiment"
+    //This is where output of data happens
     console.log('Finished Experiment');
 
     var object = (obj !== undefined) ? obj : {};
@@ -490,9 +534,11 @@ function finishExperiment(obj, movement, finalLocation, finalDistances) {
 };
 
 function createGUI(){
+    //used to create the GUI
     //Start GUI
     //GUI params
     var gui_controls = function () {
+        //gui on the right side of the screen. run experiment settings
         this.rotationX = 1;
         this.boardR = 255;
         this.boardG = 255;
@@ -506,6 +552,7 @@ function createGUI(){
             board.material.color.setRGB(boardTest.boardR, boardTest.boardG, boardTest.boardB);
         };
 
+        //set the board tilt to its default value
         this.boardTiltDefaults = function () {
             boardTest.rotationX = 1;
             board.rotation.x = 1;
@@ -520,6 +567,7 @@ function createGUI(){
         this.bgR = 0;
         this.bgG = 0;
         this.bgB = 0;
+        //set background to its default value
         this.backgroundDefaults = function () {
             boardTest.bgR = 0;
             boardTest.bgG = 0;
@@ -532,13 +580,17 @@ function createGUI(){
             renderer.setClearColor(0x000000);
 
         };
+        //this should be used later (not used yet) when we have functionality for an image on the back of the board
+        //or a separate color for viewing of stims
         this.hasBG = true;
 
         this.import = function () {
+            //import settings for experiment
             // Fires the click event on the invisible input
             document.getElementById("myInput").click();
 
             function readSingleFile(evt) {
+                //reads settings from a file
                 //Retrieve the first (and only!) File from the FileList object
                 var file = evt.target.files[0];
                 var contentsObj;
@@ -570,7 +622,7 @@ function createGUI(){
         };
 
         this.export = function () {
-
+            //saves the information in this gui to a JSON
             var exportJSON = JSON.stringify(this);
             // Download solution from http://stackoverflow.com/questions/19721439/download-json-object-as-a-file-from-browser
             var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(exportJSON);
@@ -633,6 +685,7 @@ function createGUI(){
         this.outputLoc = function () {
         };
 
+        //launch the experiment
         this.launchExperiment = function () {
             document.getElementsByClassName('dg main a')[0].style.display = 'none';
             document.getElementsByClassName('draggable')[0].style.display = 'none';
@@ -792,6 +845,7 @@ function convertExperimentToThing(fname) {
 }
 
 function makeStims(stimuli) {
+    //create stims
     for (var i = 0; i < stimuli.length; i++) {
 
         // create box
@@ -806,6 +860,7 @@ function makeStims(stimuli) {
         object.receiveShadow = true;
         objects.canMove = false;
 
+        //each stim has a different position on the board. This is the algorithm that makes sure they're in the right place
         if (i >= 0 && i <= 2) {
             object.position.x = board.position.x + (i * 300) - 300;
             object.position.y = board.position.y + 200;
@@ -828,7 +883,9 @@ function makeStims(stimuli) {
         object.rotation.x = board.rotation.x;
         object.onStimBoard = false;
         scene.add(object);
+        //create a label for the stim
         makeLabel(stimuli, object, i);
+        //make sure the object rotates when dummy rotates. dummy rotates with the board. This keeps them on the board while rotating
         dummy.add(object);
     }
 
@@ -836,6 +893,15 @@ function makeStims(stimuli) {
 
 function makeLabel(stims, obj, count){
     //MAKE LABELS
+    //would be good to make these labels children of their objects later so they follow more easily.
+
+    //these labels cover each other up. I've made them as small as possible so they cover each other up as
+    //little as possible, but that means on the highest font size, labels can only have up to 7 characters
+    //or risk getting cut off.
+    //The z-indexes are the problem here. Since each stim is specifically placed, their z-indexes are different.
+    //The canvas elements are rectangular with a margin around the words and even if I set their backgrounds to transparent
+    //I could only get it to turn the same color as the board. If you can figure it out, you're cool
+
     // create a canvas element
     var canvaslabel = document.createElement('canvas');
     var contextlabel = canvaslabel.getContext('2d');
@@ -867,12 +933,17 @@ function makeLabel(stims, obj, count){
     label.position.set(obj.position.x - 130, obj.position.y + 10, obj.position.z);
     label.rotation.x = -.5;
     scene.add(label);
+    //this might should be obj.add(label), but you'd have to play with it. labels may be positioned weird so if you do
+    //obj.add(label), you may need to play with this positioning
     obj.label = label;
+    //labels should rotate with the board
     dummy.add(label);
     objects.push(obj);
 }
 
 function overwriteLabel(count){
+    //This draws white over the label so we can do things like change color or size. Its a canvas, so we can't just change
+    //some sort of "text" attribute or something, we actually have to write it
     context1[count].fillStyle = boardColor = "rgba(" + Math.round(boardTest.boardR) + ", " + Math.round(boardTest.boardG) + ", " + Math.round(boardTest.boardB) + ", " + boardTest.labelShade + ")";
     context1[count].clearRect(0, 0, 125, 50);
     labelTexture = new THREE.Texture(canvas1[count]);
@@ -882,6 +953,7 @@ function overwriteLabel(count){
 }
 
 function updateBoard(b, obj) {
+    //updates the board with the proper settings from the gui
     console.log(b);
     console.log(obj);
 
@@ -925,6 +997,7 @@ function updateBoard(b, obj) {
 }
 
 function wrapText(context, text, x, y, maxWidth, lineHeight) {
+    //makes text in the labels' canvases wrap to the next line. might be unnecessary
     var words = text.split(' ');
     var line = '';
 
@@ -945,16 +1018,19 @@ function wrapText(context, text, x, y, maxWidth, lineHeight) {
 }
 
 function setBoardColor(gui){
+    //set board color to the gui's value
     boardColor = "rgb(" + Math.round(gui.boardR) + ", " + Math.round(gui.boardG) + ", " + Math.round(gui.boardB) + ")";
     board.material.color.set(new THREE.Color(boardColor));
 }
 
 function setBackgroundColor(gui){
+    //set background color to the gui's value
     bgColor = "rgb(" + Math.round(gui.bgR) + ", " + Math.round(gui.bgG) + ", " + Math.round(gui.bgB) + ")";
     renderer.setClearColor(new THREE.Color(bgColor));
 }
 
 function setLabelColor(gui){
+    //set label coolor to the gui's value
     if(labelsShowing == true){
         labelSize = gui.labelSize + "px";
         labelColor = "rgba(" + Math.round(gui.labelR) + ", " + Math.round(gui.labelG) + ", " + Math.round(gui.labelB) + ", " + gui.labelShade + ")";
@@ -972,6 +1048,7 @@ function setLabelColor(gui){
 }
 
 function setLabelSize(gui){
+    //overwrite the label, set it to the font size the gui says to
     if(labelsShowing == true){
         labelSize = gui.labelSize + "px";
         labelColor = "rgba(" + Math.round(gui.labelR) + ", " + Math.round(gui.labelG) + ", " + Math.round(gui.labelB) + ", " + gui.labelShade + ")";
@@ -990,14 +1067,16 @@ function setLabelSize(gui){
 }
 
 function toggleLabels(gui){
-    // if the labels are not showing
-
+    //make labels visible/invisible
     for (var i = 0; i < objects.length; i++){
-        objects[i].label.visible = !objects[i].label.visible
+        objects[i].label.visible = !objects[i].label.visible;
+        labelsShowing = !labelsShowing;
     }
+
 }
 
 function calculateDistance(point1, point2){
+    //calculate distances between two stims
     var xDiff = (point2.position.x - point1.position.x);
     var yDiff = (point2.position.y - point1.position.y);
     var distance = Math.round(Math.sqrt(Math.pow(xDiff, 2) + Math.pow(yDiff, 2)));
