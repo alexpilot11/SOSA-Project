@@ -12,6 +12,7 @@ var bgColor;
 var stimGui, stimTest;
 
 var stimSet = {};
+var currentKey;
 
 // My goal:
 // - Combine stimNamesList and stimTest under a different, more suitable name
@@ -307,20 +308,30 @@ function createGui() {
         guiLeft.add(stimGui, "stimList", stimNames).listen().onChange(function () {
             var index = document.getElementsByTagName('select')[0].selectedIndex;
             var parse = JSON.parse(stimGui.stimJSONString[index]);
-            console.log(stimTest.stimName);
-            stimTest.stimName = parse.name;
-            stimTest.stimR = parse.r;
-            stimTest.stimG = parse.g;
-            stimTest.stimB = parse.b;
-            stimTest.sizeX = parse.sizeX;
-            stimTest.sizeY = parse.sizeY;
-            stimTest.sizeZ = parse.sizeZ;
-            stimTest.bgR = parse.bgR;
-            stimTest.bgG = parse.bgG;
-            stimTest.bgB = parse.bgB;
-            setStimColor(stimTest);
-            setStimSize(stimTest);
-            setBackgroundColor(stimTest);
+
+            currentKey = parse.name;
+
+            // Check to ensure the stim with this key exists
+            if(typeof stimSet[currentKey] === 'undefined') {
+                stimSet[currentKey] = {};
+            }
+
+            stimSet[currentKey].stimName = parse.name;
+            stimSet[currentKey].stimR = parse.r;
+            stimSet[currentKey].stimG = parse.g;
+            stimSet[currentKey].stimB = parse.b;
+            stimSet[currentKey].sizeX = parse.sizeX;
+            stimSet[currentKey].sizeY = parse.sizeY;
+            stimSet[currentKey].sizeZ = parse.sizeZ;
+            stimSet[currentKey].bgR = parse.bgR;
+            stimSet[currentKey].bgG = parse.bgG;
+            stimSet[currentKey].bgB = parse.bgB;
+
+            console.log(stimSet[currentKey]);
+
+            setStimColor(stimSet[currentKey]);
+            setStimSize(stimSet[currentKey]);
+            setBackgroundColor(stimSet[currentKey]);
         });
     }
 
