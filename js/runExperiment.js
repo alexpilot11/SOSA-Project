@@ -465,6 +465,7 @@ function createFinishExperiment() {
         }
     };
     finish_gui.add(finish_exp, 'finishExperiment');
+    finish_gui.domElement.setAttribute('class', 'finish_gui');
 
 }
 
@@ -531,7 +532,36 @@ function finishExperiment(obj, movement, finalLocation, finalDistances) {
      */
     // What we want here:
     // A finished object containing timestamps and positions of all stimuli (his data)
-};
+
+
+    createThanks();
+}
+
+function createThanks() {
+    document.getElementsByClassName('finish_gui')[0].style.display = 'none';
+    info.innerHTML = '<p>Thanks for using SOSA!</p>';
+
+    var thanks_gui = new dat.GUI();
+    var thanks = thanks_gui.addFolder('Go Home');
+    thanks.open();
+    //create the redirect to home page button.
+    var thanks_page = {
+        goHome: function () {
+            var index_link = document.createElement('a');
+            index_link.setAttribute('href', 'index.html');
+            index_link.click();
+        }
+    };
+    thanks_gui.add(thanks_page, 'goHome');
+    thanks_gui.domElement.setAttribute('class', 'thanks_gui');
+    board.visible = false;
+    dummy.visible = false;
+    var t = document.getElementsByClassName('thanks_gui')[0];
+    t.style.position = 'absolute';
+    t.style.top = windowHalfY - 50 + 'px';
+    t.style.left = windowHalfX - 100 + 'px';
+
+}
 
 function createGUI(){
     //used to create the GUI
@@ -1081,7 +1111,6 @@ function setLabelDefaults(gui) {
     gui.labelSize = 20;
 
     for(var i = 0; i < objects.length; i++){
-        overwriteLabel(i);
         context1[i].font = 'Bold ' + labelSize + ' Arial';
         context1[i].fillStyle = labelColor;
         labelTexture = new THREE.Texture(canvas1[i]);
