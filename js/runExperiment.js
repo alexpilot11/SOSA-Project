@@ -429,8 +429,8 @@ function finishExperiment(obj, movement, finalLocation, finalDistances) {
     }
 
     var output = {
-        'Experiment Name': 'Test name',
-        'Experiment Version': 'Test version',
+        'Experiment Name': boardTest.Name,
+        'Experiment Version': boardTest.Version,
         'Date': getTodaysDate(),
         'Stimuli': object,
         'Stimuli Movement': stimMovement,
@@ -498,8 +498,8 @@ function createGUI(){
     //Start GUI
     //GUI params
     var gui_controls = function () {
-        this.Name = '';
-        this.Version = '';
+        this.Name = ' ';
+        this.Version = ' ';
         //gui on the right side of the screen. run experiment settings
         this.rotationX = 1;
         this.boardR = 255;
