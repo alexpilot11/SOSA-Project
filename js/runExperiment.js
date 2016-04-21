@@ -307,9 +307,13 @@ function createViewStimuli() {
     var view = {
         viewStimuli: function () {
             viewStimuli();
+        },
+        goHome: function() {
+            goHome();
         }
     };
     view_stims.add(view, 'viewStimuli');
+    view_stims.add(view, 'goHome');
     view_stims.domElement.style.position = 'absolute';
     view_stims.domElement.style.top = windowHalfY - 50 + 'px';
     view_stims.domElement.style.left = windowHalfX - 100 + 'px';
@@ -339,11 +343,15 @@ function createBeginExperiment() {
     var begin_exp = {
         beginExperiment: function () {
             createFinishExperiment();
+        },
+        goHome: function() {
+            goHome();
         }
     };
     begin_gui.add(begin_exp, 'beginExperiment');
+    begin_gui.add(begin_exp, 'goHome');
     begin_gui.domElement.style.position = 'absolute';
-    begin_gui.domElement.style.top = window.innerHeight - 50 + 'px';
+    begin_gui.domElement.style.top = window.innerHeight - 100 + 'px';
     begin_gui.domElement.style.left = windowHalfX - 100 + 'px';
     begin_gui.domElement.setAttribute('class', 'begin_gui');
     for (var i = 0; i < objects.length; i++){
@@ -392,9 +400,14 @@ function createFinishExperiment() {
         finishExperiment: function () {
             // Placeholder I need to pass in all my values
             finishExperiment(undefined, objMovementTracker, undefined, undefined);
+        },
+        goHome: function() {
+            goHome();
         }
+
     };
     finish_gui.add(finish_exp, 'finishExperiment');
+    finish_gui.add(finish_exp, 'goHome');
     finish_gui.domElement.setAttribute('class', 'finish_gui');
 
 }
@@ -467,6 +480,12 @@ function finishExperiment(obj, movement, finalLocation, finalDistances) {
     createThanks();
 }
 
+function goHome(){
+    var index_link = document.createElement('a');
+    index_link.setAttribute('href', 'index.html');
+    index_link.click();
+}
+
 function createThanks() {
     document.getElementsByClassName('finish_gui')[0].style.display = 'none';
     info.innerHTML = '<p>Thanks for using SOSA!</p>';
@@ -477,9 +496,7 @@ function createThanks() {
     //create the redirect to home page button.
     var thanks_page = {
         goHome: function () {
-            var index_link = document.createElement('a');
-            index_link.setAttribute('href', 'index.html');
-            index_link.click();
+            goHome();
         }
     };
     thanks_gui.add(thanks_page, 'goHome');
@@ -694,6 +711,12 @@ function createGUI(){
             createViewStimuli();
 
         };
+
+        this.backToHome = function(){
+            var index_link = document.createElement('a');
+            index_link.setAttribute('href', 'index.html');
+            index_link.click();
+        };
     };
     //GUI creation
     /*
@@ -797,6 +820,10 @@ function createGUI(){
     var launchExperiment = gui.addFolder('Launch Experiment');
     launchExperiment.open();
     launchExperiment.add(boardTest, 'launchExperiment');
+
+    var goHome = gui.addFolder('Go Home');
+    goHome.open();
+    goHome.add(boardTest, 'backToHome');
     //END GUI
 }
 
