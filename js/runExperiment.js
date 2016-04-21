@@ -172,8 +172,15 @@ function init() {
 
     //create the gui and the stims
     createGUI();
+
+
     //reads stims from the json
-    var preppedStim = convertExperimentToThing(importJSON);
+
+    var preppedStim;
+
+    if (typeof preppedStim === 'undefined') {
+            preppedStim = convertExperimentToThing(importJSON);
+    }
     makeStims(preppedStim);
 
 
@@ -621,6 +628,45 @@ function createGUI(){
 
         };
 
+        this.importStimSet = function() {
+
+            console.log('hellloo');
+            document.getElementById("myStimInput").click();
+
+            function readSingleStimFile(evt) {
+                console.log('click attempted');
+                //Retrieve the first (and only!) File from the FileList object
+                var file = evt.target.files[0];
+
+                if (file) {
+                    var reader = new FileReader();
+                    reader.onload = function(e) {
+                        var contents = e.target.result;
+                        var contentsObj;
+                        try {
+                            contentsObj = JSON.parse(contents);
+
+                            preppedStim = convertExperimentToThing(contentsObj);
+                            makeStims(preppedStim);
+                            // Test log
+                            console.log(contentsObj);
+                            console.log(preppedStim);
+                        }
+
+                        catch (spookyScaryMonsterException) {
+                            console.log('Your input file is in the wrong format.');
+                        }
+                    };
+                    reader.readAsText(file);
+                } else {
+                    alert('Unable to load in a file.');
+                }
+            }
+
+            document.getElementById('myStimInput').addEventListener('change', readSingleStimFile, false);
+
+        };
+
         this.export = function () {
             //saves the information in this gui to a JSON
             var exportJSON = JSON.stringify(this);
@@ -747,6 +793,7 @@ function createGUI(){
     var settingsIO = gui.addFolder('Import/Export Settings');
     settingsIO.open();
     settingsIO.add(boardTest, 'import');
+    settingsIO.add(boardTest, 'importStimSet');
     settingsIO.add(boardTest, 'export');
 
     var labels = gui.addFolder('Labels');
@@ -848,6 +895,7 @@ function convertExperimentToThing(fname) {
 
 function makeStims(stimuli) {
     //create stims
+    console.log(stimuli);
     for (var i = 0; i < stimuli.length; i++) {
 
         // create box
