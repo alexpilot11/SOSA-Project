@@ -498,6 +498,8 @@ function createGUI(){
     //Start GUI
     //GUI params
     var gui_controls = function () {
+        this.Name = '';
+        this.Version = '';
         //gui on the right side of the screen. run experiment settings
         this.rotationX = 1;
         this.boardR = 255;
@@ -701,6 +703,11 @@ function createGUI(){
      */
     boardTest = new gui_controls();
     var gui = new dat.GUI();
+
+    var experimentDetails = gui.addFolder('Experiment Details');
+    experimentDetails.open();
+    var experimentName = experimentDetails.add(boardTest, 'Name');
+    var experimentVersion = experimentDetails.add(boardTest, 'Version');
 
     var appearance = gui.addFolder('Appearance');
     appearance.open();
