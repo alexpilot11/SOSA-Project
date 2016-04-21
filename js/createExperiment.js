@@ -295,6 +295,47 @@ function createGui() {
             if (stimSet.hasOwnProperty(key)) stimNames.push(key);
         }
 
+        // This is not the ideal fix for this bug... ---------------------------------------------
+
+        Object.size = function(obj) {
+            var size = 0, key;
+            for (key in obj) {
+                if (obj.hasOwnProperty(key)) size++;
+            }
+            return size;
+        };
+
+        // Get the size of an object
+        var inc = 0;
+        var size = Object.size(stimSet);
+
+        while (inc < size) {
+
+            var parse = JSON.parse(stimGui.stimJSONString[inc]);
+            currentKey = parse.name;
+
+            // Check to ensure the stim with this key exists
+            if(typeof stimSet[currentKey] === 'undefined') {
+                stimSet[currentKey] = {};
+            }
+
+            stimSet[currentKey].stimName = parse.name;
+            stimSet[currentKey].stimR = parse.r;
+            stimSet[currentKey].stimG = parse.g;
+            stimSet[currentKey].stimB = parse.b;
+            stimSet[currentKey].sizeX = parse.sizeX;
+            stimSet[currentKey].sizeY = parse.sizeY;
+            stimSet[currentKey].sizeZ = parse.sizeZ;
+            stimSet[currentKey].bgR = parse.bgR;
+            stimSet[currentKey].bgG = parse.bgG;
+            stimSet[currentKey].bgB = parse.bgB;
+
+            inc++;
+        }
+
+
+    // End not ideal fix ----------------------------------------------------------------------
+
         var exportObject = {
             'orders': {
                 'order1': stimNames
