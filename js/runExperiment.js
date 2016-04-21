@@ -778,8 +778,10 @@ function createGUI(){
     });
     labels.add(boardTest, 'labelSize', 6, 32).listen().onChange(function () {
         setLabelSize(boardTest);
-    });;
-    labels.add(boardTest, 'labelDefaults');
+    });
+    labels.add(boardTest, 'labelDefaults').listen().onChange(function () {
+        setLabelDefaults(boardTest);
+    });
 
     var outputLocation = gui.addFolder('Log Output Location');
     outputLocation.open();
@@ -1064,6 +1066,31 @@ function setLabelSize(gui){
         }
     }
     labelsChanged = true;
+}
+
+function setLabelDefaults(gui) {
+    //overwrite the label, set it to the font size the gui says to
+    labelsShowing = true;
+    labelSize = "20px";
+    labelColor = "rgba(255, 0, 0, 1)";
+
+    gui.labelR = 255;
+    gui.labelG = 0;
+    gui.labelB = 0;
+    gui.labelShade = 1;
+    gui.labelSize = 20;
+
+    for(var i = 0; i < objects.length; i++){
+        overwriteLabel(i);
+        context1[i].font = 'Bold ' + labelSize + ' Arial';
+        context1[i].fillStyle = labelColor;
+        labelTexture = new THREE.Texture(canvas1[i]);
+        labelTexture.needsUpdate = true;
+        objects[i].label.material.map = labelTexture;
+        wrapText(context1[i], "Stim #" + (i+1), 0, 50, 125, 20);
+    }
+    labelsChanged = true;
+
 }
 
 function toggleLabels(gui){
