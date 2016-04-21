@@ -27,72 +27,6 @@ var labelsShowing = true;
 
 var objMovementTracker = {};
 var dummy;
-//Sample JSON
-var importJSON = {
-    orders: {
-        order1: ['Stimulus1', 'Stimulus2', 'Stimulus3', 'Stimulus4', 'Stimulus5', 'Stimulus6', 'Stimulus7', 'Stimulus8', 'Stimulus9'],
-        order2: ['Stimulus5', 'Stimulus4', 'Stimulus3', 'Stimulus2', 'Stimulus1'],
-        order3: ['Stimulus2', 'Stimulus3', 'Stimulus1', 'Stimulus4', 'Stimulus5']
-    },
-
-    stimuli: {
-        Stimulus1: {
-            Name: 'StimDefault1',
-            Image: 'img/test1.png',
-            sizeX: '300px',
-            sizeY: '300px'
-        },
-        Stimulus2: {
-            Name: 'StimDefault2',
-            Image: 'img/test2.png',
-            sizeX: '300px',
-            sizeY: '300px'
-        },
-        Stimulus3: {
-            Name: 'StimDefault3',
-            Image: 'img/test3.png',
-            sizeX: '300px',
-            sizeY: '300px'
-        },
-        Stimulus4: {
-            Name: 'StimDefault4',
-            Image: 'img/test4.jpg',
-            sizeX: '300px',
-            sizeY: '300px'
-        },
-        Stimulus5: {
-            Name: 'StimDefault5',
-            Image: 'img/test5.jpg',
-            sizeX: '300px',
-            sizeY: '300px'
-        },
-        Stimulus6: {
-            Name: 'StimDefault5',
-            Image: 'img/test5.jpg',
-            sizeX: '300px',
-            sizeY: '300px'
-        },
-        Stimulus7: {
-            Name: 'StimDefault5',
-            Image: 'img/test5.jpg',
-            sizeX: '300px',
-            sizeY: '300px'
-        },
-        Stimulus8: {
-            Name: 'StimDefault5',
-            Image: 'img/test5.jpg',
-            sizeX: '300px',
-            sizeY: '300px'
-        },
-        Stimulus9: {
-            Name: 'StimDefault5',
-            Image: 'img/test5.jpg',
-            sizeX: '300px',
-            sizeY: '300px'
-        }
-
-    }
-};
 
 //Scene setup
 function init() {
@@ -172,17 +106,6 @@ function init() {
 
     //create the gui and the stims
     createGUI();
-
-
-    //reads stims from the json
-
-    var preppedStim;
-
-    if (typeof preppedStim === 'undefined') {
-            preppedStim = convertExperimentToThing(importJSON);
-    }
-    makeStims(preppedStim);
-
 
     //Renderer
     renderer = new THREE.WebGLRenderer({antialias: true});
@@ -960,7 +883,7 @@ function makeStims(stimuli) {
             object.position.z = board.position.z + 110;
             labelYoffset = 20;
         }
-        object.rotation.x = board.rotation.x;
+        object.rotation.x = board.rotation.x + 1;
         object.onStimBoard = false;
         scene.add(object);
         //create a label for the stim
@@ -1011,7 +934,7 @@ function makeLabel(stims, obj, count){
         material1
     );
     label.position.set(obj.position.x - 130, obj.position.y + 10, obj.position.z);
-    label.rotation.x = -.5;
+    label.rotation.x = .5;
     scene.add(label);
     //this might should be obj.add(label), but you'd have to play with it. labels may be positioned weird so if you do
     //obj.add(label), you may need to play with this positioning
