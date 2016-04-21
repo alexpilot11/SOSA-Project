@@ -9,8 +9,13 @@ var count = 0;
 var stimColor;
 var bgColor;
 
-var stimGui, stimTest, stimNamesList;
+var stimGui, stimTest;
 
+var stimSet = {};
+
+// My goal:
+// - Combine stimNamesList and stimTest under a different, more suitable name
+// - Enable saving of a bunch of stims, exporting them into a file that uses the same format as what is imported in run
 
 //Scene setup
 function init() {
@@ -167,8 +172,6 @@ function createGui() {
         this.stimJSONString = [];
     };
 
-    stimNamesList = [];
-
     stimGui = new stimGuiControls();
     var guiLeft = new dat.GUI();
     guiLeft.domElement.style.position = 'absolute';
@@ -240,7 +243,19 @@ function createGui() {
     add.open();
     //add stim button. saves the stim info
     add.add(stimTest, 'add').listen().onChange(function () {
-        if (stimNamesList.length < 9) {
+
+        // Object size solution from http://stackoverflow.com/questions/5223/length-of-a-javascript-object-that-is-associative-array
+        Object.size = function(obj) {
+            var size = 0, key;
+            for (key in obj) {
+                if (obj.hasOwnProperty(key)) size++;
+            }
+            return size;
+        };
+
+        // Get the size of an object
+        var size = Object.size(stimSet);
+        if (size < 9) {
             var newStim = stimTest.stimName;
             var isThere = false;
             var isThereIndex = -1;
@@ -253,7 +268,13 @@ function createGui() {
                     break;
                 }
             }
-            stimNamesList.push(newStim);
+
+            if(typeof stimSet[newStim] === 'undefined') {
+                stimSet[newStim] = {
+                    'Name': newStim
+                };
+            }
+
             updateDropdown(guiLeft);
             setDataString(stimTest, isThere, isThereIndex);
             setDefaults(stimTest);
@@ -276,10 +297,16 @@ function createGui() {
     function updateDropdown(guiLeft) {
         //updates the left gui. called by the add button
         guiLeft.__controllers[0].remove();
-        guiLeft.add(stimGui, "stimList", stimNamesList).listen().onChange(function () {
+
+        // Grab all of the keys (stim names) from our stimset
+        var stimNames = [];
+        for (var key in stimSet) {
+            if (stimSet.hasOwnProperty(key)) stimNames.push(key);
+        }
+
+        guiLeft.add(stimGui, "stimList", stimNames).listen().onChange(function () {
             var index = document.getElementsByTagName('select')[0].selectedIndex;
             var parse = JSON.parse(stimGui.stimJSONString[index]);
-            //console.log(parse);
             console.log(stimTest.stimName);
             stimTest.stimName = parse.name;
             stimTest.stimR = parse.r;
