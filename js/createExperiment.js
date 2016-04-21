@@ -142,6 +142,9 @@ function createGui() {
         this.save = function(){
         };
 
+        this.backToHome = function(){
+        };
+
     };
 
     //GUI creation
@@ -309,6 +312,15 @@ function createGui() {
         // prompt user to make another stim set or go to
         // run page
 
+    });
+
+    //takes the user back to the home page where they can either run the experiment or create a stim set
+    var backToHome = gui.addFolder('Back to Home');
+    backToHome.open();
+    backToHome.add(stimTest, 'backToHome').onChange(function(){
+        var index_link = document.createElement('a');
+        index_link.setAttribute('href', 'index.html');
+        index_link.click();
     });
 
     function updateDropdown(guiLeft) {
