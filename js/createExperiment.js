@@ -290,6 +290,26 @@ function createGui() {
     save.open();
     save.add(stimTest, 'save').onChange(function(){
         // save stuff as a json
+
+        var stimNames = [];
+        for (var key in stimSet) {
+            if (stimSet.hasOwnProperty(key)) stimNames.push(key);
+        }
+
+        var exportObject = {
+            'orders': {
+                'order1': stimNames
+            },
+            'stimuli': stimSet
+        };
+
+        var exportJSON = JSON.stringify(exportObject);
+        // Download solution from http://stackoverflow.com/questions/19721439/download-json-object-as-a-file-from-browser
+        var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(exportJSON);
+        var dlAnchorElem = document.getElementById('downloadHack');
+        dlAnchorElem.setAttribute("href",     dataStr     );
+        dlAnchorElem.setAttribute("download", "StimSet.json");
+        dlAnchorElem.click();
         // prompt user to make another stim set or go to
         // run page
 
@@ -326,8 +346,6 @@ function createGui() {
             stimSet[currentKey].bgR = parse.bgR;
             stimSet[currentKey].bgG = parse.bgG;
             stimSet[currentKey].bgB = parse.bgB;
-
-            console.log(stimSet[currentKey]);
 
             setStimColor(stimSet[currentKey]);
             setStimSize(stimSet[currentKey]);
