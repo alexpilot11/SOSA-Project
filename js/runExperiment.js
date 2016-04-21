@@ -862,7 +862,9 @@ function makeStims(stimuli) {
         var geometry_box = new THREE.BoxGeometry(40, 40, 40);
         //This does images --- was not working for me on 4-10-16
         //var object = new THREE.Mesh(geometry_box, new THREE.MeshBasicMaterial({map: THREE.ImageUtils.loadTexture(stimuli[i].Image)}));
-        var stimMat = new THREE.MeshBasicMaterial({color: 0x00ff00});
+        var meshColor = 'rgb(' + stimuli[i].stimR + ', ' + stimuli[i].stimG + ', ' + stimuli[i].stimB + ')';
+        console.log(meshColor);
+        var stimMat = new THREE.MeshBasicMaterial({color: meshColor});
         var object = new THREE.Mesh(geometry_box, stimMat);
         var labelYoffset;
 
