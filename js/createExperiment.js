@@ -14,10 +14,6 @@ var stimGui, stimTest;
 var stimSet = {};
 var currentKey;
 
-// My goal:
-// - Combine stimNamesList and stimTest under a different, more suitable name
-// - Enable saving of a bunch of stims, exporting them into a file that uses the same format as what is imported in run
-
 //Scene setup
 function init() {
     //container for everything
