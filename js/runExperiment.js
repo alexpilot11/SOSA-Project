@@ -1,5 +1,5 @@
 //global vars to make things easier
-var container, board, stim_board, info;
+var container, board, stim_board, info, boardTest;
 var camera, controls, scene, renderer;
 var windowHalfX = window.innerWidth / 2;
 var windowHalfY = window.innerHeight / 2;
@@ -10,7 +10,6 @@ var mouse = new THREE.Vector2(),
     offset = new THREE.Vector3(),
     INTERSECTED, SELECTED;
 
-var outputLocationString;
 var canvas1 = [], context1 = [];
 
 var boardColor;
@@ -481,9 +480,12 @@ function finishExperiment(obj, movement, finalLocation, finalDistances) {
 }
 
 function goHome(){
-    var index_link = document.createElement('a');
-    index_link.setAttribute('href', 'index.html');
-    index_link.click();
+    var a = confirm("You will lose changes! Are you sure you want to do this?");
+    if (a) {
+        var index_link = document.createElement('a');
+        index_link.setAttribute('href', 'index.html');
+        index_link.click();
+    }
 }
 
 function createThanks() {
@@ -496,7 +498,9 @@ function createThanks() {
     //create the redirect to home page button.
     var thanks_page = {
         goHome: function () {
-            goHome();
+            var index_link = document.createElement('a');
+            index_link.setAttribute('href', 'index.html');
+            index_link.click();
         }
     };
     thanks_gui.add(thanks_page, 'goHome');
@@ -515,8 +519,8 @@ function createGUI(){
     //Start GUI
     //GUI params
     var gui_controls = function () {
-        this.Name = ' ';
-        this.Version = ' ';
+        this.Name = '';
+        this.Version = '';
         //gui on the right side of the screen. run experiment settings
         this.rotationX = 1;
         this.boardR = 255;
@@ -700,9 +704,6 @@ function createGUI(){
 
         };
 
-        this.outputLoc = function () {
-        };
-
         //launch the experiment
         this.launchExperiment = function () {
             document.getElementsByClassName('dg main a')[0].style.display = 'none';
@@ -713,9 +714,12 @@ function createGUI(){
         };
 
         this.backToHome = function(){
-            var index_link = document.createElement('a');
-            index_link.setAttribute('href', 'index.html');
-            index_link.click();
+            var a = confirm("You will lose changes! Are you sure you want to do this?");
+            if (a) {
+                var index_link = document.createElement('a');
+                index_link.setAttribute('href', 'index.html');
+                index_link.click();
+            }
         };
     };
     //GUI creation
@@ -729,8 +733,8 @@ function createGUI(){
 
     var experimentDetails = gui.addFolder('Experiment Details');
     experimentDetails.open();
-    var experimentName = experimentDetails.add(boardTest, 'Name');
-    var experimentVersion = experimentDetails.add(boardTest, 'Version');
+    gui.add(boardTest, 'Name');
+    gui.add(boardTest, 'Version');
 
     var appearance = gui.addFolder('Appearance');
     appearance.open();
@@ -812,10 +816,6 @@ function createGUI(){
     labels.add(boardTest, 'labelDefaults').listen().onChange(function () {
         setLabelDefaults(boardTest);
     });
-
-    var outputLocation = gui.addFolder('Log Output Location');
-    outputLocation.open();
-    outputLocation.add(boardTest, 'outputLoc');
 
     var launchExperiment = gui.addFolder('Launch Experiment');
     launchExperiment.open();

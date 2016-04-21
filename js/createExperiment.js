@@ -359,9 +359,12 @@ function createGui() {
     var backToHome = gui.addFolder('Back to Home');
     backToHome.open();
     backToHome.add(stimTest, 'backToHome').onChange(function(){
-        var index_link = document.createElement('a');
-        index_link.setAttribute('href', 'index.html');
-        index_link.click();
+        var a = confirm("You will lose changes! Are you sure you want to do this?");
+        if (a) {
+            var index_link = document.createElement('a');
+            index_link.setAttribute('href', 'index.html');
+            index_link.click();
+        }
     });
 
     function updateDropdown(guiLeft) {
