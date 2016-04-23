@@ -886,7 +886,10 @@ function makeStims(stimuli) {
     for (var i = 0; i < stimuli.length; i++) {
 
         // create box
-        var geometry_box = new THREE.BoxGeometry(40, 40, 40);
+        var adjustedX = stimuli[i].sizeX * 40;
+        var adjustedY = stimuli[i].sizeY * 40;
+        var adjustedZ = stimuli[i].sizeZ * 40;
+        var geometry_box = new THREE.BoxGeometry(adjustedX, adjustedY, adjustedZ);
         //This does images --- was not working for me on 4-10-16
         //var object = new THREE.Mesh(geometry_box, new THREE.MeshBasicMaterial({map: THREE.ImageUtils.loadTexture(stimuli[i].Image)}));
         var meshColor = 'rgb(' + stimuli[i].stimR + ', ' + stimuli[i].stimG + ', ' + stimuli[i].stimB + ')';
