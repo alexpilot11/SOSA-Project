@@ -645,6 +645,7 @@ function createGUI(){
 
         this.export = function () {
             //saves the information in this gui to a JSON
+            this.labelsShowing = labelsShowing;
             var exportJSON = JSON.stringify(this);
             // Download solution from http://stackoverflow.com/questions/19721439/download-json-object-as-a-file-from-browser
             var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(exportJSON);
@@ -1012,6 +1013,7 @@ function updateBoard(b, obj) {
     b.labelR = obj.labelR;
     b.labelShade = obj.labelShade;
     b.labelSize = obj.labelSize;
+    b.labelsShowing = obj.labelsShowing;
     b.rotationX = obj.rotationX;
 
     // Handles boardR, boardG, and boardB
@@ -1020,7 +1022,7 @@ function updateBoard(b, obj) {
     // Handles bgR, bgG, and bgB
     setBoardColor(b);
 
-    // Handles labelR, labelG, labelB, and labelShade
+    // Handles labelR, labelG, labelB, labelShade, and labelsShowing
     setLabelColor(b);
 
     // Handles labelSize
@@ -1072,8 +1074,14 @@ function setBackgroundColor(gui){
 }
 
 function setLabelColor(gui){
+
+    console.log(gui);
     //set label coolor to the gui's value
-    if(labelsShowing == true){
+    if(gui.labelsShowing == true){
+        if(labelsShowing == false) {
+            toggleLabels(gui);
+        }
+        console.log('i should not be here');
         labelSize = gui.labelSize + "px";
         labelColor = "rgba(" + Math.round(gui.labelR) + ", " + Math.round(gui.labelG) + ", " + Math.round(gui.labelB) + ", " + gui.labelShade + ")";
         for (var i = 0; i < objects.length; i++) {
@@ -1084,6 +1092,11 @@ function setLabelColor(gui){
             labelTexture.needsUpdate = true;
             objects[i].label.material.map = labelTexture;
             wrapText(context1[i], "Stim #" + (i+1), 0, 50, 125, 20);
+        }
+    }
+    else {
+        if(labelsShowing == true) {
+            toggleLabels(gui);
         }
     }
     labelsChanged = true;
