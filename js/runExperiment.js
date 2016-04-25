@@ -1163,3 +1163,14 @@ function calculateDistance(point1, point2){
 }
 init();
 animate();
+
+var tags = document.getElementsByTagName('input');
+
+for (var i = 0; i < tags.length; i++){
+    tags[i].onclick = function() {
+        this.focus();
+    }
+
+
+}
+
