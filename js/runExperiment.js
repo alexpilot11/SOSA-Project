@@ -213,10 +213,10 @@ function onDocumentMouseUp(event) {
 
         // I'm a wild man, here I make a key for the obj movement tracker of the object to be the date
         // Needs to be selected.name or something but these guys dont have names yet
-        if (objMovementTracker[SELECTED.id] == undefined) {
-            objMovementTracker[SELECTED.id] = {};
+        if (objMovementTracker[SELECTED.name] == undefined) {
+            objMovementTracker[SELECTED.name] = {};
         }
-        objMovementTracker[SELECTED.id][getTimeStamp()] = INTERSECTED.position;
+        objMovementTracker[SELECTED.name][getTimeStamp()] = INTERSECTED.position;
 
         SELECTED = null;
     }
@@ -939,6 +939,7 @@ function makeStims(stimuli) {
 
         object.castShadow = true;
         object.receiveShadow = true;
+        object.name = stimuli[i].Name;
         objects.canMove = false;
 
         //each stim has a different position on the board. This is the algorithm that makes sure they're in the right place
@@ -994,8 +995,7 @@ function makeLabel(stims, obj, count){
     contextlabel.font = "Bold 20px Arial";
     contextlabel.fillStyle = labelColor;
 
-
-    wrapText(contextlabel, "Stim #" + (count+1), 0, 50, 125, 20);
+    wrapText(contextlabel, obj.name, 0, 50, 125, 20);
     context1.push(contextlabel);
     canvas1.push(canvaslabel);
 
