@@ -24,6 +24,10 @@ var labelsChanged = false;
 var preppedStim;
 var labelsShowing = true;
 
+var experimentID;
+
+var viewStimsTimeStamp, beginTimeStamp, firstStimMoveTimeStamp, finishTimeStamp;
+
 var objMovementTracker = {};
 var dummy;
 
@@ -156,6 +160,11 @@ function onDocumentMouseMove(event) {
             SELECTED.position.y += 30;
             SELECTED.position.z += 30;
             SELECTED.rotation.copy(board.rotation);
+
+            //save timestamp if it is the first time a stim is moved
+            if (firstStimMoveTimeStamp == null){
+                firstStimMoveTimeStamp = getTimeStamp();
+            }
         }
         return;
     }
@@ -207,7 +216,7 @@ function onDocumentMouseUp(event) {
         if (objMovementTracker[SELECTED.id] == undefined) {
             objMovementTracker[SELECTED.id] = {};
         }
-        objMovementTracker[SELECTED.id][new Date().toLocaleString()] = INTERSECTED.position;
+        objMovementTracker[SELECTED.id][getTimeStamp()] = INTERSECTED.position;
 
         SELECTED = null;
     }
@@ -226,6 +235,15 @@ function render() {
     renderer.render(scene, camera);
     //makes labels follow stims. might be good later to just make labels children of stims (object.add(label) on create of stim
     updateLabels();
+
+    //this is to fix inputs that for some reason will not focus on click
+    var tags = document.getElementsByTagName('input');
+    for (var i = 0; i < tags.length; i++){
+        tags[i].onclick = function() {
+            this.focus();
+        }
+    }
+
     //changes the background behind the canvas to the same color as the background of the canvas (there will be a bar at the top
     //of the screen that's off color
     document.getElementsByTagName('body')[0].style.backgroundColor = "rgb(" + Math.round(boardTest.bgR) + ", " + Math.round(boardTest.bgG) + ", " + Math.round(boardTest.bgB) + ")"
@@ -298,20 +316,22 @@ function createStimBoard() {
 function createViewStimuli() {
     //This is called when someone clicks "Launch Experiment". it sets up the next page
     info.innerHTML = '<p>Prompt</p>';
-    //create new gui with a Finish Experiment button
+    //create new gui with a View Stim button
     var view_stims = new dat.GUI();
     var stims = view_stims.addFolder('View Stimuli');
     stims.open();
     //create button to view stims
     var view = {
         viewStimuli: function () {
-            viewStimuli();
+            viewStimuli(this);
         },
+        experimentID: '',
         goHome: function() {
             goHome();
         }
     };
     view_stims.add(view, 'viewStimuli');
+    view_stims.add(view, 'experimentID');
     view_stims.add(view, 'goHome');
     view_stims.domElement.style.position = 'absolute';
     view_stims.domElement.style.top = windowHalfY - 50 + 'px';
@@ -320,14 +340,24 @@ function createViewStimuli() {
 
 }
 
-function viewStimuli() {
-    //method that calls the method to view stims
-    info.innerHTML = '<p>Experiment Preview</p>';
+function viewStimuli(gui) {
+    experimentID = gui.experimentID;
 
-    document.getElementsByClassName('view_stims')[0].style.display = 'none';
-    document.getElementsByClassName('draggable')[0].style.display = 'initial';
 
-    createBeginExperiment();
+    if (!(experimentID == '') && !(experimentID == null)) {
+        //method that calls the method to view stims
+        info.innerHTML = '<p>Experiment Preview</p>';
+
+        document.getElementsByClassName('view_stims')[0].style.display = 'none';
+        document.getElementsByClassName('draggable')[0].style.display = 'initial';
+
+        if(viewStimsTimeStamp == null) {
+            viewStimsTimeStamp = getTimeStamp();
+        }
+
+        createBeginExperiment();
+    }
+    else alert("You must enter an Experiment ID before moving on!");
 
 }
 
@@ -416,6 +446,8 @@ function finishExperiment(obj, movement, finalLocation, finalDistances) {
     //This is where output of data happens
     console.log('Finished Experiment');
 
+    finishTimeStamp = getTimeStamp();
+
     var object = (obj !== undefined) ? obj : {};
     var stimMovement = (movement !== undefined) ? movement : {};
     var finalStimLocation = (finalLocation !== undefined) ? finalLocation : {};
@@ -444,6 +476,10 @@ function finishExperiment(obj, movement, finalLocation, finalDistances) {
         'Experiment Name': boardTest.Name,
         'Experiment Version': boardTest.Version,
         'Date': getTodaysDate(),
+        'Begin Experiment Timestamp': beginTimeStamp,
+        'View Stims Timestamp': viewStimsTimeStamp,
+        'First Stim Move Timestamp': firstStimMoveTimeStamp,
+        'Finish Experiment Timestamp': finishTimeStamp,
         'Stimuli': object,
         'Stimuli Movement': stimMovement,
         'Final Stimuli Location': finalStimLocation,
@@ -710,6 +746,8 @@ function createGUI(){
             document.getElementsByClassName('dg main a')[0].style.display = 'none';
             document.getElementsByClassName('draggable')[0].style.display = 'none';
             board.visible = false;
+
+            beginTimeStamp = getTimeStamp();
             createViewStimuli();
 
         };
@@ -1161,16 +1199,12 @@ function calculateDistance(point1, point2){
     var distance = Math.round(Math.sqrt(Math.pow(xDiff, 2) + Math.pow(yDiff, 2)));
     return distance;
 }
+
+function getTimeStamp(){
+    var date = new Date();
+    return date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds();
+}
+
 init();
 animate();
-
-var tags = document.getElementsByTagName('input');
-
-for (var i = 0; i < tags.length; i++){
-    tags[i].onclick = function() {
-        this.focus();
-    }
-
-
-}
 
