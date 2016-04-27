@@ -277,7 +277,7 @@ function updateLabels() {
     for (var i = 0; i < objects.length; i++) {
         var offsetY;
         if (objects[i].onStimBoard) {
-            objects[i].label.position.set(objects[i].position.x - 100, objects[i].position.y, objects[i].position.z);
+            objects[i].label.position.set(objects[i].position.x - 200, objects[i].position.y, objects[i].position.z);
         }
         else {
             if (objects[i].position.y > 0) {
@@ -400,8 +400,14 @@ function centerStimsOnBoard() {
         objects[i].canMove = true;
         objects[i].onStimBoard = true;
         objects[i].position.x = stim_board.position.x - (i * 10) + 130;
-        objects[i].position.y = stim_board.position.y + 350 - (i * 80);
+
+        //UNCOMMENT THIS NEXT LINE
+        //objects[i].position.y = stim_board.position.y + 350 - (i * 80);
+        objects[i].position.y = stim_board.position.y + 350 - (i * 80) + (110 - ((i + 1) * 50));
+        //DELETE THIS PREVIOUS LINE
         objects[i].position.z = stim_board.position.z + (i * 50);
+        //DELETE THIS NEXT LINE
+        objects[i].rotation.x  = 1.1;
         objects[i].label.rotation.x = -.5;
 
 
