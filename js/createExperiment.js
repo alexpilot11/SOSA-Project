@@ -256,13 +256,13 @@ function createGui() {
         // Get the size of an object
         var size = Object.size(stimSet);
         if (size < 9) {
-            var newStim = stimTest.stimName;
+            var newStim = stimTest.stimName.substring(0, 10);
             var isThere = false;
             var isThereIndex = -1;
 
             for (var i = 0; i < stimGui.stimJSONString.length; i++) {
                 var parse = JSON.parse(stimGui.stimJSONString[i]);
-                if (parse.name == stimTest.stimName) {
+                if (parse.name == stimTest.stimName.substring(0, 10)) {
                     isThere = true;
                     isThereIndex = i;
                     break;
@@ -319,7 +319,7 @@ function createGui() {
                 stimSet[currentKey] = {};
             }
 
-            stimSet[currentKey].stimName = parse.name;
+            stimSet[currentKey].stimName = parse.name.substring(0, 10);
             stimSet[currentKey].stimR = parse.r;
             stimSet[currentKey].stimG = parse.g;
             stimSet[currentKey].stimB = parse.b;
@@ -388,7 +388,7 @@ function createGui() {
                 stimSet[currentKey] = {};
             }
 
-            stimSet[currentKey].stimName = parse.name;
+            stimSet[currentKey].stimName = parse.name.substring(0, 10);
             stimSet[currentKey].stimR = parse.r;
             stimSet[currentKey].stimG = parse.g;
             stimSet[currentKey].stimB = parse.b;
@@ -412,7 +412,7 @@ function createGui() {
         if(isThere && index != -1){
             stimGui.stimJSONString[index] = JSON.stringify({
                 index: index,
-                name: gui.stimName,
+                name: gui.stimName.substring(0, 10),
                 r: Math.round(gui.stimR),
                 g: Math.round(gui.stimG),
                 b: Math.round(gui.stimB),
@@ -429,7 +429,7 @@ function createGui() {
             stimGui.stimJSONString.push(JSON.stringify(
                 {
                     index: count,
-                    name: gui.stimName,
+                    name: gui.stimName.substring(0, 10),
                     r: Math.round(gui.stimR),
                     g: Math.round(gui.stimG),
                     b: Math.round(gui.stimB),
