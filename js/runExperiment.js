@@ -401,13 +401,8 @@ function centerStimsOnBoard() {
         objects[i].onStimBoard = true;
         objects[i].position.x = stim_board.position.x - (i * 10) + 130;
 
-        //UNCOMMENT THIS NEXT LINE
-        //objects[i].position.y = stim_board.position.y + 350 - (i * 80);
-        objects[i].position.y = stim_board.position.y + 350 - (i * 80) + (110 - ((i + 1) * 50));
-        //DELETE THIS PREVIOUS LINE
+        objects[i].position.y = stim_board.position.y + 350 - (i * 80);
         objects[i].position.z = stim_board.position.z + (i * 50);
-        //DELETE THIS NEXT LINE
-        objects[i].rotation.x  = 1.1;
         objects[i].label.rotation.x = -.5;
 
 
