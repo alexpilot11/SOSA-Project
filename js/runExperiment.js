@@ -81,7 +81,7 @@ function init() {
 
     //Board
     //the windowHalfX and Y make it so that it sets the board at different sizes for different screens
-    var geometry = new THREE.BoxGeometry(windowHalfX * 1.5, 20, windowHalfY * 1.8);
+    var geometry = new THREE.BoxGeometry(windowHalfY * 1.8, 20, windowHalfY * 1.8);
     for (var i = 0; i < geometry.faces.length; i += 2) {
         var colo = "rgb(255, 255, 255)";
         geometry.faces[i].color.set(new THREE.Color(colo));
@@ -992,20 +992,20 @@ function makeStims(stimuli) {
 
         //each stim has a different position on the board. This is the algorithm that makes sure they're in the right place
         if (i >= 0 && i <= 2) {
-            object.position.x = board.position.x + (i * 300) - 300;
+            object.position.x = board.position.x + (i * 200) - 200;
             object.position.y = board.position.y + 200;
             object.position.z = board.position.z - 30;
             labelYoffset = 60;
         }
 
         else if (i >= 3 && i <= 5) {
-            object.position.x = board.position.x + ((i - 4) * 300);
+            object.position.x = board.position.x + ((i - 4) * 200);
             object.position.y = board.position.y;
             object.position.z = board.position.z + 30;
             labelYoffset = 75;
         }
         else if (i >= 6 && i <= 8) {
-            object.position.x = board.position.x + ((i - 7) * 300);
+            object.position.x = board.position.x + ((i - 7) * 200);
             object.position.y = board.position.y - 150;
             object.position.z = board.position.z + 110;
             labelYoffset = 20;
@@ -1240,17 +1240,17 @@ function toggleLabels(gui) {
 
 }
 
+function getTimeStamp() {
+    var date = new Date();
+    return date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds();
+}
+
 function calculateDistance(point1, point2) {
     //calculate distances between two stims
     var xDiff = (point2.position.x - point1.position.x);
     var yDiff = (point2.position.y - point1.position.y);
-    var distance = Math.round(Math.sqrt(Math.pow(xDiff, 2) + Math.pow(yDiff, 2)));
+    var distance = Math.round(Math.sqrt(Math.pow(xDiff, 2) + Math.pow(yDiff, 2)))/(windowHalfY * 1.8 / 24);
     return distance;
-}
-
-function getTimeStamp() {
-    var date = new Date();
-    return date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds();
 }
 
 init();
