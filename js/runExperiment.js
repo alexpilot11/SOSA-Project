@@ -498,8 +498,8 @@ function finishExperiment(obj, movement, finalLocation, finalDistances) {
 
         }
         else if (key == 'Stimuli Movement') {
-            listOutput.push(key);
-            listOutput.push('Stim Name,Time Stamp,Coordinates');
+            listOutput.push(key + '\n');
+            listOutput.push('Stim Name,Time Stamp,Coordinates,\n');
             for (var key2 in output[key]) {
                 for (var key3 in output[key][key2]) {
                     var keys = Object.keys(output[key][key2][key3]);
@@ -508,9 +508,9 @@ function finishExperiment(obj, movement, finalLocation, finalDistances) {
                 }
             }
         }
-        else if (key == 'Final Stimuli Location') {
-            listOutput.push(key);
-            listOutput.push('Stim number,Coordinates');
+        else if (key == 'Final Stimuli Location,\n') {
+            listOutput.push(key+ '\n');
+            listOutput.push('Stim number,Coordinates,\n');
             for (var key2 in output[key]) {
                 var keys = Object.keys(output[key][key2]);
                 listOutput.push(key2 + ',(' + output[key][key2][keys[0]] + ';' + output[key][key2][keys[1]] + ')' + ',\n');
@@ -518,8 +518,8 @@ function finishExperiment(obj, movement, finalLocation, finalDistances) {
             }
         }
         else if (key == 'Final Stimuli Distances') {
-            listOutput.push(key);
-            listOutput.push('Stim number,To Stim,Distance');
+            listOutput.push(key+ '\n');
+            listOutput.push('Stim number,To Stim,Distance,\n');
             for (var key2 in output[key]) {
                 for (var key3 in output[key][key2]) {
                     listOutput.push(key2 + ',' + key3 + ',' + output[key][key2][key3] + ',\n');
@@ -529,9 +529,8 @@ function finishExperiment(obj, movement, finalLocation, finalDistances) {
         }
     }
 
-    var exportCSV = JSON.stringify(listOutput);
     // Download solution from http://stackoverflow.com/questions/19721439/download-json-object-as-a-file-from-browser
-    var dataStr = "data:text/csv;charset=utf-8," + encodeURIComponent(exportCSV);
+    var dataStr = "data:text/csv;charset=utf-8," + encodeURIComponent(listOutput);
     var dlAnchorElem = document.getElementById('downloadHack');
     dlAnchorElem.setAttribute("href",     dataStr     );
     dlAnchorElem.setAttribute("download", "CompletedExperiment.csv");
