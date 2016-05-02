@@ -212,11 +212,13 @@ function onDocumentMouseUp(event) {
         plane.position.copy(INTERSECTED.position);
 
         // I'm a wild man, here I make a key for the obj movement tracker of the object to be the date
-        // Needs to be selected.name or something but these guys dont have names yet
         if (objMovementTracker[SELECTED.name] == undefined) {
             objMovementTracker[SELECTED.name] = {};
         }
-        objMovementTracker[SELECTED.name][getTimeStamp()] = INTERSECTED.position;
+        //console.log(INTERSECTED.position);
+        var timeStamp = getTimeStamp();
+        objMovementTracker[SELECTED.name][timeStamp] = '(' + SELECTED.position.x + '|' + SELECTED.position.y + '|' + SELECTED.position.z + ')';
+        console.log(objMovementTracker);
 
         SELECTED = null;
     }
@@ -503,7 +505,8 @@ function finishExperiment(obj, movement, finalLocation, finalDistances) {
             for (var key2 in output[key]) {
                 for (var key3 in output[key][key2]) {
                     var keys = Object.keys(output[key][key2][key3]);
-                    listOutput.push(key2 + ',' + key3 + ',(' + output[key][key2][key3][keys[0]] + ';' + output[key][key2][key3][keys[1]] + ';' + output[key][key2][key3][keys[2]] + ')' + ',\n');
+                    console.log(keys);
+                    listOutput.push(key2 + ',' + key3 + ',' + output[key][key2][key3] + ',\n');
                     //console.log(key2 + ',' + key3 + ',(' + output[key][key2][key3][keys[0]] + ';' + output[key][key2][key3][keys[1]] + ';' + output[key][key2][key3][keys[2]] + ')' + '\n');
                 }
             }
