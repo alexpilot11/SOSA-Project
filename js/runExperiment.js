@@ -23,7 +23,7 @@ var contextlabel = canvaslabel.getContext('2d');
 var labelsChanged = false;
 var preppedStim;
 var labelsShowing = true;
-
+var listOutput = [];
 var experimentID;
 
 var viewStimsTimeStamp, beginTimeStamp, firstStimMoveTimeStamp, finishTimeStamp;
@@ -81,7 +81,7 @@ function init() {
 
     //Board
     //the windowHalfX and Y make it so that it sets the board at different sizes for different screens
-    var geometry = new THREE.BoxGeometry(windowHalfX * 1.5, 20, windowHalfY * 1.8);
+    var geometry = new THREE.BoxGeometry(windowHalfY * 1.8, 20, windowHalfY * 1.8);
     for (var i = 0; i < geometry.faces.length; i += 2) {
         var colo = "rgb(255, 255, 255)";
         geometry.faces[i].color.set(new THREE.Color(colo));
@@ -162,7 +162,7 @@ function onDocumentMouseMove(event) {
             SELECTED.rotation.copy(board.rotation);
 
             //save timestamp if it is the first time a stim is moved
-            if (firstStimMoveTimeStamp == null){
+            if (firstStimMoveTimeStamp == null) {
                 firstStimMoveTimeStamp = getTimeStamp();
             }
         }
@@ -212,11 +212,13 @@ function onDocumentMouseUp(event) {
         plane.position.copy(INTERSECTED.position);
 
         // I'm a wild man, here I make a key for the obj movement tracker of the object to be the date
-        // Needs to be selected.name or something but these guys dont have names yet
         if (objMovementTracker[SELECTED.name] == undefined) {
             objMovementTracker[SELECTED.name] = {};
         }
-        objMovementTracker[SELECTED.name][getTimeStamp()] = INTERSECTED.position;
+        //console.log(INTERSECTED.position);
+        var timeStamp = getTimeStamp();
+        objMovementTracker[SELECTED.name][timeStamp] = '(' + SELECTED.position.x + '|' + SELECTED.position.y + '|' + SELECTED.position.z + ')';
+        console.log(objMovementTracker);
 
         SELECTED = null;
     }
@@ -238,8 +240,8 @@ function render() {
 
     //this is to fix inputs that for some reason will not focus on click
     var tags = document.getElementsByTagName('input');
-    for (var i = 0; i < tags.length; i++){
-        tags[i].onclick = function() {
+    for (var i = 0; i < tags.length; i++) {
+        tags[i].onclick = function () {
             this.focus();
         }
     }
@@ -250,22 +252,22 @@ function render() {
 
 }
 
-function getTodaysDate(){
+function getTodaysDate() {
     //get today's date. This is used for the output stuff
     var today = new Date();
     var dd = today.getDate();
-    var mm = today.getMonth()+1; //January is 0!
+    var mm = today.getMonth() + 1; //January is 0!
     var yyyy = today.getFullYear();
 
-    if(dd<10) {
-        dd='0'+dd
+    if (dd < 10) {
+        dd = '0' + dd
     }
 
-    if(mm<10) {
-        mm='0'+mm
+    if (mm < 10) {
+        mm = '0' + mm
     }
 
-    today = mm+'/'+dd+'/'+yyyy;
+    today = mm + '/' + dd + '/' + yyyy;
     return today;
 }
 
@@ -326,7 +328,7 @@ function createViewStimuli() {
             viewStimuli(this);
         },
         experimentID: '',
-        goHome: function() {
+        goHome: function () {
             goHome();
         }
     };
@@ -351,7 +353,7 @@ function viewStimuli(gui) {
         document.getElementsByClassName('view_stims')[0].style.display = 'none';
         document.getElementsByClassName('draggable')[0].style.display = 'initial';
 
-        if(viewStimsTimeStamp == null) {
+        if (viewStimsTimeStamp == null) {
             viewStimsTimeStamp = getTimeStamp();
         }
 
@@ -373,7 +375,7 @@ function createBeginExperiment() {
         beginExperiment: function () {
             createFinishExperiment();
         },
-        goHome: function() {
+        goHome: function () {
             goHome();
         }
     };
@@ -383,7 +385,7 @@ function createBeginExperiment() {
     begin_gui.domElement.style.top = window.innerHeight - 100 + 'px';
     begin_gui.domElement.style.left = windowHalfX - 100 + 'px';
     begin_gui.domElement.setAttribute('class', 'begin_gui');
-    for (var i = 0; i < objects.length; i++){
+    for (var i = 0; i < objects.length; i++) {
         objects[i].position.x += 100;
     }
     board.position.x = 0;
@@ -431,7 +433,7 @@ function createFinishExperiment() {
             // Placeholder I need to pass in all my values
             finishExperiment(undefined, objMovementTracker, undefined, undefined);
         },
-        goHome: function() {
+        goHome: function () {
             goHome();
         }
 
@@ -455,7 +457,7 @@ function finishExperiment(obj, movement, finalLocation, finalDistances) {
     var finalStimDistances = (finalDistances !== undefined) ? finalDistances : {};
 
 
-    for(var i = 0; i<objects.length; i++){
+    for (var i = 0; i < objects.length; i++) {
 
         finalStimLocation[i] = {};
         finalStimDistances[i] = {};
@@ -467,7 +469,7 @@ function finishExperiment(obj, movement, finalLocation, finalDistances) {
             delete stimMovement[i];
         }
 
-        for(var j = 1+i; j<objects.length; j++){
+        for (var j = 1 + i; j < objects.length; j++) {
             //gets distance between points
             finalStimDistances[i]['distance to ' + j] = calculateDistance(objects[i], objects[j]);
         }
@@ -481,19 +483,60 @@ function finishExperiment(obj, movement, finalLocation, finalDistances) {
         'View Stims Timestamp': viewStimsTimeStamp,
         'First Stim Move Timestamp': firstStimMoveTimeStamp,
         'Finish Experiment Timestamp': finishTimeStamp,
-        'Stimuli': object,
+        //commenting this because we don't use it right now
+        //'Stimuli': object,
         'Stimuli Movement': stimMovement,
         'Final Stimuli Location': finalStimLocation,
         'Final Stimuli Distances': finalStimDistances
     };
-    console.log(output);
+    //console.log(output);
 
-    var exportJSON = JSON.stringify(output);
+
+    //for outputting to csv
+    for (var key in output) {
+        if (key != 'Stimuli Movement' && key != 'Final Stimuli Location' && key != 'Final Stimuli Distances') {
+            //console.log(key + ',' + output[key] + '\n');
+            listOutput.push(key + ',' + output[key] + ',\n');
+
+        }
+        else if (key == 'Stimuli Movement') {
+            listOutput.push(key + '\n');
+            listOutput.push('Stim Name,Time Stamp,Coordinates,\n');
+            for (var key2 in output[key]) {
+                for (var key3 in output[key][key2]) {
+                    var keys = Object.keys(output[key][key2][key3]);
+                    console.log(keys);
+                    listOutput.push(key2 + ',' + key3 + ',' + output[key][key2][key3] + ',\n');
+                    //console.log(key2 + ',' + key3 + ',(' + output[key][key2][key3][keys[0]] + ';' + output[key][key2][key3][keys[1]] + ';' + output[key][key2][key3][keys[2]] + ')' + '\n');
+                }
+            }
+        }
+        else if (key == 'Final Stimuli Location,\n') {
+            listOutput.push(key+ '\n');
+            listOutput.push('Stim number,Coordinates,\n');
+            for (var key2 in output[key]) {
+                var keys = Object.keys(output[key][key2]);
+                listOutput.push(key2 + ',(' + output[key][key2][keys[0]] + ';' + output[key][key2][keys[1]] + ')' + ',\n');
+                //console.log(key2 + ',(' + output[key][key2][keys[0]] + ';' + output[key][key2][keys[1]] + ')' + '\n');
+            }
+        }
+        else if (key == 'Final Stimuli Distances') {
+            listOutput.push(key+ '\n');
+            listOutput.push('Stim number,To Stim,Distance,\n');
+            for (var key2 in output[key]) {
+                for (var key3 in output[key][key2]) {
+                    listOutput.push(key2 + ',' + key3 + ',' + output[key][key2][key3] + ',\n');
+                    //console.log(key2 + ',' + key3 + ',' + output[key][key2][key3] + '\n');
+                }
+            }
+        }
+    }
+
     // Download solution from http://stackoverflow.com/questions/19721439/download-json-object-as-a-file-from-browser
-    var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(exportJSON);
+    var dataStr = "data:text/csv;charset=utf-8," + encodeURIComponent(listOutput);
     var dlAnchorElem = document.getElementById('downloadHack');
     dlAnchorElem.setAttribute("href",     dataStr     );
-    dlAnchorElem.setAttribute("download", "CompletedExperiment.json");
+    dlAnchorElem.setAttribute("download", "CompletedExperiment.csv");
     dlAnchorElem.click();
 
     /*
@@ -516,7 +559,7 @@ function finishExperiment(obj, movement, finalLocation, finalDistances) {
     createThanks();
 }
 
-function goHome(){
+function goHome() {
     var a = confirm("You will lose changes! Are you sure you want to do this?");
     if (a) {
         var index_link = document.createElement('a');
@@ -551,7 +594,7 @@ function createThanks() {
 
 }
 
-function createGUI(){
+function createGUI() {
     //used to create the GUI
     //Start GUI
     //GUI params
@@ -578,8 +621,8 @@ function createGUI(){
             board.rotation.x = 1;
             dummy.rotation.x = board.rotation.x - 1.2;
 
-            for(var i = 0; i < objects.length; i++){
-                objects[i].label.rotation.x = 1-board.rotation.x;
+            for (var i = 0; i < objects.length; i++) {
+                objects[i].label.rotation.x = 1 - board.rotation.x;
             }
 
         };
@@ -617,7 +660,7 @@ function createGUI(){
 
                 if (file) {
                     var reader = new FileReader();
-                    reader.onload = function(e) {
+                    reader.onload = function (e) {
                         var contents = e.target.result;
                         try {
                             contentsObj = JSON.parse(contents);
@@ -637,11 +680,12 @@ function createGUI(){
                     alert('Unable to load in a file.');
                 }
             }
+
             document.getElementById('myInput').addEventListener('change', readSingleFile, false);
 
         };
 
-        this.importStimSet = function() {
+        this.importStimSet = function () {
 
             console.log('hellloo');
             document.getElementById("myStimInput").click();
@@ -653,7 +697,7 @@ function createGUI(){
 
                 if (file) {
                     var reader = new FileReader();
-                    reader.onload = function(e) {
+                    reader.onload = function (e) {
                         var contents = e.target.result;
                         var contentsObj;
                         try {
@@ -687,14 +731,14 @@ function createGUI(){
             // Download solution from http://stackoverflow.com/questions/19721439/download-json-object-as-a-file-from-browser
             var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(exportJSON);
             var dlAnchorElem = document.getElementById('downloadHack');
-            dlAnchorElem.setAttribute("href",     dataStr     );
+            dlAnchorElem.setAttribute("href", dataStr);
             dlAnchorElem.setAttribute("download", "experimentSettings.json");
             dlAnchorElem.click();
 
 
         };
 
-        this.stimPlaceHolderFunc = function() {
+        this.stimPlaceHolderFunc = function () {
             // Fires the click event on the invisible input
             document.getElementById("myInput").click();
 
@@ -704,7 +748,7 @@ function createGUI(){
 
                 if (file) {
                     var reader = new FileReader();
-                    reader.onload = function(e) {
+                    reader.onload = function (e) {
                         var contents = e.target.result;
                         var contentsObj;
                         try {
@@ -724,6 +768,7 @@ function createGUI(){
                     alert('Unable to load in a file.');
                 }
             }
+
             document.getElementById('myInput').addEventListener('change', readSingleFile, false);
 
         };
@@ -731,8 +776,10 @@ function createGUI(){
         this.toggleLabels = function () {
         };
 
-        this.labelUp = function() {};
-        this.labelDown = function() {};
+        this.labelUp = function () {
+        };
+        this.labelDown = function () {
+        };
         this.labelShade = 1;
         this.labelSize = 20;
         this.labelR = 255;
@@ -753,7 +800,7 @@ function createGUI(){
 
         };
 
-        this.backToHome = function(){
+        this.backToHome = function () {
             var a = confirm("You will lose changes! Are you sure you want to do this?");
             if (a) {
                 var index_link = document.createElement('a');
@@ -787,8 +834,8 @@ function createGUI(){
 
         dummy.rotation.x = board.rotation.x - 1.2;
 
-        for(var i = 0; i < objects.length; i++){
-            objects[i].label.rotation.x = 1-board.rotation.x;
+        for (var i = 0; i < objects.length; i++) {
+            objects[i].label.rotation.x = 1 - board.rotation.x;
         }
 
     });
@@ -825,15 +872,15 @@ function createGUI(){
 
     var labels = gui.addFolder('Labels');
     labels.open();
-    labels.add(boardTest, 'toggleLabels').listen().onChange(function(){
+    labels.add(boardTest, 'toggleLabels').listen().onChange(function () {
         toggleLabels(boardTest);
     });
-    labels.add(boardTest, 'labelUp').listen().onChange(function(){
+    labels.add(boardTest, 'labelUp').listen().onChange(function () {
         for (var i = 0; i < objects.length; i++) {
             labelPos += .5;
         }
     });
-    labels.add(boardTest, 'labelDown').listen().onChange(function(){
+    labels.add(boardTest, 'labelDown').listen().onChange(function () {
         for (var i = 0; i < objects.length; i++) {
             labelPos -= .5;
         }
@@ -945,20 +992,20 @@ function makeStims(stimuli) {
 
         //each stim has a different position on the board. This is the algorithm that makes sure they're in the right place
         if (i >= 0 && i <= 2) {
-            object.position.x = board.position.x + (i * 300) - 300;
+            object.position.x = board.position.x + (i * 200) - 200;
             object.position.y = board.position.y + 200;
             object.position.z = board.position.z - 30;
             labelYoffset = 60;
         }
 
         else if (i >= 3 && i <= 5) {
-            object.position.x = board.position.x + ((i - 4) * 300);
+            object.position.x = board.position.x + ((i - 4) * 200);
             object.position.y = board.position.y;
             object.position.z = board.position.z + 30;
             labelYoffset = 75;
         }
         else if (i >= 6 && i <= 8) {
-            object.position.x = board.position.x + ((i - 7) * 300);
+            object.position.x = board.position.x + ((i - 7) * 200);
             object.position.y = board.position.y - 150;
             object.position.z = board.position.z + 110;
             labelYoffset = 20;
@@ -974,7 +1021,7 @@ function makeStims(stimuli) {
 
 }
 
-function makeLabel(stims, obj, count){
+function makeLabel(stims, obj, count) {
     //MAKE LABELS
     //would be good to make these labels children of their objects later so they follow more easily.
 
@@ -1023,7 +1070,7 @@ function makeLabel(stims, obj, count){
     objects.push(obj);
 }
 
-function overwriteLabel(count){
+function overwriteLabel(count) {
     //This draws white over the label so we can do things like change color or size. Its a canvas, so we can't just change
     //some sort of "text" attribute or something, we actually have to write it
     context1[count].fillStyle = boardColor = "rgba(" + Math.round(boardTest.boardR) + ", " + Math.round(boardTest.boardG) + ", " + Math.round(boardTest.boardB) + ", " + boardTest.labelShade + ")";
@@ -1031,7 +1078,7 @@ function overwriteLabel(count){
     labelTexture = new THREE.Texture(canvas1[count]);
     labelTexture.needsUpdate = true;
     objects[count].label.material.map = labelTexture;
-    wrapText(context1[count], "Stim #" + (count+1), 0, 50, 125, 20);
+    wrapText(context1[count], "Stim #" + (count + 1), 0, 50, 125, 20);
 }
 
 function updateBoard(b, obj) {
@@ -1072,8 +1119,8 @@ function updateBoard(b, obj) {
 
     dummy.rotation.x = board.rotation.x - 1.2;
 
-    for(var i = 0; i < objects.length; i++){
-        objects[i].label.rotation.x = 1-board.rotation.x;
+    for (var i = 0; i < objects.length; i++) {
+        objects[i].label.rotation.x = 1 - board.rotation.x;
     }
 
 
@@ -1100,24 +1147,24 @@ function wrapText(context, text, x, y, maxWidth, lineHeight) {
     context.fillText(line, x, y);
 }
 
-function setBoardColor(gui){
+function setBoardColor(gui) {
     //set board color to the gui's value
     boardColor = "rgb(" + Math.round(gui.boardR) + ", " + Math.round(gui.boardG) + ", " + Math.round(gui.boardB) + ")";
     board.material.color.set(new THREE.Color(boardColor));
 }
 
-function setBackgroundColor(gui){
+function setBackgroundColor(gui) {
     //set background color to the gui's value
     bgColor = "rgb(" + Math.round(gui.bgR) + ", " + Math.round(gui.bgG) + ", " + Math.round(gui.bgB) + ")";
     renderer.setClearColor(new THREE.Color(bgColor));
 }
 
-function setLabelColor(gui){
+function setLabelColor(gui) {
 
     console.log(gui);
     //set label coolor to the gui's value
-    if(gui.labelsShowing == true){
-        if(labelsShowing == false) {
+    if (gui.labelsShowing == true) {
+        if (labelsShowing == false) {
             toggleLabels(gui);
         }
         console.log('i should not be here');
@@ -1130,31 +1177,31 @@ function setLabelColor(gui){
             labelTexture = new THREE.Texture(canvas1[i]);
             labelTexture.needsUpdate = true;
             objects[i].label.material.map = labelTexture;
-            wrapText(context1[i], "Stim #" + (i+1), 0, 50, 125, 20);
+            wrapText(context1[i], "Stim #" + (i + 1), 0, 50, 125, 20);
         }
     }
     else {
-        if(labelsShowing == true) {
+        if (labelsShowing == true) {
             toggleLabels(gui);
         }
     }
     labelsChanged = true;
 }
 
-function setLabelSize(gui){
+function setLabelSize(gui) {
     //overwrite the label, set it to the font size the gui says to
-    if(labelsShowing == true){
+    if (labelsShowing == true) {
         labelSize = gui.labelSize + "px";
         labelColor = "rgba(" + Math.round(gui.labelR) + ", " + Math.round(gui.labelG) + ", " + Math.round(gui.labelB) + ", " + gui.labelShade + ")";
 
-        for(var i = 0; i < objects.length; i++){
+        for (var i = 0; i < objects.length; i++) {
             overwriteLabel(i);
             context1[i].font = 'Bold ' + labelSize + ' Arial';
             context1[i].fillStyle = labelColor;
             labelTexture = new THREE.Texture(canvas1[i]);
             labelTexture.needsUpdate = true;
             objects[i].label.material.map = labelTexture;
-            wrapText(context1[i], "Stim #" + (i+1), 0, 50, 125, 20);
+            wrapText(context1[i], "Stim #" + (i + 1), 0, 50, 125, 20);
         }
     }
     labelsChanged = true;
@@ -1172,38 +1219,38 @@ function setLabelDefaults(gui) {
     gui.labelShade = 1;
     gui.labelSize = 20;
 
-    for(var i = 0; i < objects.length; i++){
+    for (var i = 0; i < objects.length; i++) {
         context1[i].font = 'Bold ' + labelSize + ' Arial';
         context1[i].fillStyle = labelColor;
         labelTexture = new THREE.Texture(canvas1[i]);
         labelTexture.needsUpdate = true;
         objects[i].label.material.map = labelTexture;
-        wrapText(context1[i], "Stim #" + (i+1), 0, 50, 125, 20);
+        wrapText(context1[i], "Stim #" + (i + 1), 0, 50, 125, 20);
     }
     labelsChanged = true;
 
 }
 
-function toggleLabels(gui){
+function toggleLabels(gui) {
     //make labels visible/invisible
-    for (var i = 0; i < objects.length; i++){
+    for (var i = 0; i < objects.length; i++) {
         objects[i].label.visible = !objects[i].label.visible;
         labelsShowing = !labelsShowing;
     }
 
 }
 
-function calculateDistance(point1, point2){
+function getTimeStamp() {
+    var date = new Date();
+    return date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds();
+}
+
+function calculateDistance(point1, point2) {
     //calculate distances between two stims
     var xDiff = (point2.position.x - point1.position.x);
     var yDiff = (point2.position.y - point1.position.y);
-    var distance = Math.round(Math.sqrt(Math.pow(xDiff, 2) + Math.pow(yDiff, 2)));
+    var distance = Math.round(Math.sqrt(Math.pow(xDiff, 2) + Math.pow(yDiff, 2)))/(windowHalfY * 1.8 / 24);
     return distance;
-}
-
-function getTimeStamp(){
-    var date = new Date();
-    return date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds();
 }
 
 init();
