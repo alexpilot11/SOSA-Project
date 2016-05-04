@@ -478,6 +478,7 @@ function finishExperiment(obj, movement, finalLocation, finalDistances) {
     var output = {
         'Experiment Name': boardTest.Name,
         'Experiment Version': boardTest.Version,
+        'Experiment ID': experimentID,
         'Date': getTodaysDate(),
         'Begin Experiment Timestamp': beginTimeStamp,
         'View Stims Timestamp': viewStimsTimeStamp,
