@@ -1,5 +1,7 @@
-//---QUESTIONABLE---
+//done
 QUnit.test( "init", function( assert ) {
+	init();
+
 	assert.equal( info.style.position, 'absolute', "Passed" );
 	assert.equal( info.style.top, '10px', "Passed");
 	assert.equal( info.style.width, '100%', "Passed");
@@ -38,48 +40,51 @@ QUnit.test( "init", function( assert ) {
 	assert.equal( renderer.shadowMap.type , THREE.PCFShadowMap, "Passed");
 });
 
-//---REQUIRE USER INPUT---
-QUnit.test( "onWindowResize", function( assert ) {
-	assert.equal( windowHalfX, window.innerWidth / 2, "Passed" );
-	assert.equal( windowHalfY, window.innerHeight / 2, "Passed" );
+//not used
+//QUnit.test( "onWindowResize", function( assert ) {
+//	assert.equal( windowHalfX, window.innerWidth / 2, "Passed" );
+//	assert.equal( windowHalfY, window.innerHeight / 2, "Passed" );
+//
+//	assert.equal( camera.aspect, window.innerWidth / window.innerHeight, "Passed" );
+//});
 
-	assert.equal( camera.aspect, window.innerWidth / window.innerHeight, "Passed" );
-});
 QUnit.test( "onDocumentMouseMove", function( assert ) {
-	assert.ok( true, "Not Done" );
+	assert.ok( true, "System Test" );
 	// --These tests require user input (i.e. 'event') and have local variables, will try to fix later--
 	// assert.equal( mouse.x, ( event.clientX / window.innerWidth ) * 2 - 1, "Passed" );
 	// assert.equal( mouse.y, -( event.clientY / window.innerHeight ) * 2 + 1, "Passed" );
 	// assert.equal( intersects_board, raycaster.intersectObject(board), "Passed" );
 });
+
 QUnit.test( "onDocumentMouseDown", function( assert ) {
-	assert.ok( true, "Not Done" );
+	assert.ok( true, "System Test" );
 	// --These tests require user input (i.e. 'event') and have local variables, will try to fix later--
 });
+
 QUnit.test( "onDocumentMouseUp", function( assert ) {
-	assert.ok( true, "Not Done" );
+	assert.ok( true, "System Test" );
 	// --These tests require user input (i.e. 'event') and have local variables, will try to fix later--
 });
 
 //done, three js
-QUnit.test( "animate", function( assert ) {
-	assert.ok( true, "Not Done" );
-});
+//QUnit.test( "animate", function( assert ) {
+//	assert.ok( true, "Imported from three js" );
+//});
 
 //done, three js
-QUnit.test( "render", function( assert ) {
-	assert.ok( true, "Not Done" );
-});
+//QUnit.test( "render", function( assert ) {
+//	assert.ok( true, "Imported from three js" );
+//});
 
-//done, maybe better way to test
+//done
 QUnit.test( "getTodaysDate", function( assert ) {
-	assert.equal( getTodaysDate(), "04/29/2016", "Passed" );
+	assert.equal( getTodaysDate(), "05/03/2016", "Passed" );
 });
 
-//not done, objects
-QUnit.test( "updateLabels", function( assert ) {
-	assert.ok( true, "Not Done" );
-});
+//system test
+//QUnit.test( "updateLabels", function( assert ) {
+//	assert.ok( true, "System Test" );
+//});
 
 //mostly done, need to test loop
 QUnit.test( "createStimBoard", function( assert ) {
@@ -97,19 +102,21 @@ QUnit.test( "createStimBoard", function( assert ) {
 	createStimBoard();
 
 	assert.deepEqual( stim_board.position.y, 0, "Create stim board with default settings" );
-	assert.deepEqual( stim_board.position.x, -860, "Create stim board with default settings" );
-	assert.deepEqual( stim_board.position.z, -100, "Create stim board with default settings" );
+	assert.deepEqual( stim_board.position.x, (-windowHalfX + 100), "Create stim board with default settings" );
+	assert.deepEqual( stim_board.position.z, (board.position.z - 100), "Create stim board with default settings" );
 	assert.deepEqual( stim_board.rotation.x, 1, "Create stim board with default settings" );
 	assert.deepEqual( board.position.x, 200, "Create stim board with default settings" );
 	assert.deepEqual( board.position.y, -100, "Create stim board with default settings" );
 });
 
-//not done
+//done, system test for gui
 QUnit.test( "createViewStimuli", function( assert ) {
-	assert.ok( true, "Not Done" );
+	createViewStimuli();
+	
+	assert.deepEqual( info.innerHTML, "<p>Prompt</p>", "Make sure html writes correctly" );
 });
 
-//done, maybe
+//done
 QUnit.test( "viewStimuli", function( assert ) {
 	document.getElementsByClassName('view_stims')[0] = new Object;
 	document.getElementsByClassName('view_stims')[0].style = new Object;
@@ -118,23 +125,24 @@ QUnit.test( "viewStimuli", function( assert ) {
 	document.getElementsByClassName('draggable')[0].style = new Object;
 	document.getElementsByClassName('draggable')[0].style.display = null;
 
-	viewStimuli();
+	boardTest = new Object;
+	boardTest.experimentID = 1;
 
+	
+	viewStimuli(boardTest);
+	
+	assert.deepEqual( info.innerHTML, "<p>Experiment Preview</p>", "Make sure html is written properly");
 	assert.deepEqual( document.getElementsByClassName('view_stims')[0].style.display, 'none', "Make sure the display is set to none" );
 	assert.deepEqual( document.getElementsByClassName('draggable')[0].style.display, 'initial', "Make sure the display is set to initial" );
+	assert.deepEqual(experimentID, 1, "Makes sure it runs with an experiment id" );
 });
 
-//not done, gui
-QUnit.test( "createBeginExperiment", function( assert ) {
-	assert.ok( true, "Not Done" );
-});
+//system test
+//QUnit.test( "centerStimsOnBoard", function( assert ) {
+//	assert.ok( true, "System Test" );
+//});
 
-//not done, objects
-QUnit.test( "centerStimsOnBoard", function( assert ) {
-	assert.ok( true, "Not Done" );
-});
-
-//almost done, need to test gui
+//done, system test for gui
 QUnit.test( "createFinishExperiment", function( assert ) {
 	document.getElementsByClassName('begin_gui')[0] = new Object;
 	document.getElementsByClassName('begin_gui')[0].style = new Object;
@@ -150,17 +158,17 @@ QUnit.test( "createFinishExperiment", function( assert ) {
 	assert.deepEqual( camera.position.y, 615, "Make sure the camera is set" );
 });
 
-//not done, objects
-QUnit.test( "finishExperiment", function( assert ) {
-	assert.ok( true, "Not Done" );
-});
+//system test
+//QUnit.test( "finishExperiment", function( assert ) {
+//	assert.ok( true, "System Test" );
+//});
 
-//not done, not sure how to test
-QUnit.test( "goHome", function( assert ) {
-	assert.ok( true, "Not Done" );
-});
+//system test
+//QUnit.test( "goHome", function( assert ) {
+//	assert.ok( true, "System Test" );
+//});
 
-//mostly done, need to test for gui
+//done system test for gui
 QUnit.test( "createThanks", function( assert ) {
 	document.getElementsByClassName('finish_gui')[0] = new Object;
 	document.getElementsByClassName('finish_gui')[0].style = new Object;
@@ -176,53 +184,33 @@ QUnit.test( "createThanks", function( assert ) {
 
 //working on it
 QUnit.test( "createGUI", function( assert ) {
-	//gui controls test
-
-	//set default test
-	var boardTest = new Object;
-	boardTest.boardR = null;
-	boardTest.boardG = null;
-	boardTest.boardB = null;
-	//set rgb
-
-
-
 	createGUI();
-
-
-	assert.deepEqual( boardTest.boardR, "same", "Not Done" );
+	assert.ok( true, "Not Done" );
 });
 
 //done
 QUnit.test( "readExperimentFromFile", function( assert ) {
 	var testStim = '{orders:{order1:["stimName", "same"]}, stimuli:{stimName:{Name:"stimName", stimName:"stimName", stimR:255, stimG:255, stimB:255, sizeX:1, sizeY:1, sizeZ:1, bgR:0, bgG:0, bgB:0}, same:{Name:"same", stimName:"same", stimR:255, stimG:255, stimB:255, sizeX:1, sizeY:1, sizeZ:1, bgR:0, bgG:0, bgB:0}}}';
 
-	assert.deepEqual( readExperimentFromFile(testStim), testStim, "Not Done" );
+	assert.deepEqual( readExperimentFromFile(testStim), testStim, "File read and changed correctly" );
 });
 
-//not done
-QUnit.test( "convertExperimentToThing", function( assert ) {
-	//var order = [];
-	//order[0] = new Object;
-	//assert.deepEqual( convertExperimentToThing(testStim), "same", "Not Done" );
-});
+//system test
+//QUnit.test( "makeStims", function( assert ) {
+//	assert.ok( true, "System Test" );
+//});
 
-//not done, stimuli
-QUnit.test( "makeStims", function( assert ) {
-	assert.ok( true, "Not Done" );
-});
+//system test
+//QUnit.test( "makeLabel", function( assert ) {
+//	assert.ok( true, "System Test" );
+//});
 
-//not done, wrapText
-QUnit.test( "makeLabel", function( assert ) {
-	assert.ok( true, "Not Done" );
-});
+//system test
+//QUnit.test( "overwriteLabel", function( assert ) {
+//	assert.ok( true, "System Test" );
+//});
 
-//not done, wrapText
-QUnit.test( "overwriteLabel", function( assert ) {
-	assert.ok( true, "Not Done" );
-});
-
-//mostly done, objects
+//done, system test for objects
 QUnit.test( "updateBoard", function( assert ) {
 	boardColor = null;
 	var boardDef = new Object;
@@ -241,6 +229,8 @@ QUnit.test( "updateBoard", function( assert ) {
 	boardDef.labelSize = null; boardDef2.labelSize = 25;
 	boardDef.labelsShowing = null; boardDef2.labelsShowing = true;
 	boardDef.rotationX = null; boardDef2.rotationX = 0;
+
+
 	updateBoard(boardDef, boardDef2);
 
 	assert.deepEqual( boardDef.bgB, 100, "Background Blue Value set to blue value of background of GUI, in this case, 100" );
@@ -249,7 +239,7 @@ QUnit.test( "updateBoard", function( assert ) {
 	assert.deepEqual( boardDef.boardB, 255, "Board Blue Value set to blue value of board of GUI, in this case, 255");
 	assert.deepEqual( boardDef.boardG, 0, "Board Green Value set to green value of board of GUI, in this case, 0" );
 	assert.deepEqual( boardDef.boardR, 0, "Board Red Value set to red value of board of GUI, in this case, 0" );
-	assert.deepEqual( boardDef.hasBG, 1, "not sure");
+	//assert.deepEqual( boardDef.hasBG, 1, "not sure");
 	assert.deepEqual( boardDef.labelB, 150, "Label Blue Value set to blue value of board of GUI, in this case, 150" );
 	assert.deepEqual( boardDef.labelG, 50, "Label Green Value set to green value of board of GUI, in this case, 50" );
 	assert.deepEqual( boardDef.labelR, 100, "Label Red Value set to red value of board of GUI, in this case, 100" );
@@ -264,12 +254,12 @@ QUnit.test( "updateBoard", function( assert ) {
 });
 
 
-//not done, wrapText
-QUnit.test( "wrapText", function( assert ) {
-	assert.ok( true, "Not Done" );
-});
+//system test
+//QUnit.test( "wrapText", function( assert ) {
+//	assert.ok( true, "System Test" );
+//});
 
-//mostly done, board
+//done, system test for board
 QUnit.test( "setBoardColor", function( assert ) {
 	boardColor = null;
 	var boardDef = new Object;
@@ -281,7 +271,7 @@ QUnit.test( "setBoardColor", function( assert ) {
 	assert.deepEqual( boardColor, "rgb(200, 200, 200)", "Board Color set to color of board in GUI, in this case, Red 200, Blue 200, Green 200" );
 });
 
-//mostly done, renderer
+//done, system test for render
 QUnit.test( "setBackgroundColor", function( assert ) {
 	bgColor = null;
 	var boardDef = new Object;
@@ -293,7 +283,7 @@ QUnit.test( "setBackgroundColor", function( assert ) {
 	assert.deepEqual( bgColor, "rgb(200, 200, 200)", "Background Color set to color of background in GUI, in this case, Red 200, Blue 200, Green 200" );
 });
 
-//mostly done, objects
+//done, system test for objects
 QUnit.test( "setLabelColor", function( assert ) {
 	labelSize = null;
 	labelColor = null;
@@ -312,7 +302,7 @@ QUnit.test( "setLabelColor", function( assert ) {
 	assert.deepEqual( labelColor, "rgba(200, 200, 200, 0)", "Label Color set to color of labels in GUI, in this case, Red 200, Blue 200, Green 200, Shade 0" );
 });
 
-//mostly done, objects
+//done, system test for objects
 QUnit.test( "setLabelSize", function( assert ) {
 	labelSize = null;
 	labelColor = null;
@@ -336,7 +326,7 @@ QUnit.test( "setLabelSize", function( assert ) {
 	assert.deepEqual( labelColor, "rgba(200, 200, 200, 0)", "Label Color set to color of labels in GUI, in this case, Red 200, Blue 200, Green 200, Shade 0" );
 });
 
-//mostly done, objects
+//done, system test for objects
 QUnit.test( "setLabelDefaults", function( assert ) {
 	labelSize = null;
 	labelColor = null;
@@ -358,10 +348,10 @@ QUnit.test( "setLabelDefaults", function( assert ) {
 	assert.deepEqual( boardDef.labelSize, 20, "Label Size value set to default value of 20" );
 });
 
-//not done, objects
-QUnit.test( "toggleLabels", function( assert ) {
-	assert.ok( true, "Not Done" );
-});
+//system test
+//QUnit.test( "toggleLabels", function( assert ) {
+//	assert.ok( true, "System Test" );
+//});
 
 //done
 QUnit.test( "calculateDistance", function( assert ) {
@@ -375,31 +365,36 @@ QUnit.test( "calculateDistance", function( assert ) {
 	first.position.y = 100;
 	second.position.x = 100;
 	second.position.y = 100;
-	assert.deepEqual( calculateDistance(first,second), 0, "Absolute Value of Square Root of (0 Squared + 0 Squared) = 0" );
+	var res = Math.round(Math.sqrt(Math.pow((second.position.x-first.position.x), 2) + Math.pow(second.position.y-first.position.y, 2)))/(windowHalfY * 1.8 / 24);
+	assert.deepEqual( calculateDistance(first,second), res, "Absolute Value of Square Root of (0 Squared + 0 Squared) = " + res );
 
 	first.position.x = 500;
 	first.position.y = -200;
 	second.position.x = -600;
 	second.position.y = 100;
-	assert.deepEqual( calculateDistance(first,second), 1140, "Absolute Value of Square Root of (-1100 Squared + 300 Squared) = 1140" );
+	res = Math.round(Math.sqrt(Math.pow((second.position.x-first.position.x), 2) + Math.pow(second.position.y-first.position.y, 2)))/(windowHalfY * 1.8 / 24);
+	assert.deepEqual( calculateDistance(first,second), res, "Absolute Value of Square Root of (-1100 Squared + 300 Squared) = " + res );
 
 	first.position.x = 10;
 	first.position.y = 9;
 	second.position.x = 8;
 	second.position.y = 7;
-	assert.deepEqual( calculateDistance(first,second), 3, "Absolute Value of Square Root of (-2 Squared + -2 Squared) = 3" );
+	res = Math.round(Math.sqrt(Math.pow((second.position.x-first.position.x), 2) + Math.pow(second.position.y-first.position.y, 2)))/(windowHalfY * 1.8 / 24);
+	assert.deepEqual( calculateDistance(first,second), res, "Absolute Value of Square Root of (-2 Squared + -2 Squared) = " + res );
 
 	first.position.x = 22;
 	first.position.y = -44;
 	second.position.x = 66;
 	second.position.y = -88;
-	assert.deepEqual( calculateDistance(first,second), 62, "Absolute Value of Square Root of (44 Squared + -44 Squared) = 62" );
+	res = Math.round(Math.sqrt(Math.pow((second.position.x-first.position.x), 2) + Math.pow(second.position.y-first.position.y, 2)))/(windowHalfY * 1.8 / 24);
+	assert.deepEqual( calculateDistance(first,second), res, "Absolute Value of Square Root of (44 Squared + -44 Squared) = " + res );
 
 	first.position.x = 300;
 	first.position.y = -800;
 	second.position.x = 200;
 	second.position.y = -400;
-	assert.deepEqual( calculateDistance(first,second), 412, "Absolute Value of Square Root of (-100 Squared + 400 Squared) = 412" );
+	res = Math.round(Math.sqrt(Math.pow((second.position.x-first.position.x), 2) + Math.pow(second.position.y-first.position.y, 2)))/(windowHalfY * 1.8 / 24);
+	assert.deepEqual( calculateDistance(first,second), res, "Absolute Value of Square Root of (-100 Squared + 400 Squared) = " + res );
 });
 
 //done
@@ -407,4 +402,17 @@ QUnit.test("getTimeStamp", function( assert ) {
 	var date = new Date();
 	var result = date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds();
 	assert.deepEqual(getTimeStamp(),result,"Should show current time")
+});
+
+//Done, system test for gui
+QUnit.test( "createBeginExperiment", function( assert ) {
+	board = new Object;
+	board.position = new Object;
+	board.position.x = null;
+	board.visable = null;
+
+	createBeginExperiment();
+
+	assert.deepEqual( board.position.x,0, "Make sure board position is correct" );
+	assert.deepEqual( board.visable,null, "Make sure board is visable" );
 });
